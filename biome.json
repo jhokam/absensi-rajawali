@@ -1,0 +1,33 @@
+{
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"organizeImports": {
+		"enabled": true
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"lineEnding": "crlf",
+		"ignore": ["node_modules", ".vscode"]
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"all": true,
+			"style": {
+				"useNamingConvention": "off",
+				"noDefaultExport": "off"
+			},
+			"suspicious": {
+				"noReactSpecificProps": "off",
+				"noEmptyBlockStatements": "off"
+			},
+			"complexity": {
+				"noExcessiveCognitiveComplexity": "off"
+			}
+		}
+	},
+	"files": {
+		"ignoreUnknown": true,
+		"ignore": ["node_modules", ".vscode", ".env.example"]
+	}
+}
