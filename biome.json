@@ -23,6 +23,9 @@
 			},
 			"complexity": {
 				"noExcessiveCognitiveComplexity": "off"
+			},
+			"correctness": {
+				"noChildrenProp": "off"
 			}
 		}
 	},
