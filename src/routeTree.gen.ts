@@ -8,31 +8,40 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createFileRoute } from '@tanstack/react-router'
-
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as RemajaImport } from './routes/remaja'
+import { Route as KelompokImport } from './routes/kelompok'
+import { Route as AboutImport } from './routes/about'
+import { Route as IndexImport } from './routes/index'
 import { Route as authLoginImport } from './routes/(auth)/login'
-
-// Create Virtual Routes
-
-const AboutLazyImport = createFileRoute('/about')()
-const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
 
-const AboutLazyRoute = AboutLazyImport.update({
+const RemajaRoute = RemajaImport.update({
+  id: '/remaja',
+  path: '/remaja',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const KelompokRoute = KelompokImport.update({
+  id: '/kelompok',
+  path: '/kelompok',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AboutRoute = AboutImport.update({
   id: '/about',
   path: '/about',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/about.lazy').then((d) => d.Route))
+} as any)
 
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
 
 const authLoginRoute = authLoginImport.update({
   id: '/(auth)/login',
@@ -48,14 +57,28 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/about': {
       id: '/about'
       path: '/about'
       fullPath: '/about'
-      preLoaderRoute: typeof AboutLazyImport
+      preLoaderRoute: typeof AboutImport
+      parentRoute: typeof rootRoute
+    }
+    '/kelompok': {
+      id: '/kelompok'
+      path: '/kelompok'
+      fullPath: '/kelompok'
+      preLoaderRoute: typeof KelompokImport
+      parentRoute: typeof rootRoute
+    }
+    '/remaja': {
+      id: '/remaja'
+      path: '/remaja'
+      fullPath: '/remaja'
+      preLoaderRoute: typeof RemajaImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/login': {
@@ -71,42 +94,52 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/about': typeof AboutLazyRoute
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/kelompok': typeof KelompokRoute
+  '/remaja': typeof RemajaRoute
   '/login': typeof authLoginRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/about': typeof AboutLazyRoute
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/kelompok': typeof KelompokRoute
+  '/remaja': typeof RemajaRoute
   '/login': typeof authLoginRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/about': typeof AboutLazyRoute
+  '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/kelompok': typeof KelompokRoute
+  '/remaja': typeof RemajaRoute
   '/(auth)/login': typeof authLoginRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/login'
+  fullPaths: '/' | '/about' | '/kelompok' | '/remaja' | '/login'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/login'
-  id: '__root__' | '/' | '/about' | '/(auth)/login'
+  to: '/' | '/about' | '/kelompok' | '/remaja' | '/login'
+  id: '__root__' | '/' | '/about' | '/kelompok' | '/remaja' | '/(auth)/login'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  AboutLazyRoute: typeof AboutLazyRoute
+  IndexRoute: typeof IndexRoute
+  AboutRoute: typeof AboutRoute
+  KelompokRoute: typeof KelompokRoute
+  RemajaRoute: typeof RemajaRoute
   authLoginRoute: typeof authLoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
-  AboutLazyRoute: AboutLazyRoute,
+  IndexRoute: IndexRoute,
+  AboutRoute: AboutRoute,
+  KelompokRoute: KelompokRoute,
+  RemajaRoute: RemajaRoute,
   authLoginRoute: authLoginRoute,
 }
 
@@ -122,14 +155,22 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/about",
+        "/kelompok",
+        "/remaja",
         "/(auth)/login"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
+      "filePath": "index.tsx"
     },
     "/about": {
-      "filePath": "about.lazy.tsx"
+      "filePath": "about.tsx"
+    },
+    "/kelompok": {
+      "filePath": "kelompok.tsx"
+    },
+    "/remaja": {
+      "filePath": "remaja.tsx"
     },
     "/(auth)/login": {
       "filePath": "(auth)/login.tsx"

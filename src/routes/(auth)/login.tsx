@@ -1,9 +1,12 @@
-import { Icon } from "@iconify/react";
 import { useForm } from "@tanstack/react-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { useCookies } from "react-cookie";
 import { z } from "zod";
 import ThemedButton from "../../components/ThemedButton.tsx";
+import ThemedInput from "../../components/ThemedInput.tsx";
+import type { LoginRequest, LoginResponse } from "../../types/index.ts";
 
 export const Route = createFileRoute("/(auth)/login")({
 	component: LoginPage,
@@ -16,13 +19,46 @@ const loginSchema = z.object({
 
 function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
+	const [cookies, setCookie] = useCookies(["access_token"]);
+	const navigate = useNavigate();
+
+	const handleLogin = async (data: LoginRequest) => {
+		const response = await fetch("http://localhost:8080/api/auth/login", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		});
+		if (!response.ok) {
+			const error = await response.json();
+			throw new Error(error.message);
+		}
+		return response.json();
+	};
+
+	const { mutateAsync } = useMutation<LoginResponse, Error, LoginRequest>({
+		mutationKey: ["login"],
+		mutationFn: handleLogin,
+		onSuccess: (data) => {
+			setCookie("access_token", data.data.access_token);
+			navigate({
+				to: "/",
+			});
+		},
+	});
+
 	const form = useForm({
 		defaultValues: {
 			username: "",
 			password: "",
 		},
 		onSubmit: async (values) => {
-			console.log(values);
+			try {
+				await mutateAsync(values.value);
+			} catch (error) {
+				console.log(error);
+			}
 		},
 		validators: {
 			onChange: loginSchema,
@@ -53,25 +89,17 @@ function LoginPage() {
 						<form.Field
 							name="username"
 							children={(field) => (
-								<>
-									<label
-										htmlFor="username"
-										className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-									>
-										Username
-									</label>
-									<input
-										type="text"
-										name={field.name}
-										id={field.name}
-										value={field.state.value}
-										onBlur={field.handleBlur}
-										onChange={(e) => field.handleChange(e.target.value)}
-										className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-										placeholder="JohnDoe"
-										required={true}
-									/>
-								</>
+								<ThemedInput
+									htmlFor={field.name}
+									type="text"
+									name={field.name}
+									id={field.name}
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) => field.handleChange(e.target.value)}
+									placeholder="Username"
+									required={true}
+								/>
 							)}
 						/>
 					</div>
@@ -79,38 +107,19 @@ function LoginPage() {
 						<form.Field
 							name="password"
 							children={(field) => (
-								<>
-									<label
-										htmlFor="password"
-										className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-									>
-										Password
-									</label>
-									<div className="flex space-x-2 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-										<input
-											type={showPassword ? "text" : "password"}
-											name={field.name}
-											id={field.name}
-											value={field.state.value}
-											onBlur={field.handleBlur}
-											onChange={(e) => field.handleChange(e.target.value)}
-											placeholder="••••••••"
-											className="focus:outline-none w-full"
-											required={true}
-										/>
-										<button
-											type="button"
-											className=""
-											onClick={() => setShowPassword(!showPassword)}
-										>
-											<Icon
-												icon={showPassword ? "mdi:eye" : "mdi:eye-off"}
-												color="white"
-												width={20}
-											/>
-										</button>
-									</div>
-								</>
+								<ThemedInput
+									htmlFor={field.name}
+									type={showPassword ? "text" : "password"}
+									name={field.name}
+									id={field.name}
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={(e) => field.handleChange(e.target.value)}
+									placeholder="Password"
+									required={true}
+									className="flex-1"
+									buttonClick={() => setShowPassword(!showPassword)}
+								/>
 							)}
 						/>
 					</div>
