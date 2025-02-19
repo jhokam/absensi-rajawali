@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import Dialog from "../components/Dialog";
 
 export const Route = createFileRoute("/")({
 	component: Index,

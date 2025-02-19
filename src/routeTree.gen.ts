@@ -11,31 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as RemajaImport } from './routes/remaja'
-import { Route as KelompokImport } from './routes/kelompok'
-import { Route as AboutImport } from './routes/about'
 import { Route as IndexImport } from './routes/index'
-import { Route as authLoginImport } from './routes/(auth)/login'
+import { Route as AdminLoginImport } from './routes/admin/login'
+import { Route as AdminDashboardRemajaImport } from './routes/admin/dashboard/remaja'
 
 // Create/Update Routes
-
-const RemajaRoute = RemajaImport.update({
-  id: '/remaja',
-  path: '/remaja',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const KelompokRoute = KelompokImport.update({
-  id: '/kelompok',
-  path: '/kelompok',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const AboutRoute = AboutImport.update({
-  id: '/about',
-  path: '/about',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -43,9 +23,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const authLoginRoute = authLoginImport.update({
-  id: '/(auth)/login',
-  path: '/login',
+const AdminLoginRoute = AdminLoginImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminDashboardRemajaRoute = AdminDashboardRemajaImport.update({
+  id: '/admin/dashboard/remaja',
+  path: '/admin/dashboard/remaja',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -60,32 +46,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutImport
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginImport
       parentRoute: typeof rootRoute
     }
-    '/kelompok': {
-      id: '/kelompok'
-      path: '/kelompok'
-      fullPath: '/kelompok'
-      preLoaderRoute: typeof KelompokImport
-      parentRoute: typeof rootRoute
-    }
-    '/remaja': {
-      id: '/remaja'
-      path: '/remaja'
-      fullPath: '/remaja'
-      preLoaderRoute: typeof RemajaImport
-      parentRoute: typeof rootRoute
-    }
-    '/(auth)/login': {
-      id: '/(auth)/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof authLoginImport
+    '/admin/dashboard/remaja': {
+      id: '/admin/dashboard/remaja'
+      path: '/admin/dashboard/remaja'
+      fullPath: '/admin/dashboard/remaja'
+      preLoaderRoute: typeof AdminDashboardRemajaImport
       parentRoute: typeof rootRoute
     }
   }
@@ -95,52 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/kelompok': typeof KelompokRoute
-  '/remaja': typeof RemajaRoute
-  '/login': typeof authLoginRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/kelompok': typeof KelompokRoute
-  '/remaja': typeof RemajaRoute
-  '/login': typeof authLoginRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/about': typeof AboutRoute
-  '/kelompok': typeof KelompokRoute
-  '/remaja': typeof RemajaRoute
-  '/(auth)/login': typeof authLoginRoute
+  '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/kelompok' | '/remaja' | '/login'
+  fullPaths: '/' | '/admin/login' | '/admin/dashboard/remaja'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/kelompok' | '/remaja' | '/login'
-  id: '__root__' | '/' | '/about' | '/kelompok' | '/remaja' | '/(auth)/login'
+  to: '/' | '/admin/login' | '/admin/dashboard/remaja'
+  id: '__root__' | '/' | '/admin/login' | '/admin/dashboard/remaja'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AboutRoute: typeof AboutRoute
-  KelompokRoute: typeof KelompokRoute
-  RemajaRoute: typeof RemajaRoute
-  authLoginRoute: typeof authLoginRoute
+  AdminLoginRoute: typeof AdminLoginRoute
+  AdminDashboardRemajaRoute: typeof AdminDashboardRemajaRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AboutRoute: AboutRoute,
-  KelompokRoute: KelompokRoute,
-  RemajaRoute: RemajaRoute,
-  authLoginRoute: authLoginRoute,
+  AdminLoginRoute: AdminLoginRoute,
+  AdminDashboardRemajaRoute: AdminDashboardRemajaRoute,
 }
 
 export const routeTree = rootRoute
@@ -154,26 +116,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/about",
-        "/kelompok",
-        "/remaja",
-        "/(auth)/login"
+        "/admin/login",
+        "/admin/dashboard/remaja"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/about": {
-      "filePath": "about.tsx"
+    "/admin/login": {
+      "filePath": "admin/login.tsx"
     },
-    "/kelompok": {
-      "filePath": "kelompok.tsx"
-    },
-    "/remaja": {
-      "filePath": "remaja.tsx"
-    },
-    "/(auth)/login": {
-      "filePath": "(auth)/login.tsx"
+    "/admin/dashboard/remaja": {
+      "filePath": "admin/dashboard/remaja.tsx"
     }
   }
 }

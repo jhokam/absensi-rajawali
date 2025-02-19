@@ -6,9 +6,9 @@ import { useCookies } from "react-cookie";
 import { z } from "zod";
 import ThemedButton from "../../components/ThemedButton.tsx";
 import ThemedInput from "../../components/ThemedInput.tsx";
-import type { LoginRequest, LoginResponse } from "../../types/index.ts";
+import type { LoginRequest, LoginResponse } from "../../types/api.ts";
 
-export const Route = createFileRoute("/(auth)/login")({
+export const Route = createFileRoute("/admin/login")({
 	component: LoginPage,
 });
 
@@ -23,7 +23,7 @@ function LoginPage() {
 	const navigate = useNavigate();
 
 	const handleLogin = async (data: LoginRequest) => {
-		const response = await fetch("http://localhost:8080/api/auth/login", {
+		const response = await fetch("http://localhost:8080/auth/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

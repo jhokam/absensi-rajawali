@@ -19,16 +19,19 @@ export type ResponseBaseWithArray<T> = {
 
 export type RemajaBase = {
 	id: number;
-	createAt: string;
-	updatedAt: number;
 	nama: string;
 	username: string;
-	jenis_kelamin: "LAKI_LAKI" | "PEREMPUAN";
-	jenjang: "PAUD" | "CABERAWIT" | "PRA_REMAJA" | "REMAJA" | "PRA_NIKAH";
+	jenis_kelamin: "Laki-Laki" | "Perempuan" | string;
+	jenjang:
+		| "Paud"
+		| "Caberawit"
+		| "Pra_Remaja"
+		| "Remaja"
+		| "Pra_Nikah"
+		| string;
 	alamat: string;
-	sambung: boolean;
-	role: "ADMIN" | "USER";
-	password: string;
+	sambung: "Aktif" | "Tidak_Aktif" | string;
+	role: "Admin" | "User" | string;
 };
 
 export type LoginBase = {
@@ -38,3 +41,20 @@ export type LoginBase = {
 export type LoginResponse = ResponseBase<LoginBase>;
 
 export type RemajaResponse = ResponseBaseWithArray<RemajaBase>;
+
+export type RemajaRequest = {
+	nama: string;
+	username: string;
+	jenis_kelamin: "Laki-Laki" | "Perempuan" | string;
+	jenjang:
+		| "Paud"
+		| "Caberawit"
+		| "Pra_Remaja"
+		| "Remaja"
+		| "Pra_Nikah"
+		| string;
+	alamat: string;
+	sambung: "Aktif" | "Tidak_Aktif" | string;
+	role: "Admin" | "User" | string;
+	password: string;
+};
