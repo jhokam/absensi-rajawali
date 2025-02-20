@@ -8,7 +8,8 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { RemajaRequest, RemajaResponse } from "../types/api";
+import type { RemajaRequest, RemajaResponseArray } from "../types/api";
+import TextError from "./TextError";
 import ThemedButton from "./ThemedButton";
 import ThemedInput from "./ThemedInput";
 import ThemedSelect from "./ThemedSelect";
@@ -41,7 +42,7 @@ export default function SheetCreate({
 	});
 
 	const { mutateAsync, isError, error } = useMutation<
-		RemajaResponse,
+		RemajaResponseArray,
 		Error,
 		RemajaRequest
 	>({
@@ -103,39 +104,49 @@ export default function SheetCreate({
 						<form.Field
 							name="nama"
 							children={(field) => (
-								<ThemedInput
-									label="Nama"
-									variant="secondary"
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="John Doe"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Nama"
+										variant="secondary"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="John Doe"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 
 						<form.Field
 							name="username"
 							children={(field) => (
-								<ThemedInput
-									label="Username"
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="john"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Username"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="john"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 
@@ -174,19 +185,24 @@ export default function SheetCreate({
 						<form.Field
 							name="alamat"
 							children={(field) => (
-								<ThemedInput
-									label="Alamat"
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Jl. Madukoro No. 1"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Alamat"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="Jl. Madukoro No. 1"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 
@@ -225,19 +241,24 @@ export default function SheetCreate({
 						<form.Field
 							name="password"
 							children={(field) => (
-								<ThemedInput
-									label="Password"
-									htmlFor={field.name}
-									type="password"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Make sure it's strong"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Password"
+										htmlFor={field.name}
+										type="password"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="Make sure it's strong"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 					</div>

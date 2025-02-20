@@ -7,7 +7,7 @@ import Alert from "../../../components/Alert";
 import ProfileInfoCard from "../../../components/ProfileInfoCard";
 import Sidebar from "../../../components/Sidebar";
 import Skeleton from "../../../components/Skeleton";
-import type { ProfileResponse } from "../../../types/api";
+import type { RemajaResponse } from "../../../types/api";
 import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/")({
@@ -20,7 +20,7 @@ function RouteComponent() {
 	const [alertMessage, setAlertMessage] = useState("");
 	const { setRole } = useProfile();
 
-	const { isPending, error, data } = useQuery<ProfileResponse>({
+	const { isPending, error, data } = useQuery<RemajaResponse>({
 		queryKey: ["remajaData"],
 		queryFn: async () =>
 			await fetch("http://localhost:8080/api/profile", {

@@ -15,11 +15,12 @@ import Badge from "../../../components/Badge";
 import Dialog from "../../../components/Dialog";
 import SearchBar from "../../../components/SearchBar";
 import SheetCreate from "../../../components/SheetCreate";
+import SheetUpdate from "../../../components/SheetUpdate";
 import Sidebar from "../../../components/Sidebar";
 import Spinner from "../../../components/Spinner";
 import ThemedButton from "../../../components/ThemedButton";
 import { colorMap } from "../../../constants";
-import type { RemajaBase, RemajaResponse } from "../../../types/api";
+import type { RemajaBase, RemajaResponseArray } from "../../../types/api";
 import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/remaja")({
@@ -28,15 +29,18 @@ export const Route = createFileRoute("/admin/dashboard/remaja")({
 
 function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
-	const [sheet, setSheet] = useState(false);
+	const [sheetCreate, setSheetCreate] = useState(false);
+	const [sheetUpdate, setSheetUpdate] = useState(false);
+	const [selectedData, setSelectedData] = useState<RemajaBase | null>(null);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [alertType, setAlertType] = useState<"success" | "error">("success");
-	const queryClient = useQueryClient();
 	const [dialog, setDialog] = useState(false);
-	const { role } = useProfile();
+	const [deleteId, setDeleteId] = useState<number | null>(null);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [debounceSearch] = useDebounce(searchTerm, 3000);
+	const [debounceSearch] = useDebounce(searchTerm, 1000);
+	const queryClient = useQueryClient();
+	const { role } = useProfile();
 
 	const deleteRemaja = async (id: number) => {
 		const response = await fetch(`http://localhost:8080/api/remaja/${id}`, {
@@ -45,12 +49,14 @@ function RouteComponent() {
 				Authorization: `Bearer ${cookies.access_token}`,
 			},
 		});
-
+		if (!response.ok) {
+			throw new Error("Failed to delete data");
+		}
 		return response.json();
 	};
 
 	const mutation = useMutation({
-		mutationFn: (id: number) => deleteRemaja(id),
+		mutationFn: deleteRemaja,
 		onSuccess: (success) => {
 			queryClient.invalidateQueries({ queryKey: ["remajaData"] });
 			handleAlertSuccess(success.message);
@@ -62,17 +68,29 @@ function RouteComponent() {
 
 	const columnHelper = createColumnHelper<RemajaBase>();
 
-	const handleEdit = (row: RemajaBase) => {};
-
-	const handleDelete = (row: RemajaBase) => {
-		mutation.mutate(row.id);
+	const handleEdit = (row: RemajaBase) => {
+		setSelectedData(row);
+		setSheetUpdate(true);
 	};
 
-	const { isPending, error, data } = useQuery<RemajaResponse>({
+	const handleDeleteConfirm = () => {
+		if (deleteId !== null) {
+			mutation.mutate(deleteId);
+			setDialog(false);
+			setDeleteId(null);
+		}
+	};
+
+	const handleDelete = (row: RemajaBase) => {
+		setDeleteId(row.id);
+		setDialog(true);
+	};
+
+	const { isPending, error, data } = useQuery<RemajaResponseArray>({
 		queryKey: ["remajaData", debounceSearch],
 		queryFn: async () => {
 			const searchParams = new URLSearchParams();
-			if (debounceSearch) {
+			if (debounceSearch && !Number.isNaN(Number(debounceSearch))) {
 				searchParams.append("id", debounceSearch);
 			}
 
@@ -95,74 +113,40 @@ function RouteComponent() {
 	});
 
 	const columns = [
-		columnHelper.accessor("id", {
-			header: () => "ID",
-		}),
-		columnHelper.accessor("nama", {
-			header: () => "Nama",
-		}),
-		columnHelper.accessor("username", {
-			header: () => "Username",
-		}),
-		columnHelper.accessor("jenis_kelamin", {
-			header: () => "Jenis Kelamin",
-		}),
-		columnHelper.accessor("jenjang", {
-			header: () => "Jenjang",
-		}),
-		columnHelper.accessor("alamat", {
-			header: () => "Alamat",
-		}),
-		columnHelper.accessor("sambung", {
-			header: () => "Sambung",
-		}),
-		columnHelper.accessor("role", {
-			header: () => "Role",
-		}),
+		columnHelper.accessor("id", { header: "ID" }),
+		columnHelper.accessor("nama", { header: "Nama" }),
+		columnHelper.accessor("username", { header: "Username" }),
+		columnHelper.accessor("jenis_kelamin", { header: "Jenis Kelamin" }),
+		columnHelper.accessor("jenjang", { header: "Jenjang" }),
+		columnHelper.accessor("alamat", { header: "Alamat" }),
+		columnHelper.accessor("sambung", { header: "Sambung" }),
+		columnHelper.accessor("role", { header: "Role" }),
 		columnHelper.display({
 			id: "actions",
-			header: () => "Action",
+			header: "Action",
 			cell: (props) => {
 				const row = props.row.original;
 				return (
 					<div className="flex space-x-2">
-						<button
-							type="button"
-							onClick={() => {
-								handleEdit(row);
-							}}
-							disabled={mutation.isPending}
-						>
+						<button type="button" onClick={() => handleEdit(row)}>
 							<Icon
 								icon="line-md:edit"
 								fontSize={20}
-								className={
-									mutation.isPending ? "text-gray-500" : "text-blue-500"
-								}
+								className="text-blue-500"
 							/>
 						</button>
-						<button
-							type="button"
-							onClick={() => {
-								handleDelete(row);
-							}}
-							disabled={mutation.isPending}
-						>
+						<button type="button" onClick={() => handleDelete(row)}>
 							<Icon
 								icon="mynaui:trash"
 								fontSize={20}
-								className={
-									mutation.isPending ? "text-gray-500" : "text-red-500"
-								}
+								className="text-red-500"
 							/>
 						</button>
 					</div>
 				);
 			},
 			enableHiding: true,
-			meta: {
-				hidden: role === "User",
-			},
+			meta: { hidden: role === "User" },
 		}),
 	];
 
@@ -171,9 +155,7 @@ function RouteComponent() {
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		state: {
-			columnVisibility: {
-				actions: role !== "User",
-			},
+			columnVisibility: { actions: role !== "User" },
 		},
 	});
 
@@ -181,114 +163,74 @@ function RouteComponent() {
 		setAlertMessage(message);
 		setAlertType("error");
 		setAlert(true);
-		setTimeout(() => {
-			setAlert(false);
-		}, 3000);
+		setTimeout(() => setAlert(false), 3000);
 	};
 
 	const handleAlertSuccess = (message: string) => {
 		setAlertMessage(message);
 		setAlertType("success");
 		setAlert(true);
-		setTimeout(() => {
-			setAlert(false);
-		}, 3000);
+		setTimeout(() => setAlert(false), 3000);
 	};
 
 	return (
 		<div className="flex">
-			{sheet ? <SheetCreate closeSheet={() => setSheet(false)} /> : null}
-			{alert ? <Alert message={alertMessage} type={alertType} /> : null}
-			{dialog ? (
+			{sheetCreate && <SheetCreate closeSheet={() => setSheetCreate(false)} />}
+			{sheetUpdate && selectedData && (
+				<SheetUpdate
+					closeSheet={() => setSheetUpdate(false)}
+					selectedData={selectedData}
+				/>
+			)}
+			{alert && <Alert message={alertMessage} type={alertType} />}
+			{dialog && (
 				<Dialog
 					cancel="Cancel"
 					confirm="Yes, Delete!"
-					description="Are you sure want to delete this data?"
+					description="Are you sure you want to delete this data?"
 					title="Delete Data"
 					handleCancel={() => setDialog(false)}
-					handleConfirm={() => {}}
+					handleConfirm={handleDeleteConfirm}
 				/>
-			) : null}
+			)}
 			<Sidebar />
 			<div className="flex-1 px-2 py-3">
 				<div className="flex justify-between">
 					<SearchBar
-						onChange={(e) => {
-							setSearchTerm(e.target.value);
-						}}
-						placeholder=""
+						onChange={(e) => setSearchTerm(e.target.value)}
+						placeholder="Search Item"
 						value={searchTerm}
 					/>
-					<ThemedButton type="button" onClick={() => setSheet(true)}>
+					<ThemedButton type="button" onClick={() => setSheetCreate(true)}>
 						Create Remaja
 					</ThemedButton>
 				</div>
-				<table className="w-full h-fit text-left text-sm text-gray-500">
+				<table className="w-full text-left text-sm text-gray-500">
 					<thead className="text-xs text-gray-700 uppercase bg-gray-50">
 						{table.getHeaderGroups().map((headerGroup) => (
 							<tr key={headerGroup.id}>
 								{headerGroup.headers.map((header) => (
 									<th key={header.id} className="px-6 py-3">
-										{header.isPlaceholder
-											? null
-											: flexRender(
-													header.column.columnDef.header,
-													header.getContext(),
-												)}
+										{flexRender(
+											header.column.columnDef.header,
+											header.getContext(),
+										)}
 									</th>
 								))}
 							</tr>
 						))}
 					</thead>
-					{isPending ? (
-						<Spinner className="m-2" />
-					) : (
-						<tbody>
-							{table.getRowModel().rows.map((row) => (
-								<tr key={row.id} className="bg-white border-b">
-									{row.getVisibleCells().map((cell) => {
-										const value = flexRender(
-											cell.column.columnDef.cell,
-											cell.getContext(),
-										);
-										const fieldName = cell.column.id;
-										if (
-											["jenis_kelamin", "jenjang", "role", "sambung"].includes(
-												fieldName,
-											)
-										) {
-											const badgeColor =
-												colorMap[fieldName][cell.row.original[fieldName]];
-
-											if (
-												fieldName in colorMap &&
-												cell.row.original[fieldName] in colorMap[fieldName]
-											) {
-												badgeColor;
-											}
-
-											return (
-												<td
-													key={cell.id}
-													className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-												>
-													<Badge text={value} color={badgeColor} size="small" />
-												</td>
-											);
-										}
-										return (
-											<td
-												key={cell.id}
-												className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-											>
-												{value}
-											</td>
-										);
-									})}
-								</tr>
-							))}
-						</tbody>
-					)}
+					<tbody>
+						{table.getRowModel().rows.map((row) => (
+							<tr key={row.id} className="bg-white border-b">
+								{row.getVisibleCells().map((cell) => (
+									<td key={cell.id} className="px-6 py-4">
+										{flexRender(cell.column.columnDef.cell, cell.getContext())}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
 				</table>
 			</div>
 		</div>

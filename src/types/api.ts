@@ -42,9 +42,9 @@ export type LoginBase = {
 
 export type LoginResponse = ResponseBase<LoginBase>;
 
-export type RemajaResponse = ResponseBaseWithArray<RemajaBase>;
+export type RemajaResponseArray = ResponseBaseWithArray<RemajaBase>;
 
-export type ProfileResponse = ResponseBase<RemajaBase>;
+export type RemajaResponse = ResponseBase<RemajaBase>;
 
 export type RemajaRequest = {
 	nama: string;

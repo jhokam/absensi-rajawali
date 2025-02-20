@@ -4,6 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { z } from "zod";
+import TextError from "../../components/TextError.tsx";
 import ThemedButton from "../../components/ThemedButton.tsx";
 import ThemedInput from "../../components/ThemedInput.tsx";
 import type { LoginRequest, LoginResponse } from "../../types/api.ts";
@@ -69,7 +70,7 @@ function LoginPage() {
 		<div className="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
 			<img
 				src="/logo-rajawali.png"
-				className="h-11 lg:mb-10"
+				className="h-24 mb-10"
 				alt="Logo Rajawali"
 			/>
 			{/* Card */}
@@ -89,17 +90,23 @@ function LoginPage() {
 						<form.Field
 							name="username"
 							children={(field) => (
-								<ThemedInput
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Username"
-									required={true}
-								/>
+								<>
+									<ThemedInput
+										label="Username"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="JohnDoe"
+										required={true}
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 					</div>
@@ -107,29 +114,27 @@ function LoginPage() {
 						<form.Field
 							name="password"
 							children={(field) => (
-								<ThemedInput
-									htmlFor={field.name}
-									type={showPassword ? "text" : "password"}
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Password"
-									required={true}
-									className="flex-1"
-									buttonClick={() => setShowPassword(!showPassword)}
-								/>
+								<>
+									<ThemedInput
+										label="Password"
+										htmlFor={field.name}
+										type={showPassword ? "text" : "password"}
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="Password"
+										required={true}
+										className="flex-1"
+										buttonClick={() => setShowPassword(!showPassword)}
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
-					</div>
-					<div className="flex items-start">
-						<a
-							href="/forgot-password"
-							className="ml-auto text-sm text-primary-700 hover:underline dark:text-primary-500"
-						>
-							Lupa Password?
-						</a>
 					</div>
 					<form.Subscribe
 						selector={(state) => [state.canSubmit, state.isSubmitting]}

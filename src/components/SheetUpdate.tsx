@@ -8,15 +8,18 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { RemajaRequest, RemajaResponse } from "../types/api";
+import type { RemajaRequest, RemajaResponseArray } from "../types/api";
+import { useProfile } from "../utils/useProfile";
+import TextError from "./TextError";
 import ThemedButton from "./ThemedButton";
 import ThemedInput from "./ThemedInput";
 import ThemedSelect from "./ThemedSelect";
 
-export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
+export default function SheetUpdate({ closeSheet, selectedData }) {
 	const [cookies] = useCookies(["access_token"]);
+	const { role } = useProfile();
 
-	const createRemajaSchema = z.object({
+	const updateRemajaSchema = z.object({
 		nama: z.string().nonempty("Nama tidak boleh kosong"),
 		username: z.string().nonempty("Username tidak boleh kosong"),
 		jenis_kelamin: z.enum(["Laki_Laki", "Perempuan"], {
@@ -35,23 +38,26 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 		role: z.enum(["Admin", "User"], {
 			required_error: "Role tidak boleh kosong",
 		}),
-		password: z.string().nonempty("Password tidak boleh kosong"),
+		password: z.string().optional(),
 	});
 
 	const { mutateAsync, isError, error } = useMutation<
-		RemajaResponse,
+		RemajaResponseArray,
 		Error,
 		RemajaRequest
 	>({
 		mutationFn: async (data: RemajaRequest) => {
-			const response = await fetch("http://localhost:8080/api/remaja", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${cookies.access_token}`,
+			const response = await fetch(
+				`http://localhost:8080/api/remaja/${selectedData.id}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${cookies.access_token}`,
+					},
+					body: JSON.stringify(data),
 				},
-				body: JSON.stringify(data),
-			});
+			);
 
 			if (!response.ok) {
 				const errorData = await response.json();
@@ -63,16 +69,7 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 	});
 
 	const form = useForm({
-		defaultValues: {
-			nama: "",
-			username: "",
-			jenis_kelamin: "Laki_Laki",
-			jenjang: "Paud",
-			alamat: "",
-			sambung: "Tidak_Aktif",
-			role: "User",
-			password: "",
-		},
+		defaultValues: selectedData,
 		onSubmit: async ({ value }) => {
 			try {
 				await mutateAsync(value);
@@ -80,14 +77,14 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 			} catch (err) {}
 		},
 		validators: {
-			onSubmit: createRemajaSchema,
+			onSubmit: updateRemajaSchema,
 		},
 	});
 
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 			<div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
-				<h1 className="text-2xl font-bold mb-6 text-gray-800">Sheet</h1>
+				<h1 className="text-2xl font-bold mb-6 text-gray-800">Update Data</h1>
 
 				<form
 					onSubmit={(e) => {
@@ -101,36 +98,48 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 						<form.Field
 							name="nama"
 							children={(field) => (
-								<ThemedInput
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="John Doe"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Nama"
+										variant="secondary"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="John Doe"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
-
 						<form.Field
 							name="username"
 							children={(field) => (
-								<ThemedInput
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="john"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Username"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="john"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 
@@ -169,18 +178,24 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 						<form.Field
 							name="alamat"
 							children={(field) => (
-								<ThemedInput
-									htmlFor={field.name}
-									type="text"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Jl. Madukoro No. 1"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Alamat"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="Jl. Madukoro No. 1"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 
@@ -219,18 +234,24 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 						<form.Field
 							name="password"
 							children={(field) => (
-								<ThemedInput
-									htmlFor={field.name}
-									type="password"
-									name={field.name}
-									id={field.name}
-									value={field.state.value}
-									onBlur={field.handleBlur}
-									onChange={(e) => field.handleChange(e.target.value)}
-									placeholder="Make sure it's strong"
-									required={true}
-									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-								/>
+								<>
+									<ThemedInput
+										label="Password"
+										htmlFor={field.name}
+										type="password"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="Make sure it's strong"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									{field.state.meta.errors.length > 0 ? (
+										<TextError>{field.state.meta.errors.join(", ")}</TextError>
+									) : null}
+								</>
 							)}
 						/>
 					</div>
@@ -242,9 +263,9 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 								<button
 									type="submit"
 									disabled={!canSubmit}
-									className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+									className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
 								>
-									{isSubmitting ? "Memproses..." : "Submit"}
+									{isSubmitting ? "Memproses..." : "Update"}
 								</button>
 							)}
 						/>
@@ -252,7 +273,7 @@ export default function Sheet({ closeSheet }: { closeSheet: () => void }) {
 						<button
 							type="button"
 							onClick={closeSheet}
-							className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all"
+							className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300"
 						>
 							Close
 						</button>
