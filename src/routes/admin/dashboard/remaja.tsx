@@ -72,13 +72,7 @@ function RouteComponent() {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},
-			})
-				.then(async (res) => await res.json())
-				.catch((err) => {
-					if (err instanceof Error) {
-						throw err;
-					}
-				}),
+			}).then(async (res) => await res.json()),
 	});
 
 	const columns = [
@@ -207,7 +201,7 @@ function RouteComponent() {
 	return (
 		<div className="flex">
 			{sheet ? <SheetCreate closeSheet={() => setSheet(false)} /> : null}
-			{sheet ? <SheetUpdate closeSheet={() => setSheet(false)} /> : null}
+			{/* {sheet ? <SheetUpdate closeSheet={() => setSheet(false)} /> : null} */}
 			{alert ? <Alert message={alertMessage} type={alertType} /> : null}
 			{dialog ? (
 				<Dialog

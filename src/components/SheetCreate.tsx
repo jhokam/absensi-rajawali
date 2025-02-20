@@ -89,7 +89,7 @@ export default function SheetCreate({
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 			<div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
-				<h1 className="text-2xl font-bold mb-6 text-gray-800">Sheet</h1>
+				<h1 className="text-2xl font-bold mb-6 text-gray-800">Create Remaja</h1>
 
 				<form
 					onSubmit={(e) => {
@@ -104,6 +104,8 @@ export default function SheetCreate({
 							name="nama"
 							children={(field) => (
 								<ThemedInput
+									label="Nama"
+									variant="secondary"
 									htmlFor={field.name}
 									type="text"
 									name={field.name}
@@ -122,6 +124,7 @@ export default function SheetCreate({
 							name="username"
 							children={(field) => (
 								<ThemedInput
+									label="Username"
 									htmlFor={field.name}
 									type="text"
 									name={field.name}
@@ -172,6 +175,7 @@ export default function SheetCreate({
 							name="alamat"
 							children={(field) => (
 								<ThemedInput
+									label="Alamat"
 									htmlFor={field.name}
 									type="text"
 									name={field.name}
@@ -222,6 +226,7 @@ export default function SheetCreate({
 							name="password"
 							children={(field) => (
 								<ThemedInput
+									label="Password"
 									htmlFor={field.name}
 									type="password"
 									name={field.name}
@@ -241,23 +246,18 @@ export default function SheetCreate({
 						<form.Subscribe
 							selector={(state) => [state.canSubmit, state.isSubmitting]}
 							children={([canSubmit, isSubmitting]) => (
-								<button
-									type="submit"
-									disabled={!canSubmit}
-									className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-								>
+								<ThemedButton type="submit" disabled={!canSubmit}>
 									{isSubmitting ? "Memproses..." : "Submit"}
-								</button>
+								</ThemedButton>
 							)}
 						/>
-
-						<button
+						<ThemedButton
 							type="button"
 							onClick={closeSheet}
 							className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all"
 						>
 							Close
-						</button>
+						</ThemedButton>
 					</div>
 				</form>
 			</div>
