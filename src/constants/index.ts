@@ -20,3 +20,25 @@ export const sambungOptions = [
 	{ value: "Aktif", label: "Aktif" },
 	{ value: "Tidak_Aktif", label: "Tidak Aktif" },
 ];
+
+export const colorMap = {
+	jenis_kelamin: {
+		Laki_Laki: "blue",
+		Perempuan: "pink",
+	},
+	jenjang: {
+		Paud: "green",
+		Caberawit: "yellow",
+		Pra_Remaja: "orange",
+		Remaja: "purple",
+		Pra_Nikah: "teal",
+	},
+	role: {
+		Admin: "red",
+		User: "gray",
+	},
+	sambung: {
+		Aktif: "green",
+		Tidak_Aktif: "red",
+	},
+};

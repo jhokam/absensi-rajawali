@@ -9,15 +9,16 @@ import {
 } from "@tanstack/react-table";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+import { useDebounce } from "use-debounce";
 import Alert from "../../../components/Alert";
 import Badge from "../../../components/Badge";
 import Dialog from "../../../components/Dialog";
 import SearchBar from "../../../components/SearchBar";
 import SheetCreate from "../../../components/SheetCreate";
-import SheetUpdate from "../../../components/SheetUpdate";
 import Sidebar from "../../../components/Sidebar";
 import Spinner from "../../../components/Spinner";
 import ThemedButton from "../../../components/ThemedButton";
+import { colorMap } from "../../../constants";
 import type { RemajaBase, RemajaResponse } from "../../../types/api";
 import { useProfile } from "../../../utils/useProfile";
 
@@ -34,6 +35,8 @@ function RouteComponent() {
 	const queryClient = useQueryClient();
 	const [dialog, setDialog] = useState(false);
 	const { role } = useProfile();
+	const [searchTerm, setSearchTerm] = useState("");
+	const [debounceSearch] = useDebounce(searchTerm, 3000);
 
 	const deleteRemaja = async (id: number) => {
 		const response = await fetch(`http://localhost:8080/api/remaja/${id}`, {
@@ -66,13 +69,29 @@ function RouteComponent() {
 	};
 
 	const { isPending, error, data } = useQuery<RemajaResponse>({
-		queryKey: ["remajaData"],
-		queryFn: async () =>
-			await fetch("http://localhost:8080/api/remaja", {
+		queryKey: ["remajaData", debounceSearch],
+		queryFn: async () => {
+			const searchParams = new URLSearchParams();
+			if (debounceSearch) {
+				searchParams.append("id", debounceSearch);
+			}
+
+			const url = `http://localhost:8080/api/remaja${
+				searchParams.toString() ? `?${searchParams.toString()}` : ""
+			}`;
+
+			const response = await fetch(url, {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},
-			}).then(async (res) => await res.json()),
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to fetch data");
+			}
+
+			return response.json();
+		},
 	});
 
 	const columns = [
@@ -158,28 +177,6 @@ function RouteComponent() {
 		},
 	});
 
-	const colorMap = {
-		jenis_kelamin: {
-			Laki_Laki: "blue",
-			Perempuan: "pink",
-		},
-		jenjang: {
-			Paud: "green",
-			Caberawit: "yellow",
-			Pra_Remaja: "orange",
-			Remaja: "purple",
-			Pra_Nikah: "teal",
-		},
-		role: {
-			Admin: "red",
-			User: "gray",
-		},
-		sambung: {
-			Aktif: "green",
-			Tidak_Aktif: "red",
-		},
-	};
-
 	const handleAlertError = (message: string) => {
 		setAlertMessage(message);
 		setAlertType("error");
@@ -201,7 +198,6 @@ function RouteComponent() {
 	return (
 		<div className="flex">
 			{sheet ? <SheetCreate closeSheet={() => setSheet(false)} /> : null}
-			{/* {sheet ? <SheetUpdate closeSheet={() => setSheet(false)} /> : null} */}
 			{alert ? <Alert message={alertMessage} type={alertType} /> : null}
 			{dialog ? (
 				<Dialog
@@ -214,11 +210,19 @@ function RouteComponent() {
 				/>
 			) : null}
 			<Sidebar />
-			<div>
-				{/* <SearchBar onChange={() => {}}  /> */}
-				<ThemedButton type="button" onClick={() => setSheet(true)}>
-					Create Remaja
-				</ThemedButton>
+			<div className="flex-1 px-2 py-3">
+				<div className="flex justify-between">
+					<SearchBar
+						onChange={(e) => {
+							setSearchTerm(e.target.value);
+						}}
+						placeholder=""
+						value={searchTerm}
+					/>
+					<ThemedButton type="button" onClick={() => setSheet(true)}>
+						Create Remaja
+					</ThemedButton>
+				</div>
 				<table className="w-full h-fit text-left text-sm text-gray-500">
 					<thead className="text-xs text-gray-700 uppercase bg-gray-50">
 						{table.getHeaderGroups().map((headerGroup) => (

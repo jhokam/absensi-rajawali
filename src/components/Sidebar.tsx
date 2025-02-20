@@ -19,14 +19,11 @@ export default function Sidebar() {
 
 	return (
 		<div className="bg-gray-50 h-screen w-64 flex flex-col shadow-md">
-			<div className="py-6 px-8">
-				<Link
-					to="/admin/dashboard"
-					className="text-2xl font-bold text-gray-800"
-				>
-					Home
-				</Link>
-			</div>
+			<img
+				src="/logo-rajawali.png"
+				alt="Logo Rajawali"
+				className="w-28 self-center py-5"
+			/>
 			<ul className="flex-grow space-y-2 px-4">
 				<li>
 					<Link

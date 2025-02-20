@@ -13,7 +13,7 @@ export default function SearchBar({
 	disabled?: boolean;
 }) {
 	return (
-		<div className="flex items-center">
+		<div className="flex items-center space-x-2">
 			<input
 				type="search"
 				className="border border-gray-300 rounded-md p-2 w-96"
