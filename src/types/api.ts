@@ -1,3 +1,5 @@
+import type { ReactNode } from "@tanstack/react-router";
+
 export type LoginRequest = {
 	username: string;
 	password: string;
@@ -7,7 +9,7 @@ export type ResponseBase<T> = {
 	success: boolean;
 	message: string;
 	errors: any | null;
-	data: T;
+	data: T | ReactNode;
 };
 
 export type ResponseBaseWithArray<T> = {
@@ -21,7 +23,7 @@ export type RemajaBase = {
 	id: number;
 	nama: string;
 	username: string;
-	jenis_kelamin: "Laki-Laki" | "Perempuan" | string;
+	jenis_kelamin: "Laki_Laki" | "Perempuan";
 	jenjang:
 		| "Paud"
 		| "Caberawit"
@@ -41,6 +43,8 @@ export type LoginBase = {
 export type LoginResponse = ResponseBase<LoginBase>;
 
 export type RemajaResponse = ResponseBaseWithArray<RemajaBase>;
+
+export type ProfileResponse = ResponseBase<RemajaBase>;
 
 export type RemajaRequest = {
 	nama: string;

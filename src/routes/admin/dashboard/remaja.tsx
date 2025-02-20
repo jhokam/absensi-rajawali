@@ -14,6 +14,8 @@ import SearchBar from "../../../components/SearchBar";
 import SheetCreate from "../../../components/SheetCreate";
 import SheetUpdate from "../../../components/SheetUpdate";
 import Sidebar from "../../../components/Sidebar";
+import Skeleton from "../../../components/Skeleton";
+import Spinner from "../../../components/Spinner";
 import ThemedButton from "../../../components/ThemedButton";
 import type { RemajaBase, RemajaResponse } from "../../../types/api";
 
@@ -206,51 +208,55 @@ function RouteComponent() {
 							</tr>
 						))}
 					</thead>
-					<tbody>
-						{table.getRowModel().rows.map((row) => (
-							<tr key={row.id} className="bg-white border-b">
-								{row.getVisibleCells().map((cell) => {
-									const value = flexRender(
-										cell.column.columnDef.cell,
-										cell.getContext(),
-									);
-									const fieldName = cell.column.id;
-									if (
-										["jenis_kelamin", "jenjang", "role", "sambung"].includes(
-											fieldName,
-										)
-									) {
-										const badgeColor =
-											colorMap[fieldName][cell.row.original[fieldName]];
-
+					{isPending ? (
+						<Spinner className="m-2" />
+					) : (
+						<tbody>
+							{table.getRowModel().rows.map((row) => (
+								<tr key={row.id} className="bg-white border-b">
+									{row.getVisibleCells().map((cell) => {
+										const value = flexRender(
+											cell.column.columnDef.cell,
+											cell.getContext(),
+										);
+										const fieldName = cell.column.id;
 										if (
-											fieldName in colorMap &&
-											cell.row.original[fieldName] in colorMap[fieldName]
+											["jenis_kelamin", "jenjang", "role", "sambung"].includes(
+												fieldName,
+											)
 										) {
-											badgeColor;
-										}
+											const badgeColor =
+												colorMap[fieldName][cell.row.original[fieldName]];
 
+											if (
+												fieldName in colorMap &&
+												cell.row.original[fieldName] in colorMap[fieldName]
+											) {
+												badgeColor;
+											}
+
+											return (
+												<td
+													key={cell.id}
+													className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+												>
+													<Badge text={value} color={badgeColor} size="small" />
+												</td>
+											);
+										}
 										return (
 											<td
 												key={cell.id}
 												className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
 											>
-												<Badge text={value} color={badgeColor} size="small" />
+												{value}
 											</td>
 										);
-									}
-									return (
-										<td
-											key={cell.id}
-											className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
-										>
-											{value}
-										</td>
-									);
-								})}
-							</tr>
-						))}
-					</tbody>
+									})}
+								</tr>
+							))}
+						</tbody>
+					)}
 				</table>
 			</div>
 		</div>
