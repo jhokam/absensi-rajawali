@@ -1,3 +1,4 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -10,14 +11,15 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Alert from "../../../components/Alert";
 import Badge from "../../../components/Badge";
+import Dialog from "../../../components/Dialog";
 import SearchBar from "../../../components/SearchBar";
 import SheetCreate from "../../../components/SheetCreate";
 import SheetUpdate from "../../../components/SheetUpdate";
 import Sidebar from "../../../components/Sidebar";
-import Skeleton from "../../../components/Skeleton";
 import Spinner from "../../../components/Spinner";
 import ThemedButton from "../../../components/ThemedButton";
 import type { RemajaBase, RemajaResponse } from "../../../types/api";
+import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/remaja")({
 	component: RouteComponent,
@@ -30,6 +32,8 @@ function RouteComponent() {
 	const [alertMessage, setAlertMessage] = useState("");
 	const [alertType, setAlertType] = useState<"success" | "error">("success");
 	const queryClient = useQueryClient();
+	const [dialog, setDialog] = useState(false);
+	const { role } = useProfile();
 
 	const deleteRemaja = async (id: number) => {
 		const response = await fetch(`http://localhost:8080/api/remaja/${id}`, {
@@ -111,25 +115,40 @@ function RouteComponent() {
 					<div className="flex space-x-2">
 						<button
 							type="button"
-							className="text-blue-500"
 							onClick={() => {
 								handleEdit(row);
 							}}
+							disabled={mutation.isPending}
 						>
-							Edit
+							<Icon
+								icon="line-md:edit"
+								fontSize={20}
+								className={
+									mutation.isPending ? "text-gray-500" : "text-blue-500"
+								}
+							/>
 						</button>
 						<button
 							type="button"
-							className="text-red-500"
 							onClick={() => {
 								handleDelete(row);
 							}}
 							disabled={mutation.isPending}
 						>
-							{mutation.isPending ? "Deleting..." : "Delete"}
+							<Icon
+								icon="mynaui:trash"
+								fontSize={20}
+								className={
+									mutation.isPending ? "text-gray-500" : "text-red-500"
+								}
+							/>
 						</button>
 					</div>
 				);
+			},
+			enableHiding: true,
+			meta: {
+				hidden: role === "User",
 			},
 		}),
 	];
@@ -138,6 +157,11 @@ function RouteComponent() {
 		data: data?.data ?? [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
+		state: {
+			columnVisibility: {
+				actions: role !== "User",
+			},
+		},
 	});
 
 	const colorMap = {
@@ -185,6 +209,16 @@ function RouteComponent() {
 			{sheet ? <SheetCreate closeSheet={() => setSheet(false)} /> : null}
 			{sheet ? <SheetUpdate closeSheet={() => setSheet(false)} /> : null}
 			{alert ? <Alert message={alertMessage} type={alertType} /> : null}
+			{dialog ? (
+				<Dialog
+					cancel="Cancel"
+					confirm="Yes, Delete!"
+					description="Are you sure want to delete this data?"
+					title="Delete Data"
+					handleCancel={() => setDialog(false)}
+					handleConfirm={() => {}}
+				/>
+			) : null}
 			<Sidebar />
 			<div>
 				{/* <SearchBar onChange={() => {}}  /> */}

@@ -139,15 +139,6 @@ function LoginPage() {
 							</ThemedButton>
 						)}
 					/>
-					<div className="text-sm font-medium text-gray-500 dark:text-gray-400">
-						Belum punya akun?{" "}
-						<a
-							href="/register"
-							className="text-primary-700 hover:underline dark:text-primary-500"
-						>
-							Buat akun baru
-						</a>
-					</div>
 				</form>
 			</div>
 		</div>

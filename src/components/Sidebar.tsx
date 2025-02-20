@@ -56,8 +56,8 @@ export default function Sidebar() {
 			</div>
 			{logoutDialog && (
 				<Dialog
-					title="blablabla"
-					description="hi"
+					title="Logout"
+					description="Are you sure you want to Logout?"
 					cancel="Cancel"
 					confirm="Yes, Logout"
 					handleCancel={() => setLogoutDialog(false)}

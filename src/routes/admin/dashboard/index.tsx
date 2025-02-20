@@ -8,24 +8,17 @@ import ProfileInfoCard from "../../../components/ProfileInfoCard";
 import Sidebar from "../../../components/Sidebar";
 import Skeleton from "../../../components/Skeleton";
 import type { ProfileResponse } from "../../../types/api";
+import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/")({
 	component: RouteComponent,
 });
-const mockUserData = {
-	nama: "John Doe",
-	username: "johndoe123",
-	jenisKelamin: "Laki-laki",
-	alamat: "Jl. Merdeka No. 45, Jakarta",
-	jenjang: "S1 Teknik Informatika",
-	role: "Software Engineer",
-	sambung: "+62 812-3456-7890",
-};
 
 function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
+	const { setRole } = useProfile();
 
 	const { isPending, error, data } = useQuery<ProfileResponse>({
 		queryKey: ["remajaData"],
@@ -38,6 +31,10 @@ function RouteComponent() {
 				.then(async (res) => await res.json())
 				.catch((error) => handleAlertError(error.message)),
 	});
+
+	if (data) {
+		setRole(data.data.role);
+	}
 
 	const handleAlertError = (message: string) => {
 		setAlertMessage(message);
