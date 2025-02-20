@@ -22,7 +22,7 @@ export const Route = createRootRoute({
 					<br />
 					we suggest you back to home.
 				</p>
-				<ThemedLink to="/">Back to Home</ThemedLink>
+				<ThemedLink to="/admin/dashboard">Back to Home</ThemedLink>
 			</div>
 			<img src="/404-ilustration.png" alt="404 ilustration" />
 		</div>

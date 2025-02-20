@@ -2,7 +2,6 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Dialog from "../components/Dialog";
-import Badge from "./Badge";
 import ThemedButton from "./ThemedButton";
 
 export default function Sidebar() {
@@ -21,14 +20,17 @@ export default function Sidebar() {
 	return (
 		<div className="bg-gray-50 h-screen w-64 flex flex-col shadow-md">
 			<div className="py-6 px-8">
-				<Link to="/" className="text-2xl font-bold text-gray-800">
+				<Link
+					to="/admin/dashboard"
+					className="text-2xl font-bold text-gray-800"
+				>
 					Home
 				</Link>
 			</div>
 			<ul className="flex-grow space-y-2 px-4">
 				<li>
 					<Link
-						to="/"
+						to="/admin/dashboard"
 						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
 					>
 						Dashboard

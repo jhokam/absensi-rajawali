@@ -23,7 +23,7 @@ function LoginPage() {
 	const navigate = useNavigate();
 
 	const handleLogin = async (data: LoginRequest) => {
-		const response = await fetch("http://localhost:8080/auth/login", {
+		const response = await fetch("http://localhost:8080/api/auth/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -43,7 +43,7 @@ function LoginPage() {
 		onSuccess: (data) => {
 			setCookie("access_token", data.data.access_token);
 			navigate({
-				to: "/",
+				to: "/admin/dashboard",
 			});
 		},
 	});
