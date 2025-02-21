@@ -1,21 +1,31 @@
-import type { ReactNode } from "@tanstack/react-router";
-
 export type LoginRequest = {
 	username: string;
 	password: string;
 };
 
+export type ErrorResponse = {
+	response: {
+		message: string;
+		error: string;
+		statusCode: number;
+	};
+	status: number;
+	options: Record<never, never>;
+	message: string;
+	name: string;
+};
+
 export type ResponseBase<T> = {
 	success: boolean;
 	message: string;
-	errors: any | null;
-	data: T | ReactNode;
+	error: ErrorResponse | null;
+	data: T;
 };
 
 export type ResponseBaseWithArray<T> = {
 	success: boolean;
 	message: string;
-	errors: any | null;
+	error: ErrorResponse | null;
 	data: T[];
 };
 
@@ -24,17 +34,14 @@ export type RemajaBase = {
 	nama: string;
 	username: string;
 	jenis_kelamin: "Laki_Laki" | "Perempuan";
-	jenjang:
-		| "Paud"
-		| "Caberawit"
-		| "Pra_Remaja"
-		| "Remaja"
-		| "Pra_Nikah"
-		| string;
+	jenjang: "Paud" | "Caberawit" | "Pra_Remaja" | "Remaja" | "Pra_Nikah";
 	alamat: string;
 	sambung: "Aktif" | "Tidak_Aktif" | string;
-	role: "Admin" | "User" | string;
+	role: "Admin" | "User";
+	password: string;
 };
+
+export type PublicRemaja = Omit<RemajaBase, "password">;
 
 export type LoginBase = {
 	access_token: string;
@@ -42,23 +49,6 @@ export type LoginBase = {
 
 export type LoginResponse = ResponseBase<LoginBase>;
 
-export type RemajaResponseArray = ResponseBaseWithArray<RemajaBase>;
+export type RemajaResponseArray = ResponseBaseWithArray<PublicRemaja>;
 
-export type RemajaResponse = ResponseBase<RemajaBase>;
-
-export type RemajaRequest = {
-	nama: string;
-	username: string;
-	jenis_kelamin: "Laki-Laki" | "Perempuan" | string;
-	jenjang:
-		| "Paud"
-		| "Caberawit"
-		| "Pra_Remaja"
-		| "Remaja"
-		| "Pra_Nikah"
-		| string;
-	alamat: string;
-	sambung: "Aktif" | "Tidak_Aktif" | string;
-	role: "Admin" | "User" | string;
-	password: string;
-};
+export type RemajaResponse = ResponseBase<PublicRemaja>;

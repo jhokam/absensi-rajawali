@@ -8,7 +8,7 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { RemajaRequest, RemajaResponseArray } from "../types/api";
+import type { PublicRemaja, RemajaResponseArray } from "../types/api";
 import { useProfile } from "../utils/useProfile";
 import TextError from "./TextError";
 import ThemedButton from "./ThemedButton";
@@ -44,9 +44,9 @@ export default function SheetUpdate({ closeSheet, selectedData }) {
 	const { mutateAsync, isError, error } = useMutation<
 		RemajaResponseArray,
 		Error,
-		RemajaRequest
+		PublicRemaja
 	>({
-		mutationFn: async (data: RemajaRequest) => {
+		mutationFn: async (data: PublicRemaja) => {
 			const response = await fetch(
 				`http://localhost:8080/api/remaja/${selectedData.id}`,
 				{

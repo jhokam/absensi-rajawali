@@ -7,7 +7,7 @@ export default function ProfileInfoCard({
 }: {
 	title: string;
 	icon?: ReactNode;
-	details: { label: string; value: string }[];
+	details: { label: string; value: string | undefined }[];
 }) {
 	return (
 		<div className="bg-gray-100 rounded-lg p-6 space-y-4">

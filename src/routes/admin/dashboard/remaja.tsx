@@ -20,7 +20,11 @@ import Sidebar from "../../../components/Sidebar";
 import Spinner from "../../../components/Spinner";
 import ThemedButton from "../../../components/ThemedButton";
 import { colorMap } from "../../../constants";
-import type { RemajaBase, RemajaResponseArray } from "../../../types/api";
+import type {
+	PublicRemaja,
+	RemajaResponse,
+	RemajaResponseArray,
+} from "../../../types/api";
 import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/remaja")({
@@ -31,7 +35,7 @@ function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
-	const [selectedData, setSelectedData] = useState<RemajaBase | null>(null);
+	const [selectedData, setSelectedData] = useState<PublicRemaja | null>(null);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [alertType, setAlertType] = useState<"success" | "error">("success");
@@ -57,7 +61,9 @@ function RouteComponent() {
 
 	const mutation = useMutation({
 		mutationFn: deleteRemaja,
-		onSuccess: (success) => {
+		onSuccess: (success: RemajaResponse) => {
+			console.log(success);
+
 			queryClient.invalidateQueries({ queryKey: ["remajaData"] });
 			handleAlertSuccess(success.message);
 		},
@@ -66,9 +72,9 @@ function RouteComponent() {
 		},
 	});
 
-	const columnHelper = createColumnHelper<RemajaBase>();
+	const columnHelper = createColumnHelper<PublicRemaja>();
 
-	const handleEdit = (row: RemajaBase) => {
+	const handleEdit = (row: PublicRemaja) => {
 		setSelectedData(row);
 		setSheetUpdate(true);
 	};
@@ -81,7 +87,7 @@ function RouteComponent() {
 		}
 	};
 
-	const handleDelete = (row: RemajaBase) => {
+	const handleDelete = (row: PublicRemaja) => {
 		setDeleteId(row.id);
 		setDialog(true);
 	};
@@ -151,7 +157,7 @@ function RouteComponent() {
 	];
 
 	const table = useReactTable({
-		data: data?.data ?? [],
+		data: data?.data || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 		state: {
@@ -198,7 +204,7 @@ function RouteComponent() {
 				<div className="flex justify-between">
 					<SearchBar
 						onChange={(e) => setSearchTerm(e.target.value)}
-						placeholder="Search Item"
+						placeholder="Search by ID"
 						value={searchTerm}
 					/>
 					<ThemedButton type="button" onClick={() => setSheetCreate(true)}>
