@@ -10,7 +10,11 @@ Absensi untuk Remaja Al Wali (FullStack) dalam rangka rewrite code lama dan untu
 
 ## Tech Stack
 
-React + Vite, TailwindCSS, TanStack Router, and TanStack Query
+React + Vite, TailwindCSS, TanStack (Router, Query, Table, Form)
+
+## Appendix
+
+- [Back-end](https://github.com/jhokam/absensi-rajawali-backend)
 
 ## Documentation
 
@@ -46,4 +50,12 @@ npm run dev
 
 ## Screenshots
 
-Coming soon...
+![Login Page](/github/screenshots/login.png)
+
+![Dashboard Page](/github/screenshots/dashboard.png)
+
+![Index Page](/github/screenshots/remaja.png)
+
+![Create Sheet](/github/screenshots/create-remaja.png)
+
+![Dialog Logout](/github/screenshots/logout-dialog.png)
