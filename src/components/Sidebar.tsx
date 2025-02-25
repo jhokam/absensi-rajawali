@@ -2,7 +2,7 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Dialog from "../components/Dialog";
-import ThemedButton from "./ThemedButton";
+import Button from "./Button";
 
 export default function Sidebar() {
 	const [logoutDialog, setLogoutDialog] = useState(false);
@@ -43,13 +43,13 @@ export default function Sidebar() {
 				</li>
 			</ul>
 			<div className="py-4 px-8 border-t mt-auto">
-				<ThemedButton
+				<Button
 					type="button"
 					onClick={() => setLogoutDialog(true)}
 					className="w-full"
 				>
 					Logout
-				</ThemedButton>
+				</Button>
 			</div>
 			{logoutDialog && (
 				<Dialog

@@ -1,5 +1,10 @@
-import type { ReactNode } from "@tanstack/react-router";
+import type { DetailedHTMLProps, HTMLAttributes } from "react";
 
-export default function TextError({ children }: { children: ReactNode }) {
-	return <p className="text-red-500">{children}</p>;
+export default function TextError({
+	...props
+}: DetailedHTMLProps<
+	HTMLAttributes<HTMLParagraphElement>,
+	HTMLParagraphElement
+>) {
+	return <p className="text-red-500" {...props} />;
 }

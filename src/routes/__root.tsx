@@ -1,17 +1,21 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { TanStackRouterDevtools } from "../components/TanStackRouterDevtools.tsx";
 import ThemedLink from "../components/ThemedLink.tsx";
-import { ProfileProvider } from "../utils/useProfile.tsx";
+import type { UserContextType } from "../utils/useProfile.tsx";
 
-export const Route = createRootRoute({
+type RouteContext = {
+	authentication: UserContextType;
+};
+
+export const Route = createRootRouteWithContext<RouteContext>()({
 	component: () => (
-		<ProfileProvider>
+		<>
 			<Outlet />
 			<Suspense>
 				<TanStackRouterDevtools />
 			</Suspense>
-		</ProfileProvider>
+		</>
 	),
 	notFoundComponent: () => (
 		<div className="px-16 h-screen w-screen grid grid-flow-col justify-around items-center">

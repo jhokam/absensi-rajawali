@@ -1,6 +1,6 @@
 import { type ReactNode, createContext, useContext, useState } from "react";
 
-type UserContextType = {
+export type UserContextType = {
 	role: string | null;
 	setRole: (role: string) => void;
 };

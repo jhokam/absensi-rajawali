@@ -1,5 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
+import type { MouseEventHandler } from "react";
 import { useCookies } from "react-cookie";
 import { z } from "zod";
 import {
@@ -11,11 +12,16 @@ import {
 import type { PublicRemaja, RemajaResponseArray } from "../types/api";
 import { useProfile } from "../utils/useProfile";
 import TextError from "./TextError";
-import ThemedButton from "./ThemedButton";
 import ThemedInput from "./ThemedInput";
 import ThemedSelect from "./ThemedSelect";
 
-export default function SheetUpdate({ closeSheet, selectedData }) {
+export default function SheetUpdate({
+	closeSheet,
+	selectedData,
+}: {
+	closeSheet: MouseEventHandler | undefined;
+	selectedData: PublicRemaja;
+}) {
 	const [cookies] = useCookies(["access_token"]);
 	const { role } = useProfile();
 

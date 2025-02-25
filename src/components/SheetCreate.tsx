@@ -8,9 +8,9 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { RemajaBase, RemajaResponse } from "../types/api";
+import type { PublicRemaja, RemajaBase, RemajaResponse } from "../types/api";
+import Button from "./Button";
 import TextError from "./TextError";
-import ThemedButton from "./ThemedButton";
 import ThemedInput from "./ThemedInput";
 import ThemedSelect from "./ThemedSelect";
 
@@ -44,9 +44,9 @@ export default function SheetCreate({
 	const { mutateAsync, isError, error } = useMutation<
 		RemajaResponse,
 		Error,
-		RemajaBase
+		PublicRemaja
 	>({
-		mutationFn: async (data: RemajaBase) => {
+		mutationFn: async (data: PublicRemaja) => {
 			const response = await fetch("http://localhost:8080/api/remaja", {
 				method: "POST",
 				headers: {
@@ -267,18 +267,18 @@ export default function SheetCreate({
 						<form.Subscribe
 							selector={(state) => [state.canSubmit, state.isSubmitting]}
 							children={([canSubmit, isSubmitting]) => (
-								<ThemedButton type="submit" disabled={!canSubmit}>
+								<Button type="submit" disabled={!canSubmit}>
 									{isSubmitting ? "Memproses..." : "Submit"}
-								</ThemedButton>
+								</Button>
 							)}
 						/>
-						<ThemedButton
+						<Button
 							type="button"
 							onClick={closeSheet}
 							className="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all"
 						>
 							Close
-						</ThemedButton>
+						</Button>
 					</div>
 				</form>
 			</div>

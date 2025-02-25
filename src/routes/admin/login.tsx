@@ -4,8 +4,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { z } from "zod";
-import TextError from "../../components/TextError.tsx";
-import ThemedButton from "../../components/ThemedButton.tsx";
+import Button from "../../components/Button.tsx";
 import ThemedInput from "../../components/ThemedInput.tsx";
 import type { LoginRequest, LoginResponse } from "../../types/api.ts";
 
@@ -139,9 +138,9 @@ function LoginPage() {
 					<form.Subscribe
 						selector={(state) => [state.canSubmit, state.isSubmitting]}
 						children={([canSubmit, isSubmitting]) => (
-							<ThemedButton type="submit" disabled={!canSubmit}>
+							<Button type="submit" disabled={!canSubmit}>
 								{isSubmitting ? "Memproses..." : "Masuk"}
-							</ThemedButton>
+							</Button>
 						)}
 					/>
 				</form>

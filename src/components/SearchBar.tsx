@@ -1,29 +1,23 @@
-import type { ChangeEvent } from "react";
-import ThemedButton from "./ThemedButton";
+import type { DetailedHTMLProps, InputHTMLAttributes } from "react";
+import cn from "../utils/cn";
 
-export default function SearchBar({
-	onChange,
-	value,
-	placeholder,
-	disabled,
-}: {
-	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-	value: string;
-	placeholder: string;
-	disabled?: boolean;
-}) {
+type SearchBarProps = DetailedHTMLProps<
+	InputHTMLAttributes<HTMLInputElement>,
+	HTMLInputElement
+> & {
+	className?: string | undefined;
+};
+
+export default function SearchBar({ className, ...props }: SearchBarProps) {
 	return (
-		<div className="flex items-center space-x-2">
+		<div className={cn("flex items-center space-x-2", className)}>
 			<input
 				type="text"
 				pattern="(?:0|[1-9]\d*)"
 				inputMode="decimal"
 				autoComplete="off"
 				className="border border-gray-300 rounded-md p-2 w-96"
-				placeholder={placeholder}
-				onChange={onChange}
-				value={value}
-				disabled={disabled}
+				{...props}
 			/>
 		</div>
 	);

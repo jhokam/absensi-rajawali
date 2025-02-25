@@ -1,4 +1,4 @@
-import ThemedButton from "./ThemedButton";
+import Button from "./Button";
 
 export default function Dialog({
 	title,
@@ -21,12 +21,10 @@ export default function Dialog({
 				<h1 className="text-2xl font-bold text-gray-800">{title}</h1>
 				<p className="text-gray-800">{description}</p>
 				<div className="flex justify-end">
-					<ThemedButton type="button" onClick={handleCancel}>
-						{cancel}
-					</ThemedButton>
-					<ThemedButton type="button" onClick={handleConfirm}>
+					<Button onClick={handleCancel}>{cancel}</Button>
+					<Button type="button" onClick={handleConfirm}>
 						{confirm}
-					</ThemedButton>
+					</Button>
 				</div>
 			</div>
 		</div>

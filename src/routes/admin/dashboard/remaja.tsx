@@ -12,13 +12,12 @@ import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
 import Alert from "../../../components/Alert";
 import Badge from "../../../components/Badge";
+import Button from "../../../components/Button";
 import Dialog from "../../../components/Dialog";
 import SearchBar from "../../../components/SearchBar";
 import SheetCreate from "../../../components/SheetCreate";
 import SheetUpdate from "../../../components/SheetUpdate";
 import Sidebar from "../../../components/Sidebar";
-import Spinner from "../../../components/Spinner";
-import ThemedButton from "../../../components/ThemedButton";
 import { colorMap } from "../../../constants";
 import type {
 	PublicRemaja,
@@ -207,9 +206,9 @@ function RouteComponent() {
 						placeholder="Search by ID"
 						value={searchTerm}
 					/>
-					<ThemedButton type="button" onClick={() => setSheetCreate(true)}>
+					<Button typeof="button" onClick={() => setSheetCreate(true)}>
 						Create Remaja
-					</ThemedButton>
+					</Button>
 				</div>
 				<table className="w-full text-left text-sm text-gray-500">
 					<thead className="text-xs text-gray-700 uppercase bg-gray-50">

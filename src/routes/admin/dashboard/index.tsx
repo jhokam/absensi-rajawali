@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import Alert from "../../../components/Alert";
@@ -12,6 +12,14 @@ import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/")({
 	component: RouteComponent,
+	beforeLoad: ({ context }) => {
+		console.log(context.authentication.role);
+		if (context.authentication.role === "User") {
+			throw redirect({
+				to: "/admin/login",
+			});
+		}
+	},
 });
 
 function RouteComponent() {
@@ -59,7 +67,7 @@ function RouteComponent() {
 						<div>
 							<h1 className="text-3xl font-bold text-gray-800">
 								{isPending ? (
-									<Skeleton className="h-7 w-full" />
+									<Skeleton className="h-7 w-full bg-red-50" />
 								) : (
 									`Hi, ${data?.data.nama}!`
 								)}
