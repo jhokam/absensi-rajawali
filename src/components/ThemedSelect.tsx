@@ -8,14 +8,7 @@ interface SelectFieldProps {
 	label: string;
 	options: SelectOption[];
 	placeholder?: string;
-	field: {
-		name: string;
-		state: {
-			value: string;
-		};
-		handleChange: (value: string) => void;
-		handleBlur: () => void;
-	};
+	field: any;
 	required?: boolean;
 }
 

@@ -4,7 +4,9 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { z } from "zod";
+import Alert from "../../components/Alert.tsx";
 import Button from "../../components/Button.tsx";
+import TextError from "../../components/TextError.tsx";
 import ThemedInput from "../../components/ThemedInput.tsx";
 import type { LoginRequest, LoginResponse } from "../../types/api.ts";
 
@@ -21,6 +23,8 @@ function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [cookies, setCookie] = useCookies(["access_token"]);
 	const navigate = useNavigate();
+	// const [error, setError] = useState(false);
+	// const [errorMessage, setErrorMessage] = useState("hi");
 
 	const handleLogin = async (data: LoginRequest) => {
 		const response = await fetch("http://localhost:8080/api/auth/login", {
@@ -37,7 +41,11 @@ function LoginPage() {
 		return response.json();
 	};
 
-	const { mutateAsync } = useMutation<LoginResponse, Error, LoginRequest>({
+	const { mutateAsync, error } = useMutation<
+		LoginResponse,
+		Error,
+		LoginRequest
+	>({
 		mutationKey: ["login"],
 		mutationFn: handleLogin,
 		onSuccess: (data) => {
@@ -54,11 +62,7 @@ function LoginPage() {
 			password: "",
 		},
 		onSubmit: async (values) => {
-			try {
-				await mutateAsync(values.value);
-			} catch (error) {
-				console.log(error);
-			}
+			await mutateAsync(values.value);
 		},
 		validators: {
 			onChange: loginSchema,
@@ -67,6 +71,7 @@ function LoginPage() {
 
 	return (
 		<div className="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
+			{error && <Alert variant="error">{error.message}</Alert>}
 			<img
 				src="/logo-rajawali.png"
 				className="h-24 mb-10"
@@ -126,7 +131,6 @@ function LoginPage() {
 										placeholder="Password"
 										required={true}
 										className="flex-1"
-										buttonClick={() => setShowPassword(!showPassword)}
 									/>
 									{field.state.meta.errors.length > 0 ? (
 										<TextError>{field.state.meta.errors.join(", ")}</TextError>

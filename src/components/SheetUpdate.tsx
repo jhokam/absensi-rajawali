@@ -9,7 +9,12 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { PublicRemaja, RemajaResponseArray } from "../types/api";
+import type {
+	PublicRemaja,
+	RemajaRequest,
+	RemajaResponse,
+	RemajaResponseArray,
+} from "../types/api";
 import { useProfile } from "../utils/useProfile";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -19,7 +24,7 @@ export default function SheetUpdate({
 	closeSheet,
 	selectedData,
 }: {
-	closeSheet: MouseEventHandler | undefined;
+	closeSheet: () => void;
 	selectedData: PublicRemaja;
 }) {
 	const [cookies] = useCookies(["access_token"]);
@@ -44,15 +49,15 @@ export default function SheetUpdate({
 		role: z.enum(["Admin", "User"], {
 			required_error: "Role tidak boleh kosong",
 		}),
-		password: z.string().optional(),
+		password: z.string(),
 	});
 
 	const { mutateAsync, isError, error } = useMutation<
-		RemajaResponseArray,
+		RemajaResponse,
 		Error,
-		PublicRemaja
+		RemajaRequest
 	>({
-		mutationFn: async (data: PublicRemaja) => {
+		mutationFn: async (data: RemajaRequest) => {
 			const response = await fetch(
 				`http://localhost:8080/api/remaja/${selectedData.id}`,
 				{
@@ -74,13 +79,20 @@ export default function SheetUpdate({
 		},
 	});
 
-	const form = useForm({
-		defaultValues: selectedData,
+	const form = useForm<RemajaRequest>({
+		defaultValues: {
+			nama: selectedData.nama,
+			username: selectedData.username,
+			jenis_kelamin: selectedData.jenis_kelamin,
+			jenjang: selectedData.jenjang,
+			alamat: selectedData.alamat,
+			sambung: selectedData.sambung,
+			role: selectedData.role,
+			password: "",
+		},
 		onSubmit: async ({ value }) => {
-			try {
-				await mutateAsync(value);
-				closeSheet();
-			} catch (err) {}
+			await mutateAsync(value);
+			closeSheet();
 		},
 		validators: {
 			onSubmit: updateRemajaSchema,

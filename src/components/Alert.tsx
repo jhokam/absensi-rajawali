@@ -31,7 +31,7 @@ export default function Alert({
 	...props
 }: AlertProps) {
 	return (
-		<div className={cn(alertVariants({ variant }), className)} {...props}>
+		<div className={cn(alertVariants({ variant, className }))} {...props}>
 			<span className="font-medium">{children}</span>
 		</div>
 	);

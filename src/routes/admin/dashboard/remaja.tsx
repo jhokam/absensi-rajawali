@@ -91,7 +91,7 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const { isPending, error, data } = useQuery<RemajaResponseArray>({
+	const { isPending, error, isError, data } = useQuery<RemajaResponseArray>({
 		queryKey: ["remajaData", debounceSearch],
 		queryFn: async () => {
 			const searchParams = new URLSearchParams();
@@ -187,7 +187,11 @@ function RouteComponent() {
 					selectedData={selectedData}
 				/>
 			)}
-			{alert && <Alert message={alertMessage} type={alertType} />}
+			{isError ||
+				(mutation.isError && (
+					//TODO: Fix error message
+					<Alert variant={alertType}>{error || mutation.error?.message}</Alert>
+				))}
 			{dialog && (
 				<Dialog
 					cancel="Cancel"

@@ -8,7 +8,13 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { PublicRemaja, RemajaBase, RemajaResponse } from "../types/api";
+import type {
+	PublicRemaja,
+	RemajaBase,
+	RemajaRequest,
+	RemajaResponse,
+	RemajaResponseArray,
+} from "../types/api";
 import Button from "./Button";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -44,9 +50,9 @@ export default function SheetCreate({
 	const { mutateAsync, isError, error } = useMutation<
 		RemajaResponse,
 		Error,
-		PublicRemaja
+		RemajaRequest
 	>({
-		mutationFn: async (data: PublicRemaja) => {
+		mutationFn: async (data: RemajaRequest) => {
 			const response = await fetch("http://localhost:8080/api/remaja", {
 				method: "POST",
 				headers: {
@@ -65,7 +71,7 @@ export default function SheetCreate({
 		},
 	});
 
-	const form = useForm({
+	const form = useForm<RemajaRequest>({
 		defaultValues: {
 			nama: "",
 			username: "",
@@ -77,10 +83,8 @@ export default function SheetCreate({
 			password: "",
 		},
 		onSubmit: async ({ value }) => {
-			try {
-				await mutateAsync(value);
-				closeSheet();
-			} catch (err) {}
+			await mutateAsync(value);
+			closeSheet();
 		},
 		validators: {
 			onSubmit: createRemajaSchema,

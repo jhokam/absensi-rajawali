@@ -14,7 +14,10 @@ export const Route = createFileRoute("/admin/dashboard/")({
 	component: RouteComponent,
 	beforeLoad: ({ context }) => {
 		console.log(context.authentication.role);
-		if (context.authentication.role === "User") {
+		if (
+			context.authentication.role === "User" ||
+			context.authentication.role === null
+		) {
 			throw redirect({
 				to: "/admin/login",
 			});
@@ -24,8 +27,6 @@ export const Route = createFileRoute("/admin/dashboard/")({
 
 function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
-	const [alert, setAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
 	const { setRole } = useProfile();
 
 	const { isPending, error, data } = useQuery<RemajaResponse>({
@@ -35,26 +36,16 @@ function RouteComponent() {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},
-			})
-				.then(async (res) => await res.json())
-				.catch((error) => handleAlertError(error.message)),
+			}).then(async (res) => await res.json()),
 	});
 
 	if (data) {
 		setRole(data.data.role);
 	}
 
-	const handleAlertError = (message: string) => {
-		setAlertMessage(message);
-		setAlert(true);
-		setTimeout(() => {
-			setAlert(false);
-		}, 3000);
-	};
-
 	return (
 		<div className="flex h-screen">
-			{alert ? <Alert message={error?.message} type="error" /> : null}
+			{error && <Alert variant="error">{error.message}</Alert>}
 			<Sidebar />
 
 			<div className="min-h-screen bg-gray-50 p-6 w-full  ">

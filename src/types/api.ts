@@ -43,6 +43,8 @@ export type RemajaBase = {
 
 export type PublicRemaja = Omit<RemajaBase, "password">;
 
+export type RemajaRequest = Omit<RemajaBase, "id">;
+
 export type LoginBase = {
 	access_token: string;
 };

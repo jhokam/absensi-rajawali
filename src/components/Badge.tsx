@@ -48,7 +48,7 @@ export default function Badge({
 }: BadgeProps) {
 	return (
 		<span
-			className={cn("", BadgeVariants({ color, size }), className)}
+			className={cn("", BadgeVariants({ color, size, className }))}
 			{...props}
 		/>
 	);

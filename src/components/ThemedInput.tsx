@@ -13,7 +13,6 @@ type InputProps = DetailedHTMLProps<
 	HTMLInputElement
 > & {
 	variant?: InputVariant;
-	buttonClick?: () => void;
 	label: ReactNode;
 	htmlFor: string | undefined;
 };

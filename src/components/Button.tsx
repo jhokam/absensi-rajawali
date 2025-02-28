@@ -28,6 +28,6 @@ const buttonVariants = cva(
 
 export default function Button({ className, variant, ...props }: ButtonProps) {
 	return (
-		<button className={cn(buttonVariants({ variant }), className)} {...props} />
+		<button className={cn(buttonVariants({ variant, className }))} {...props} />
 	);
 }
