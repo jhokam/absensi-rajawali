@@ -43,69 +43,57 @@ function RouteComponent() {
 	}
 
 	return (
-		<div className="flex h-screen">
+		<div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">
 			{error && <Alert variant="error">{error.message}</Alert>}
-			<Sidebar />
-
-			<div className="min-h-screen bg-gray-50 p-6 w-full  ">
-				<div className="max-w-4xl mx-auto bg-white shadow-md rounded-xl p-8">
-					<div className="flex items-center mb-8 space-x-4">
-						<Icon
-							icon="qlementine-icons:user-16"
-							className="h-16 w-16 text-blue-500"
-						/>
-						<div>
-							<h1 className="text-3xl font-bold text-gray-800">
-								{isPending ? (
-									<Skeleton className="h-7 w-full bg-red-50" />
-								) : (
-									`Hi, ${data?.data.nama}!`
-								)}
-							</h1>
-							<p className="text-gray-500">Welcome to your dashboard</p>
-						</div>
-					</div>
-
-					<div className="grid md:grid-cols-2 gap-6">
+			<div className="flex items-center mb-8 space-x-4">
+				<Icon
+					icon="qlementine-icons:user-16"
+					className="h-16 w-16 text-blue-500"
+				/>
+				<div>
+					<h1 className="text-3xl font-bold text-gray-800">
 						{isPending ? (
-							<Skeleton className="p-6 w-full" />
+							<Skeleton className="h-7 w-full bg-red-50" />
 						) : (
-							<ProfileInfoCard
-								title="Personal Information"
-								icon={
-									<Icon
-										icon="uiw:information"
-										className="h-6 w-6 text-blue-500"
-									/>
-								}
-								details={[
-									{ label: "Nama", value: data?.data.nama },
-									{ label: "Username", value: data?.data.username },
-									{ label: "Jenis Kelamin", value: data?.data.jenis_kelamin },
-								]}
-							/>
+							`Hi, ${data?.data.nama}!`
 						)}
-
-						{isPending ? (
-							<Skeleton className="p-6 w-full" />
-						) : (
-							<ProfileInfoCard
-								title="Professional Details"
-								icon={
-									<Icon
-										icon="uiw:information"
-										className="h-6 w-6 text-green-500"
-									/>
-								}
-								details={[
-									{ label: "Alamat", value: data?.data.alamat },
-									{ label: "Jenjang", value: data?.data.jenjang },
-									{ label: "Role", value: data?.data.role },
-								]}
-							/>
-						)}
-					</div>
+					</h1>
+					<p className="text-gray-500">Welcome to your dashboard</p>
 				</div>
+			</div>
+
+			<div className="grid md:grid-cols-2 gap-6">
+				{isPending ? (
+					<Skeleton className="p-6 w-full" />
+				) : (
+					<ProfileInfoCard
+						title="Personal Information"
+						icon={
+							<Icon icon="uiw:information" className="h-6 w-6 text-blue-500" />
+						}
+						details={[
+							{ label: "Nama", value: data?.data.nama },
+							{ label: "Username", value: data?.data.username },
+							{ label: "Jenis Kelamin", value: data?.data.jenis_kelamin },
+						]}
+					/>
+				)}
+
+				{isPending ? (
+					<Skeleton className="p-6 w-full" />
+				) : (
+					<ProfileInfoCard
+						title="Professional Details"
+						icon={
+							<Icon icon="uiw:information" className="h-6 w-6 text-green-500" />
+						}
+						details={[
+							{ label: "Alamat", value: data?.data.alamat },
+							{ label: "Jenjang", value: data?.data.jenjang },
+							{ label: "Role", value: data?.data.role },
+						]}
+					/>
+				)}
 			</div>
 		</div>
 	);

@@ -179,69 +179,44 @@ function RouteComponent() {
 	};
 
 	return (
-		<div className="flex">
-			{sheetCreate && <SheetCreate closeSheet={() => setSheetCreate(false)} />}
-			{sheetUpdate && selectedData && (
-				<SheetUpdate
-					closeSheet={() => setSheetUpdate(false)}
-					selectedData={selectedData}
+		<>
+			<div className="flex justify-between">
+				<SearchBar
+					onChange={(e) => setSearchTerm(e.target.value)}
+					placeholder="Search by ID"
+					value={searchTerm}
 				/>
-			)}
-			{isError ||
-				(mutation.isError && (
-					//TODO: Fix error message
-					<Alert variant={alertType}>{error || mutation.error?.message}</Alert>
-				))}
-			{dialog && (
-				<Dialog
-					cancel="Cancel"
-					confirm="Yes, Delete!"
-					description="Are you sure you want to delete this data?"
-					title="Delete Data"
-					handleCancel={() => setDialog(false)}
-					handleConfirm={handleDeleteConfirm}
-				/>
-			)}
-			<Sidebar />
-			<div className="flex-1 px-2 py-3">
-				<div className="flex justify-between">
-					<SearchBar
-						onChange={(e) => setSearchTerm(e.target.value)}
-						placeholder="Search by ID"
-						value={searchTerm}
-					/>
-					<Button typeof="button" onClick={() => setSheetCreate(true)}>
-						Create Remaja
-					</Button>
-				</div>
-				<table className="w-full text-left text-sm text-gray-500">
-					<thead className="text-xs text-gray-700 uppercase bg-gray-50">
-						{table.getHeaderGroups().map((headerGroup) => (
-							<tr key={headerGroup.id}>
-								{headerGroup.headers.map((header) => (
-									<th key={header.id} className="px-6 py-3">
-										{flexRender(
-											header.column.columnDef.header,
-											header.getContext(),
-										)}
-									</th>
-								))}
-							</tr>
-						))}
-					</thead>
-					<tbody>
-						{table.getRowModel().rows.map((row) => (
-							<tr key={row.id} className="bg-white border-b">
-								{row.getVisibleCells().map((cell) => (
-									<td key={cell.id} className="px-6 py-4">
-										{flexRender(cell.column.columnDef.cell, cell.getContext())}
-									</td>
-								))}
-							</tr>
-						))}
-					</tbody>
-				</table>
+				<Button typeof="button" onClick={() => setSheetCreate(true)}>
+					Create Remaja
+				</Button>
 			</div>
-		</div>
+			<table className="w-full text-left text-sm text-gray-500">
+				<thead className="text-xs text-gray-700 uppercase bg-gray-50">
+					{table.getHeaderGroups().map((headerGroup) => (
+						<tr key={headerGroup.id}>
+							{headerGroup.headers.map((header) => (
+								<th key={header.id} className="px-6 py-3">
+									{flexRender(
+										header.column.columnDef.header,
+										header.getContext(),
+									)}
+								</th>
+							))}
+						</tr>
+					))}
+				</thead>
+				<tbody>
+					{table.getRowModel().rows.map((row) => (
+						<tr key={row.id} className="bg-white border-b">
+							{row.getVisibleCells().map((cell) => (
+								<td key={cell.id} className="px-6 py-4">
+									{flexRender(cell.column.columnDef.cell, cell.getContext())}
+								</td>
+							))}
+						</tr>
+					))}
+				</tbody>
+			</table>
+		</>
 	);
 }
