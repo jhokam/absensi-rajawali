@@ -35,6 +35,22 @@ export default function Sidebar() {
 				</li>
 				<li>
 					<Link
+						to="/admin/dashboard/desa"
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
+					>
+						Desa
+					</Link>
+				</li>
+				<li>
+					<Link
+						to="/admin/dashboard/kelompok"
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
+					>
+						Kelompok
+					</Link>
+				</li>
+				<li>
+					<Link
 						to="/admin/dashboard/remaja"
 						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
 					>

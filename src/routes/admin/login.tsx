@@ -1,14 +1,14 @@
+import Alert from "@/components/Alert.tsx";
+import Button from "@/components/Button.tsx";
+import TextError from "@/components/TextError.tsx";
+import ThemedInput from "@/components/ThemedInput.tsx";
+import type { LoginRequest, LoginResponse } from "@/types/api.ts";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { z } from "zod";
-import Alert from "../../components/Alert.tsx";
-import Button from "../../components/Button.tsx";
-import TextError from "../../components/TextError.tsx";
-import ThemedInput from "../../components/ThemedInput.tsx";
-import type { LoginRequest, LoginResponse } from "../../types/api.ts";
 
 export const Route = createFileRoute("/admin/login")({
 	component: LoginPage,
@@ -23,11 +23,9 @@ function LoginPage() {
 	const [showPassword, setShowPassword] = useState(false);
 	const [cookies, setCookie] = useCookies(["access_token"]);
 	const navigate = useNavigate();
-	// const [error, setError] = useState(false);
-	// const [errorMessage, setErrorMessage] = useState("hi");
 
 	const handleLogin = async (data: LoginRequest) => {
-		const response = await fetch("http://localhost:8080/api/auth/login", {
+		const response = await fetch(`${process.env.DEV_LINK}/auth/login`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

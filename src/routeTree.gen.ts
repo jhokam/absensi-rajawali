@@ -14,6 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AdminLoginImport } from './routes/admin/login'
 import { Route as AdminDashboardIndexImport } from './routes/admin/dashboard/index'
 import { Route as AdminDashboardRemajaImport } from './routes/admin/dashboard/remaja'
+import { Route as AdminDashboardKelompokImport } from './routes/admin/dashboard/kelompok'
+import { Route as AdminDashboardDesaImport } from './routes/admin/dashboard/desa'
 
 // Create/Update Routes
 
@@ -35,6 +37,18 @@ const AdminDashboardRemajaRoute = AdminDashboardRemajaImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const AdminDashboardKelompokRoute = AdminDashboardKelompokImport.update({
+  id: '/admin/dashboard/kelompok',
+  path: '/admin/dashboard/kelompok',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AdminDashboardDesaRoute = AdminDashboardDesaImport.update({
+  id: '/admin/dashboard/desa',
+  path: '/admin/dashboard/desa',
+  getParentRoute: () => rootRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -44,6 +58,20 @@ declare module '@tanstack/react-router' {
       path: '/admin/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/dashboard/desa': {
+      id: '/admin/dashboard/desa'
+      path: '/admin/dashboard/desa'
+      fullPath: '/admin/dashboard/desa'
+      preLoaderRoute: typeof AdminDashboardDesaImport
+      parentRoute: typeof rootRoute
+    }
+    '/admin/dashboard/kelompok': {
+      id: '/admin/dashboard/kelompok'
+      path: '/admin/dashboard/kelompok'
+      fullPath: '/admin/dashboard/kelompok'
+      preLoaderRoute: typeof AdminDashboardKelompokImport
       parentRoute: typeof rootRoute
     }
     '/admin/dashboard/remaja': {
@@ -67,12 +95,16 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
+  '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
   '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
+  '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
   '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
 }
@@ -80,18 +112,32 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/admin/login': typeof AdminLoginRoute
+  '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
+  '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
   '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/admin/login' | '/admin/dashboard/remaja' | '/admin/dashboard'
+  fullPaths:
+    | '/admin/login'
+    | '/admin/dashboard/desa'
+    | '/admin/dashboard/kelompok'
+    | '/admin/dashboard/remaja'
+    | '/admin/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/admin/login' | '/admin/dashboard/remaja' | '/admin/dashboard'
+  to:
+    | '/admin/login'
+    | '/admin/dashboard/desa'
+    | '/admin/dashboard/kelompok'
+    | '/admin/dashboard/remaja'
+    | '/admin/dashboard'
   id:
     | '__root__'
     | '/admin/login'
+    | '/admin/dashboard/desa'
+    | '/admin/dashboard/kelompok'
     | '/admin/dashboard/remaja'
     | '/admin/dashboard/'
   fileRoutesById: FileRoutesById
@@ -99,12 +145,16 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
+  AdminDashboardDesaRoute: typeof AdminDashboardDesaRoute
+  AdminDashboardKelompokRoute: typeof AdminDashboardKelompokRoute
   AdminDashboardRemajaRoute: typeof AdminDashboardRemajaRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
+  AdminDashboardDesaRoute: AdminDashboardDesaRoute,
+  AdminDashboardKelompokRoute: AdminDashboardKelompokRoute,
   AdminDashboardRemajaRoute: AdminDashboardRemajaRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
 }
@@ -120,12 +170,20 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/admin/login",
+        "/admin/dashboard/desa",
+        "/admin/dashboard/kelompok",
         "/admin/dashboard/remaja",
         "/admin/dashboard/"
       ]
     },
     "/admin/login": {
       "filePath": "admin/login.tsx"
+    },
+    "/admin/dashboard/desa": {
+      "filePath": "admin/dashboard/desa.tsx"
+    },
+    "/admin/dashboard/kelompok": {
+      "filePath": "admin/dashboard/kelompok.tsx"
     },
     "/admin/dashboard/remaja": {
       "filePath": "admin/dashboard/remaja.tsx"

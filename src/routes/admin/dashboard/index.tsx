@@ -1,22 +1,21 @@
+import Alert from "@/components/Alert";
+import ProfileInfoCard from "@/components/ProfileInfoCard";
+import Sidebar from "@/components/Sidebar";
+import Skeleton from "@/components/Skeleton";
+import type { RemajaResponse } from "@/types/api";
+import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useState } from "react";
 import { useCookies } from "react-cookie";
-import Alert from "../../../components/Alert";
-import ProfileInfoCard from "../../../components/ProfileInfoCard";
-import Sidebar from "../../../components/Sidebar";
-import Skeleton from "../../../components/Skeleton";
-import type { RemajaResponse } from "../../../types/api";
-import { useProfile } from "../../../utils/useProfile";
 
 export const Route = createFileRoute("/admin/dashboard/")({
 	component: RouteComponent,
 	beforeLoad: ({ context }) => {
 		console.log(context.authentication.role);
 		if (
-			context.authentication.role === "User" ||
-			context.authentication.role === null
+			context.authentication.role === "User"
+			// context.authentication.role === null
 		) {
 			throw redirect({
 				to: "/admin/login",
@@ -32,7 +31,7 @@ function RouteComponent() {
 	const { isPending, error, data } = useQuery<RemajaResponse>({
 		queryKey: ["remajaData"],
 		queryFn: async () =>
-			await fetch("http://localhost:8080/api/profile", {
+			await fetch(`${process.env.DEV_LINK}/profile`, {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},

@@ -1,6 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import type { MouseEventHandler } from "react";
 import { useCookies } from "react-cookie";
 import { z } from "zod";
 import {
@@ -9,12 +8,7 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type {
-	PublicRemaja,
-	RemajaRequest,
-	RemajaResponse,
-	RemajaResponseArray,
-} from "../types/api";
+import type { PublicRemaja, RemajaRequest, RemajaResponse } from "../types/api";
 import { useProfile } from "../utils/useProfile";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -59,7 +53,7 @@ export default function SheetUpdate({
 	>({
 		mutationFn: async (data: RemajaRequest) => {
 			const response = await fetch(
-				`http://localhost:8080/api/remaja/${selectedData.id}`,
+				`${process.env.DEV_LINK}/remaja/${selectedData.id}`,
 				{
 					method: "PUT",
 					headers: {

@@ -8,13 +8,7 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type {
-	PublicRemaja,
-	RemajaBase,
-	RemajaRequest,
-	RemajaResponse,
-	RemajaResponseArray,
-} from "../types/api";
+import type { RemajaRequest, RemajaResponse } from "../types/api";
 import Button from "./Button";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -53,7 +47,7 @@ export default function SheetCreate({
 		RemajaRequest
 	>({
 		mutationFn: async (data: RemajaRequest) => {
-			const response = await fetch("http://localhost:8080/api/remaja", {
+			const response = await fetch(`${process.env.DEV_LINK}/remaja`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
