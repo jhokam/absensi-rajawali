@@ -8,7 +8,11 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { PublicRemaja, RemajaRequest, RemajaResponse } from "../types/api";
+import type {
+	GenerusRequest,
+	GenerusResponse,
+	PublicGenerus,
+} from "../types/api";
 import { useProfile } from "../utils/useProfile";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -19,12 +23,12 @@ export default function SheetUpdate({
 	selectedData,
 }: {
 	closeSheet: () => void;
-	selectedData: PublicRemaja;
+	selectedData: PublicGenerus;
 }) {
 	const [cookies] = useCookies(["access_token"]);
 	const { role } = useProfile();
 
-	const updateRemajaSchema = z.object({
+	const updateGenerusSchema = z.object({
 		nama: z.string().nonempty("Nama tidak boleh kosong"),
 		username: z.string().nonempty("Username tidak boleh kosong"),
 		jenis_kelamin: z.enum(["Laki_Laki", "Perempuan"], {
@@ -47,13 +51,13 @@ export default function SheetUpdate({
 	});
 
 	const { mutateAsync, isError, error } = useMutation<
-		RemajaResponse,
+		GenerusResponse,
 		Error,
-		RemajaRequest
+		GenerusRequest
 	>({
-		mutationFn: async (data: RemajaRequest) => {
+		mutationFn: async (data: GenerusRequest) => {
 			const response = await fetch(
-				`${process.env.DEV_LINK}/remaja/${selectedData.id}`,
+				`${import.meta.env.VITE_DEV_LINK}/generus/${selectedData.id}`,
 				{
 					method: "PUT",
 					headers: {
@@ -73,7 +77,7 @@ export default function SheetUpdate({
 		},
 	});
 
-	const form = useForm<RemajaRequest>({
+	const form = useForm<GenerusRequest>({
 		defaultValues: {
 			nama: selectedData.nama,
 			username: selectedData.username,
@@ -89,7 +93,7 @@ export default function SheetUpdate({
 			closeSheet();
 		},
 		validators: {
-			onSubmit: updateRemajaSchema,
+			onSubmit: updateGenerusSchema,
 		},
 	});
 

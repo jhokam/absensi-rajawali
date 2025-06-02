@@ -54,7 +54,7 @@ export default function Sidebar() {
 						to="/admin/dashboard/remaja"
 						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
 					>
-						Remaja
+						Generus
 					</Link>
 				</li>
 			</ul>

@@ -1,16 +1,9 @@
-import Alert from "@/components/Alert";
-import Badge from "@/components/Badge";
 import Button from "@/components/Button";
-import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
-import SheetCreate from "@/components/SheetCreate";
-import SheetUpdate from "@/components/SheetUpdate";
-import Sidebar from "@/components/Sidebar";
-import { colorMap } from "@/constants";
 import type {
-	PublicRemaja,
-	RemajaResponse,
-	RemajaResponseArray,
+	GenerusResponsesese,
+	GenerusResponseArrayArrayArray,
+	PublicGenerus,
 } from "@/types/api";
 import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
@@ -34,7 +27,7 @@ function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
-	const [selectedData, setSelectedData] = useState<PublicRemaja | null>(null);
+	const [selectedData, setSelectedData] = useState<PublicGenerus | null>(null);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [alertType, setAlertType] = useState<"success" | "error">("success");
@@ -45,13 +38,16 @@ function RouteComponent() {
 	const queryClient = useQueryClient();
 	const { role } = useProfile();
 
-	const deleteRemaja = async (id: number) => {
-		const response = await fetch(`${process.env.DEV_LINK}/remaja/${id}`, {
-			method: "DELETE",
-			headers: {
-				Authorization: `Bearer ${cookies.access_token}`,
+	const deleteGenerus = async (id: number) => {
+		const response = await fetch(
+			`${import.meta.env.VITE_DEV_LINK}/generus/${id}`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${cookies.access_token}`,
+				},
 			},
-		});
+		);
 		if (!response.ok) {
 			throw new Error("Failed to delete data");
 		}
@@ -59,11 +55,11 @@ function RouteComponent() {
 	};
 
 	const mutation = useMutation({
-		mutationFn: deleteRemaja,
-		onSuccess: (success: RemajaResponse) => {
+		mutationFn: deleteGenerus,
+		onSuccess: (success: GenerusResponse) => {
 			console.log(success);
 
-			queryClient.invalidateQueries({ queryKey: ["remajaData"] });
+			queryClient.invalidateQueries({ queryKey: ["generusData"] });
 			handleAlertSuccess(success.message);
 		},
 		onError: (error) => {
@@ -71,9 +67,9 @@ function RouteComponent() {
 		},
 	});
 
-	const columnHelper = createColumnHelper<PublicRemaja>();
+	const columnHelper = createColumnHelper<PublicGenerus>();
 
-	const handleEdit = (row: PublicRemaja) => {
+	const handleEdit = (row: PublicGenerus) => {
 		setSelectedData(row);
 		setSheetUpdate(true);
 	};
@@ -86,20 +82,20 @@ function RouteComponent() {
 		}
 	};
 
-	const handleDelete = (row: PublicRemaja) => {
+	const handleDelete = (row: PublicGenerus) => {
 		setDeleteId(row.id);
 		setDialog(true);
 	};
 
-	const { isPending, error, isError, data } = useQuery<RemajaResponseArray>({
-		queryKey: ["remajaData", debounceSearch],
+	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
+		queryKey: ["generusData", debounceSearch],
 		queryFn: async () => {
 			const searchParams = new URLSearchParams();
 			if (debounceSearch && !Number.isNaN(Number(debounceSearch))) {
 				searchParams.append("id", debounceSearch);
 			}
 
-			const url = `${process.env.DEV_LINK}/remaja${
+			const url = `${import.meta.env.VITE_DEV_LINK}/generus${
 				searchParams.toString() ? `?${searchParams.toString()}` : ""
 			}`;
 
@@ -187,7 +183,7 @@ function RouteComponent() {
 					value={searchTerm}
 				/>
 				<Button typeof="button" onClick={() => setSheetCreate(true)}>
-					Create Remaja
+					Create Generus
 				</Button>
 			</div>
 			<table className="w-full text-left text-sm text-gray-500">

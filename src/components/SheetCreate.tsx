@@ -8,7 +8,7 @@ import {
 	roleOptions,
 	sambungOptions,
 } from "../constants";
-import type { RemajaRequest, RemajaResponse } from "../types/api";
+import type { GenerusRequest, GenerusResponse } from "../types/api";
 import Button from "./Button";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -19,7 +19,7 @@ export default function SheetCreate({
 }: { closeSheet: () => void }) {
 	const [cookies] = useCookies(["access_token"]);
 
-	const createRemajaSchema = z.object({
+	const createGenerusSchema = z.object({
 		nama: z.string().nonempty("Nama tidak boleh kosong"),
 		username: z.string().nonempty("Username tidak boleh kosong"),
 		jenis_kelamin: z.enum(["Laki_Laki", "Perempuan"], {
@@ -42,12 +42,12 @@ export default function SheetCreate({
 	});
 
 	const { mutateAsync, isError, error } = useMutation<
-		RemajaResponse,
+		GenerusResponse,
 		Error,
-		RemajaRequest
+		GenerusRequest
 	>({
-		mutationFn: async (data: RemajaRequest) => {
-			const response = await fetch(`${process.env.DEV_LINK}/remaja`, {
+		mutationFn: async (data: GenerusRequest) => {
+			const response = await fetch(`${import.meta.env.DEV_LINK}/generus`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -65,7 +65,7 @@ export default function SheetCreate({
 		},
 	});
 
-	const form = useForm<RemajaRequest>({
+	const form = useForm<GenerusRequest>({
 		defaultValues: {
 			nama: "",
 			username: "",
@@ -81,14 +81,16 @@ export default function SheetCreate({
 			closeSheet();
 		},
 		validators: {
-			onSubmit: createRemajaSchema,
+			onSubmit: createGenerusSchema,
 		},
 	});
 
 	return (
 		<div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
 			<div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md mx-4">
-				<h1 className="text-2xl font-bold mb-6 text-gray-800">Create Remaja</h1>
+				<h1 className="text-2xl font-bold mb-6 text-gray-800">
+					Buat Data Generus
+				</h1>
 
 				<form
 					onSubmit={(e) => {

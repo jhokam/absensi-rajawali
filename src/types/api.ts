@@ -4,15 +4,8 @@ export type LoginRequest = {
 };
 
 export type ErrorResponse = {
-	response: {
-		message: string;
-		error: string;
-		statusCode: number;
-	};
-	status: number;
-	options: Record<never, never>;
 	message: string;
-	name: string;
+	error: string;
 };
 
 export type ResponseBase<T> = {
@@ -29,7 +22,7 @@ export type ResponseBaseWithArray<T> = {
 	data: T[];
 };
 
-export type RemajaBase = {
+export type GenerusBase = {
 	id: number;
 	nama: string;
 	username: string;
@@ -37,13 +30,11 @@ export type RemajaBase = {
 	jenjang: "Paud" | "Caberawit" | "Pra_Remaja" | "Remaja" | "Pra_Nikah";
 	alamat: string;
 	sambung: "Aktif" | "Tidak_Aktif" | string;
-	role: "Admin" | "User";
-	password: string;
 };
 
-export type PublicRemaja = Omit<RemajaBase, "password">;
+export type PublicGenerus = GenerusBase;
 
-export type RemajaRequest = Omit<RemajaBase, "id">;
+export type GenerusRequest = Omit<GenerusBase, "id">;
 
 export type LoginBase = {
 	access_token: string;
@@ -51,6 +42,6 @@ export type LoginBase = {
 
 export type LoginResponse = ResponseBase<LoginBase>;
 
-export type RemajaResponseArray = ResponseBaseWithArray<PublicRemaja>;
+export type GenerusResponseArray = ResponseBaseWithArray<PublicGenerus>;
 
-export type RemajaResponse = ResponseBase<PublicRemaja>;
+export type GenerusResponse = ResponseBase<PublicGenerus>;

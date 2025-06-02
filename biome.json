@@ -6,8 +6,7 @@
 	"formatter": {
 		"enabled": true,
 		"indentStyle": "tab",
-		"lineEnding": "crlf",
-		"ignore": ["node_modules", ".vscode"]
+		"lineEnding": "crlf"
 	},
 	"linter": {
 		"enabled": true,

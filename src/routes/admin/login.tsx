@@ -25,13 +25,16 @@ function LoginPage() {
 	const navigate = useNavigate();
 
 	const handleLogin = async (data: LoginRequest) => {
-		const response = await fetch(`${process.env.DEV_LINK}/auth/login`, {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
+		const response = await fetch(
+			`${import.meta.env.VITE_DEV_LINK}/auth/login`,
+			{
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(data),
 			},
-			body: JSON.stringify(data),
-		});
+		);
 		if (!response.ok) {
 			const error = await response.json();
 			throw new Error(error.message);

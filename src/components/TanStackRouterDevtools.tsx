@@ -1,7 +1,7 @@
 import React from "react";
 
 export const TanStackRouterDevtools =
-	process.env.NODE_ENV === "production"
+	import.meta.env.PROD === true
 		? () => null
 		: React.lazy(() =>
 				import("@tanstack/router-devtools").then((res) => ({

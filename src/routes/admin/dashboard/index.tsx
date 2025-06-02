@@ -1,8 +1,7 @@
 import Alert from "@/components/Alert";
 import ProfileInfoCard from "@/components/ProfileInfoCard";
-import Sidebar from "@/components/Sidebar";
 import Skeleton from "@/components/Skeleton";
-import type { RemajaResponse } from "@/types/api";
+import type { GenerusResponse } from "@/types/api";
 import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useQuery } from "@tanstack/react-query";
@@ -28,10 +27,10 @@ function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
 	const { setRole } = useProfile();
 
-	const { isPending, error, data } = useQuery<RemajaResponse>({
-		queryKey: ["remajaData"],
+	const { isPending, error, data } = useQuery<GenerusResponse>({
+		queryKey: ["generusData"],
 		queryFn: async () =>
-			await fetch(`${process.env.DEV_LINK}/profile`, {
+			await fetch(`${import.meta.env.VITE_DEV_LINK}/profile`, {
 				headers: {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},
