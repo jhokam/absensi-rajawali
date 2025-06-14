@@ -1,8 +1,8 @@
 import Button from "@/components/Button";
 import SearchBar from "@/components/SearchBar";
 import type {
-	GenerusResponsesese,
-	GenerusResponseArrayArrayArray,
+	GenerusResponse,
+	GenerusResponseArray,
 	PublicGenerus,
 } from "@/types/api";
 import { useProfile } from "@/utils/useProfile";
@@ -18,8 +18,9 @@ import {
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
+import Alert from "../../../components/Alert";
 
-export const Route = createFileRoute("/admin/dashboard/remaja")({
+export const Route = createFileRoute("/admin/dashboard/generus")({
 	component: RouteComponent,
 });
 
@@ -57,8 +58,6 @@ function RouteComponent() {
 	const mutation = useMutation({
 		mutationFn: deleteGenerus,
 		onSuccess: (success: GenerusResponse) => {
-			console.log(success);
-
 			queryClient.invalidateQueries({ queryKey: ["generusData"] });
 			handleAlertSuccess(success.message);
 		},
@@ -105,10 +104,6 @@ function RouteComponent() {
 				},
 			});
 
-			if (!response.ok) {
-				throw new Error("Failed to fetch data");
-			}
-
 			return response.json();
 		},
 	});
@@ -116,12 +111,10 @@ function RouteComponent() {
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
 		columnHelper.accessor("nama", { header: "Nama" }),
-		columnHelper.accessor("username", { header: "Username" }),
 		columnHelper.accessor("jenis_kelamin", { header: "Jenis Kelamin" }),
 		columnHelper.accessor("jenjang", { header: "Jenjang" }),
 		columnHelper.accessor("alamat", { header: "Alamat" }),
 		columnHelper.accessor("sambung", { header: "Sambung" }),
-		columnHelper.accessor("role", { header: "Role" }),
 		columnHelper.display({
 			id: "actions",
 			header: "Action",
@@ -176,6 +169,11 @@ function RouteComponent() {
 
 	return (
 		<>
+			{isError && (
+				<Alert variant="error" className="z-50">
+					{error.message}
+				</Alert>
+			)}
 			<div className="flex justify-between">
 				<SearchBar
 					onChange={(e) => setSearchTerm(e.target.value)}

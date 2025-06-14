@@ -51,7 +51,7 @@ export default function Sidebar() {
 				</li>
 				<li>
 					<Link
-						to="/admin/dashboard/remaja"
+						to="/admin/dashboard/generus"
 						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
 					>
 						Generus

@@ -14,8 +14,8 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AdminLoginImport } from './routes/admin/login'
 import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard/route'
 import { Route as AdminDashboardIndexImport } from './routes/admin/dashboard/index'
-import { Route as AdminDashboardRemajaImport } from './routes/admin/dashboard/remaja'
 import { Route as AdminDashboardKelompokImport } from './routes/admin/dashboard/kelompok'
+import { Route as AdminDashboardGenerusImport } from './routes/admin/dashboard/generus'
 import { Route as AdminDashboardDesaImport } from './routes/admin/dashboard/desa'
 
 // Create/Update Routes
@@ -38,15 +38,15 @@ const AdminDashboardIndexRoute = AdminDashboardIndexImport.update({
   getParentRoute: () => AdminDashboardRouteRoute,
 } as any)
 
-const AdminDashboardRemajaRoute = AdminDashboardRemajaImport.update({
-  id: '/remaja',
-  path: '/remaja',
-  getParentRoute: () => AdminDashboardRouteRoute,
-} as any)
-
 const AdminDashboardKelompokRoute = AdminDashboardKelompokImport.update({
   id: '/kelompok',
   path: '/kelompok',
+  getParentRoute: () => AdminDashboardRouteRoute,
+} as any)
+
+const AdminDashboardGenerusRoute = AdminDashboardGenerusImport.update({
+  id: '/generus',
+  path: '/generus',
   getParentRoute: () => AdminDashboardRouteRoute,
 } as any)
 
@@ -81,18 +81,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardDesaImport
       parentRoute: typeof AdminDashboardRouteImport
     }
+    '/admin/dashboard/generus': {
+      id: '/admin/dashboard/generus'
+      path: '/generus'
+      fullPath: '/admin/dashboard/generus'
+      preLoaderRoute: typeof AdminDashboardGenerusImport
+      parentRoute: typeof AdminDashboardRouteImport
+    }
     '/admin/dashboard/kelompok': {
       id: '/admin/dashboard/kelompok'
       path: '/kelompok'
       fullPath: '/admin/dashboard/kelompok'
       preLoaderRoute: typeof AdminDashboardKelompokImport
-      parentRoute: typeof AdminDashboardRouteImport
-    }
-    '/admin/dashboard/remaja': {
-      id: '/admin/dashboard/remaja'
-      path: '/remaja'
-      fullPath: '/admin/dashboard/remaja'
-      preLoaderRoute: typeof AdminDashboardRemajaImport
       parentRoute: typeof AdminDashboardRouteImport
     }
     '/admin/dashboard/': {
@@ -109,15 +109,15 @@ declare module '@tanstack/react-router' {
 
 interface AdminDashboardRouteRouteChildren {
   AdminDashboardDesaRoute: typeof AdminDashboardDesaRoute
+  AdminDashboardGenerusRoute: typeof AdminDashboardGenerusRoute
   AdminDashboardKelompokRoute: typeof AdminDashboardKelompokRoute
-  AdminDashboardRemajaRoute: typeof AdminDashboardRemajaRoute
   AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
 }
 
 const AdminDashboardRouteRouteChildren: AdminDashboardRouteRouteChildren = {
   AdminDashboardDesaRoute: AdminDashboardDesaRoute,
+  AdminDashboardGenerusRoute: AdminDashboardGenerusRoute,
   AdminDashboardKelompokRoute: AdminDashboardKelompokRoute,
-  AdminDashboardRemajaRoute: AdminDashboardRemajaRoute,
   AdminDashboardIndexRoute: AdminDashboardIndexRoute,
 }
 
@@ -128,16 +128,16 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
+  '/admin/dashboard/generus': typeof AdminDashboardGenerusRoute
   '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
-  '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
+  '/admin/dashboard/generus': typeof AdminDashboardGenerusRoute
   '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
-  '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
 }
 
@@ -146,8 +146,8 @@ export interface FileRoutesById {
   '/admin/dashboard': typeof AdminDashboardRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
+  '/admin/dashboard/generus': typeof AdminDashboardGenerusRoute
   '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
-  '/admin/dashboard/remaja': typeof AdminDashboardRemajaRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
 }
 
@@ -157,23 +157,23 @@ export interface FileRouteTypes {
     | '/admin/dashboard'
     | '/admin/login'
     | '/admin/dashboard/desa'
+    | '/admin/dashboard/generus'
     | '/admin/dashboard/kelompok'
-    | '/admin/dashboard/remaja'
     | '/admin/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin/login'
     | '/admin/dashboard/desa'
+    | '/admin/dashboard/generus'
     | '/admin/dashboard/kelompok'
-    | '/admin/dashboard/remaja'
     | '/admin/dashboard'
   id:
     | '__root__'
     | '/admin/dashboard'
     | '/admin/login'
     | '/admin/dashboard/desa'
+    | '/admin/dashboard/generus'
     | '/admin/dashboard/kelompok'
-    | '/admin/dashboard/remaja'
     | '/admin/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -206,8 +206,8 @@ export const routeTree = rootRoute
       "filePath": "admin/dashboard/route.tsx",
       "children": [
         "/admin/dashboard/desa",
+        "/admin/dashboard/generus",
         "/admin/dashboard/kelompok",
-        "/admin/dashboard/remaja",
         "/admin/dashboard/"
       ]
     },
@@ -218,12 +218,12 @@ export const routeTree = rootRoute
       "filePath": "admin/dashboard/desa.tsx",
       "parent": "/admin/dashboard"
     },
-    "/admin/dashboard/kelompok": {
-      "filePath": "admin/dashboard/kelompok.tsx",
+    "/admin/dashboard/generus": {
+      "filePath": "admin/dashboard/generus.tsx",
       "parent": "/admin/dashboard"
     },
-    "/admin/dashboard/remaja": {
-      "filePath": "admin/dashboard/remaja.tsx",
+    "/admin/dashboard/kelompok": {
+      "filePath": "admin/dashboard/kelompok.tsx",
       "parent": "/admin/dashboard"
     },
     "/admin/dashboard/": {
