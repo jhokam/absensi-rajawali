@@ -8,167 +8,218 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
-import { Route as AdminDashboardRouteRouteImport } from './routes/admin/dashboard/route'
-import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
-import { Route as AdminDashboardKelompokRouteImport } from './routes/admin/dashboard/kelompok'
-import { Route as AdminDashboardGenerusRouteImport } from './routes/admin/dashboard/generus'
-import { Route as AdminDashboardDesaRouteImport } from './routes/admin/dashboard/desa'
+import { Route as AdminAdminRouteRouteImport } from './routes/admin/_admin/route'
+import { Route as AdminAdminKelompokRouteImport } from './routes/admin/_admin/kelompok'
+import { Route as AdminAdminKegiatanRouteImport } from './routes/admin/_admin/kegiatan'
+import { Route as AdminAdminGenerusRouteImport } from './routes/admin/_admin/generus'
+import { Route as AdminAdminDesaRouteImport } from './routes/admin/_admin/desa'
+import { Route as AdminAdminDashboardRouteImport } from './routes/admin/_admin/dashboard'
 
+const AdminRouteImport = createFileRoute('/admin')()
+
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
-  id: '/admin/login',
-  path: '/admin/login',
-  getParentRoute: () => rootRouteImport,
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
 } as any)
-const AdminDashboardRouteRoute = AdminDashboardRouteRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => rootRouteImport,
+const AdminAdminRouteRoute = AdminAdminRouteRouteImport.update({
+  id: '/_admin',
+  getParentRoute: () => AdminRoute,
 } as any)
-const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminDashboardRouteRoute,
-} as any)
-const AdminDashboardKelompokRoute = AdminDashboardKelompokRouteImport.update({
+const AdminAdminKelompokRoute = AdminAdminKelompokRouteImport.update({
   id: '/kelompok',
   path: '/kelompok',
-  getParentRoute: () => AdminDashboardRouteRoute,
+  getParentRoute: () => AdminAdminRouteRoute,
 } as any)
-const AdminDashboardGenerusRoute = AdminDashboardGenerusRouteImport.update({
+const AdminAdminKegiatanRoute = AdminAdminKegiatanRouteImport.update({
+  id: '/kegiatan',
+  path: '/kegiatan',
+  getParentRoute: () => AdminAdminRouteRoute,
+} as any)
+const AdminAdminGenerusRoute = AdminAdminGenerusRouteImport.update({
   id: '/generus',
   path: '/generus',
-  getParentRoute: () => AdminDashboardRouteRoute,
+  getParentRoute: () => AdminAdminRouteRoute,
 } as any)
-const AdminDashboardDesaRoute = AdminDashboardDesaRouteImport.update({
+const AdminAdminDesaRoute = AdminAdminDesaRouteImport.update({
   id: '/desa',
   path: '/desa',
-  getParentRoute: () => AdminDashboardRouteRoute,
+  getParentRoute: () => AdminAdminRouteRoute,
+} as any)
+const AdminAdminDashboardRoute = AdminAdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminAdminRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/admin/dashboard': typeof AdminDashboardRouteRouteWithChildren
+  '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
-  '/admin/dashboard/generus': typeof AdminDashboardGenerusRoute
-  '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
-  '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/dashboard': typeof AdminAdminDashboardRoute
+  '/admin/desa': typeof AdminAdminDesaRoute
+  '/admin/generus': typeof AdminAdminGenerusRoute
+  '/admin/kegiatan': typeof AdminAdminKegiatanRoute
+  '/admin/kelompok': typeof AdminAdminKelompokRoute
 }
 export interface FileRoutesByTo {
+  '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
-  '/admin/dashboard/generus': typeof AdminDashboardGenerusRoute
-  '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
-  '/admin/dashboard': typeof AdminDashboardIndexRoute
+  '/admin/dashboard': typeof AdminAdminDashboardRoute
+  '/admin/desa': typeof AdminAdminDesaRoute
+  '/admin/generus': typeof AdminAdminGenerusRoute
+  '/admin/kegiatan': typeof AdminAdminKegiatanRoute
+  '/admin/kelompok': typeof AdminAdminKelompokRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/admin/dashboard': typeof AdminDashboardRouteRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/admin/_admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
-  '/admin/dashboard/generus': typeof AdminDashboardGenerusRoute
-  '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
-  '/admin/dashboard/': typeof AdminDashboardIndexRoute
+  '/admin/_admin/dashboard': typeof AdminAdminDashboardRoute
+  '/admin/_admin/desa': typeof AdminAdminDesaRoute
+  '/admin/_admin/generus': typeof AdminAdminGenerusRoute
+  '/admin/_admin/kegiatan': typeof AdminAdminKegiatanRoute
+  '/admin/_admin/kelompok': typeof AdminAdminKelompokRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/admin/dashboard'
+    | '/admin'
     | '/admin/login'
-    | '/admin/dashboard/desa'
-    | '/admin/dashboard/generus'
-    | '/admin/dashboard/kelompok'
-    | '/admin/dashboard/'
+    | '/admin/dashboard'
+    | '/admin/desa'
+    | '/admin/generus'
+    | '/admin/kegiatan'
+    | '/admin/kelompok'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/admin'
     | '/admin/login'
-    | '/admin/dashboard/desa'
-    | '/admin/dashboard/generus'
-    | '/admin/dashboard/kelompok'
     | '/admin/dashboard'
+    | '/admin/desa'
+    | '/admin/generus'
+    | '/admin/kegiatan'
+    | '/admin/kelompok'
   id:
     | '__root__'
-    | '/admin/dashboard'
+    | '/admin'
+    | '/admin/_admin'
     | '/admin/login'
-    | '/admin/dashboard/desa'
-    | '/admin/dashboard/generus'
-    | '/admin/dashboard/kelompok'
-    | '/admin/dashboard/'
+    | '/admin/_admin/dashboard'
+    | '/admin/_admin/desa'
+    | '/admin/_admin/generus'
+    | '/admin/_admin/kegiatan'
+    | '/admin/_admin/kelompok'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  AdminDashboardRouteRoute: typeof AdminDashboardRouteRouteWithChildren
-  AdminLoginRoute: typeof AdminLoginRoute
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/login': {
       id: '/admin/login'
-      path: '/admin/login'
+      path: '/login'
       fullPath: '/admin/login'
       preLoaderRoute: typeof AdminLoginRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/admin/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteRouteImport
-      parentRoute: typeof rootRouteImport
+    '/admin/_admin': {
+      id: '/admin/_admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminAdminRouteRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/admin/dashboard/': {
-      id: '/admin/dashboard/'
-      path: '/'
-      fullPath: '/admin/dashboard/'
-      preLoaderRoute: typeof AdminDashboardIndexRouteImport
-      parentRoute: typeof AdminDashboardRouteRoute
-    }
-    '/admin/dashboard/kelompok': {
-      id: '/admin/dashboard/kelompok'
+    '/admin/_admin/kelompok': {
+      id: '/admin/_admin/kelompok'
       path: '/kelompok'
-      fullPath: '/admin/dashboard/kelompok'
-      preLoaderRoute: typeof AdminDashboardKelompokRouteImport
-      parentRoute: typeof AdminDashboardRouteRoute
+      fullPath: '/admin/kelompok'
+      preLoaderRoute: typeof AdminAdminKelompokRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
     }
-    '/admin/dashboard/generus': {
-      id: '/admin/dashboard/generus'
+    '/admin/_admin/kegiatan': {
+      id: '/admin/_admin/kegiatan'
+      path: '/kegiatan'
+      fullPath: '/admin/kegiatan'
+      preLoaderRoute: typeof AdminAdminKegiatanRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
+    }
+    '/admin/_admin/generus': {
+      id: '/admin/_admin/generus'
       path: '/generus'
-      fullPath: '/admin/dashboard/generus'
-      preLoaderRoute: typeof AdminDashboardGenerusRouteImport
-      parentRoute: typeof AdminDashboardRouteRoute
+      fullPath: '/admin/generus'
+      preLoaderRoute: typeof AdminAdminGenerusRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
     }
-    '/admin/dashboard/desa': {
-      id: '/admin/dashboard/desa'
+    '/admin/_admin/desa': {
+      id: '/admin/_admin/desa'
       path: '/desa'
-      fullPath: '/admin/dashboard/desa'
-      preLoaderRoute: typeof AdminDashboardDesaRouteImport
-      parentRoute: typeof AdminDashboardRouteRoute
+      fullPath: '/admin/desa'
+      preLoaderRoute: typeof AdminAdminDesaRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
+    }
+    '/admin/_admin/dashboard': {
+      id: '/admin/_admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminAdminDashboardRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
     }
   }
 }
 
-interface AdminDashboardRouteRouteChildren {
-  AdminDashboardDesaRoute: typeof AdminDashboardDesaRoute
-  AdminDashboardGenerusRoute: typeof AdminDashboardGenerusRoute
-  AdminDashboardKelompokRoute: typeof AdminDashboardKelompokRoute
-  AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+interface AdminAdminRouteRouteChildren {
+  AdminAdminDashboardRoute: typeof AdminAdminDashboardRoute
+  AdminAdminDesaRoute: typeof AdminAdminDesaRoute
+  AdminAdminGenerusRoute: typeof AdminAdminGenerusRoute
+  AdminAdminKegiatanRoute: typeof AdminAdminKegiatanRoute
+  AdminAdminKelompokRoute: typeof AdminAdminKelompokRoute
 }
 
-const AdminDashboardRouteRouteChildren: AdminDashboardRouteRouteChildren = {
-  AdminDashboardDesaRoute: AdminDashboardDesaRoute,
-  AdminDashboardGenerusRoute: AdminDashboardGenerusRoute,
-  AdminDashboardKelompokRoute: AdminDashboardKelompokRoute,
-  AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+const AdminAdminRouteRouteChildren: AdminAdminRouteRouteChildren = {
+  AdminAdminDashboardRoute: AdminAdminDashboardRoute,
+  AdminAdminDesaRoute: AdminAdminDesaRoute,
+  AdminAdminGenerusRoute: AdminAdminGenerusRoute,
+  AdminAdminKegiatanRoute: AdminAdminKegiatanRoute,
+  AdminAdminKelompokRoute: AdminAdminKelompokRoute,
 }
 
-const AdminDashboardRouteRouteWithChildren =
-  AdminDashboardRouteRoute._addFileChildren(AdminDashboardRouteRouteChildren)
+const AdminAdminRouteRouteWithChildren = AdminAdminRouteRoute._addFileChildren(
+  AdminAdminRouteRouteChildren,
+)
+
+interface AdminRouteChildren {
+  AdminAdminRouteRoute: typeof AdminAdminRouteRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminRouteRoute: AdminAdminRouteRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
-  AdminDashboardRouteRoute: AdminDashboardRouteRouteWithChildren,
-  AdminLoginRoute: AdminLoginRoute,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

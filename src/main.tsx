@@ -1,8 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
+import { scan } from "react-scan";
 import App from "./App";
 import { ProfileProvider } from "./utils/useProfile";
+
+scan({
+	enabled: true,
+});
 
 const rootElement = document.getElementById("root");
 if (!rootElement) {
