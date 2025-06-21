@@ -8,121 +8,44 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-// Import Routes
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
+import { Route as AdminDashboardRouteRouteImport } from './routes/admin/dashboard/route'
+import { Route as AdminDashboardIndexRouteImport } from './routes/admin/dashboard/index'
+import { Route as AdminDashboardKelompokRouteImport } from './routes/admin/dashboard/kelompok'
+import { Route as AdminDashboardGenerusRouteImport } from './routes/admin/dashboard/generus'
+import { Route as AdminDashboardDesaRouteImport } from './routes/admin/dashboard/desa'
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as AdminLoginImport } from './routes/admin/login'
-import { Route as AdminDashboardRouteImport } from './routes/admin/dashboard/route'
-import { Route as AdminDashboardIndexImport } from './routes/admin/dashboard/index'
-import { Route as AdminDashboardKelompokImport } from './routes/admin/dashboard/kelompok'
-import { Route as AdminDashboardGenerusImport } from './routes/admin/dashboard/generus'
-import { Route as AdminDashboardDesaImport } from './routes/admin/dashboard/desa'
-
-// Create/Update Routes
-
-const AdminLoginRoute = AdminLoginImport.update({
+const AdminLoginRoute = AdminLoginRouteImport.update({
   id: '/admin/login',
   path: '/admin/login',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AdminDashboardRouteRoute = AdminDashboardRouteImport.update({
+const AdminDashboardRouteRoute = AdminDashboardRouteRouteImport.update({
   id: '/admin/dashboard',
   path: '/admin/dashboard',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => rootRouteImport,
 } as any)
-
-const AdminDashboardIndexRoute = AdminDashboardIndexImport.update({
+const AdminDashboardIndexRoute = AdminDashboardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminDashboardRouteRoute,
 } as any)
-
-const AdminDashboardKelompokRoute = AdminDashboardKelompokImport.update({
+const AdminDashboardKelompokRoute = AdminDashboardKelompokRouteImport.update({
   id: '/kelompok',
   path: '/kelompok',
   getParentRoute: () => AdminDashboardRouteRoute,
 } as any)
-
-const AdminDashboardGenerusRoute = AdminDashboardGenerusImport.update({
+const AdminDashboardGenerusRoute = AdminDashboardGenerusRouteImport.update({
   id: '/generus',
   path: '/generus',
   getParentRoute: () => AdminDashboardRouteRoute,
 } as any)
-
-const AdminDashboardDesaRoute = AdminDashboardDesaImport.update({
+const AdminDashboardDesaRoute = AdminDashboardDesaRouteImport.update({
   id: '/desa',
   path: '/desa',
   getParentRoute: () => AdminDashboardRouteRoute,
 } as any)
-
-// Populate the FileRoutesByPath interface
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/admin/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof rootRoute
-    }
-    '/admin/login': {
-      id: '/admin/login'
-      path: '/admin/login'
-      fullPath: '/admin/login'
-      preLoaderRoute: typeof AdminLoginImport
-      parentRoute: typeof rootRoute
-    }
-    '/admin/dashboard/desa': {
-      id: '/admin/dashboard/desa'
-      path: '/desa'
-      fullPath: '/admin/dashboard/desa'
-      preLoaderRoute: typeof AdminDashboardDesaImport
-      parentRoute: typeof AdminDashboardRouteImport
-    }
-    '/admin/dashboard/generus': {
-      id: '/admin/dashboard/generus'
-      path: '/generus'
-      fullPath: '/admin/dashboard/generus'
-      preLoaderRoute: typeof AdminDashboardGenerusImport
-      parentRoute: typeof AdminDashboardRouteImport
-    }
-    '/admin/dashboard/kelompok': {
-      id: '/admin/dashboard/kelompok'
-      path: '/kelompok'
-      fullPath: '/admin/dashboard/kelompok'
-      preLoaderRoute: typeof AdminDashboardKelompokImport
-      parentRoute: typeof AdminDashboardRouteImport
-    }
-    '/admin/dashboard/': {
-      id: '/admin/dashboard/'
-      path: '/'
-      fullPath: '/admin/dashboard/'
-      preLoaderRoute: typeof AdminDashboardIndexImport
-      parentRoute: typeof AdminDashboardRouteImport
-    }
-  }
-}
-
-// Create and export the route tree
-
-interface AdminDashboardRouteRouteChildren {
-  AdminDashboardDesaRoute: typeof AdminDashboardDesaRoute
-  AdminDashboardGenerusRoute: typeof AdminDashboardGenerusRoute
-  AdminDashboardKelompokRoute: typeof AdminDashboardKelompokRoute
-  AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
-}
-
-const AdminDashboardRouteRouteChildren: AdminDashboardRouteRouteChildren = {
-  AdminDashboardDesaRoute: AdminDashboardDesaRoute,
-  AdminDashboardGenerusRoute: AdminDashboardGenerusRoute,
-  AdminDashboardKelompokRoute: AdminDashboardKelompokRoute,
-  AdminDashboardIndexRoute: AdminDashboardIndexRoute,
-}
-
-const AdminDashboardRouteRouteWithChildren =
-  AdminDashboardRouteRoute._addFileChildren(AdminDashboardRouteRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/admin/dashboard': typeof AdminDashboardRouteRouteWithChildren
@@ -132,7 +55,6 @@ export interface FileRoutesByFullPath {
   '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
 }
-
 export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
@@ -140,9 +62,8 @@ export interface FileRoutesByTo {
   '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
   '/admin/dashboard': typeof AdminDashboardIndexRoute
 }
-
 export interface FileRoutesById {
-  __root__: typeof rootRoute
+  __root__: typeof rootRouteImport
   '/admin/dashboard': typeof AdminDashboardRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard/desa': typeof AdminDashboardDesaRoute
@@ -150,7 +71,6 @@ export interface FileRoutesById {
   '/admin/dashboard/kelompok': typeof AdminDashboardKelompokRoute
   '/admin/dashboard/': typeof AdminDashboardIndexRoute
 }
-
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
@@ -177,59 +97,79 @@ export interface FileRouteTypes {
     | '/admin/dashboard/'
   fileRoutesById: FileRoutesById
 }
-
 export interface RootRouteChildren {
   AdminDashboardRouteRoute: typeof AdminDashboardRouteRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
 }
 
+declare module '@tanstack/react-router' {
+  interface FileRoutesByPath {
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/admin/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/dashboard/': {
+      id: '/admin/dashboard/'
+      path: '/'
+      fullPath: '/admin/dashboard/'
+      preLoaderRoute: typeof AdminDashboardIndexRouteImport
+      parentRoute: typeof AdminDashboardRouteRoute
+    }
+    '/admin/dashboard/kelompok': {
+      id: '/admin/dashboard/kelompok'
+      path: '/kelompok'
+      fullPath: '/admin/dashboard/kelompok'
+      preLoaderRoute: typeof AdminDashboardKelompokRouteImport
+      parentRoute: typeof AdminDashboardRouteRoute
+    }
+    '/admin/dashboard/generus': {
+      id: '/admin/dashboard/generus'
+      path: '/generus'
+      fullPath: '/admin/dashboard/generus'
+      preLoaderRoute: typeof AdminDashboardGenerusRouteImport
+      parentRoute: typeof AdminDashboardRouteRoute
+    }
+    '/admin/dashboard/desa': {
+      id: '/admin/dashboard/desa'
+      path: '/desa'
+      fullPath: '/admin/dashboard/desa'
+      preLoaderRoute: typeof AdminDashboardDesaRouteImport
+      parentRoute: typeof AdminDashboardRouteRoute
+    }
+  }
+}
+
+interface AdminDashboardRouteRouteChildren {
+  AdminDashboardDesaRoute: typeof AdminDashboardDesaRoute
+  AdminDashboardGenerusRoute: typeof AdminDashboardGenerusRoute
+  AdminDashboardKelompokRoute: typeof AdminDashboardKelompokRoute
+  AdminDashboardIndexRoute: typeof AdminDashboardIndexRoute
+}
+
+const AdminDashboardRouteRouteChildren: AdminDashboardRouteRouteChildren = {
+  AdminDashboardDesaRoute: AdminDashboardDesaRoute,
+  AdminDashboardGenerusRoute: AdminDashboardGenerusRoute,
+  AdminDashboardKelompokRoute: AdminDashboardKelompokRoute,
+  AdminDashboardIndexRoute: AdminDashboardIndexRoute,
+}
+
+const AdminDashboardRouteRouteWithChildren =
+  AdminDashboardRouteRoute._addFileChildren(AdminDashboardRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   AdminDashboardRouteRoute: AdminDashboardRouteRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
 }
-
-export const routeTree = rootRoute
+export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/admin/dashboard",
-        "/admin/login"
-      ]
-    },
-    "/admin/dashboard": {
-      "filePath": "admin/dashboard/route.tsx",
-      "children": [
-        "/admin/dashboard/desa",
-        "/admin/dashboard/generus",
-        "/admin/dashboard/kelompok",
-        "/admin/dashboard/"
-      ]
-    },
-    "/admin/login": {
-      "filePath": "admin/login.tsx"
-    },
-    "/admin/dashboard/desa": {
-      "filePath": "admin/dashboard/desa.tsx",
-      "parent": "/admin/dashboard"
-    },
-    "/admin/dashboard/generus": {
-      "filePath": "admin/dashboard/generus.tsx",
-      "parent": "/admin/dashboard"
-    },
-    "/admin/dashboard/kelompok": {
-      "filePath": "admin/dashboard/kelompok.tsx",
-      "parent": "/admin/dashboard"
-    },
-    "/admin/dashboard/": {
-      "filePath": "admin/dashboard/index.tsx",
-      "parent": "/admin/dashboard"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

@@ -20,7 +20,6 @@ const loginSchema = z.object({
 });
 
 function LoginPage() {
-	const [showPassword, setShowPassword] = useState(false);
 	const [cookies, setCookie] = useCookies(["access_token"]);
 	const navigate = useNavigate();
 
@@ -108,9 +107,7 @@ function LoginPage() {
 										placeholder="JohnDoe"
 										required={true}
 									/>
-									{field.state.meta.errors.length > 0 ? (
-										<TextError>{field.state.meta.errors.join(", ")}</TextError>
-									) : null}
+									<TextError field={field} />
 								</>
 							)}
 						/>
@@ -123,7 +120,7 @@ function LoginPage() {
 									<ThemedInput
 										label="Password"
 										htmlFor={field.name}
-										type={showPassword ? "text" : "password"}
+										type="password"
 										name={field.name}
 										id={field.name}
 										value={field.state.value}
@@ -133,9 +130,7 @@ function LoginPage() {
 										required={true}
 										className="flex-1"
 									/>
-									{field.state.meta.errors.length > 0 ? (
-										<TextError>{field.state.meta.errors.join(", ")}</TextError>
-									) : null}
+									<TextError field={field} />
 								</>
 							)}
 						/>

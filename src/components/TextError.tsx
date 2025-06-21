@@ -1,10 +1,18 @@
-import type { DetailedHTMLProps, HTMLAttributes } from "react";
+import type { AnyFieldApi } from "@tanstack/react-form";
 
 export default function TextError({
-	...props
-}: DetailedHTMLProps<
-	HTMLAttributes<HTMLParagraphElement>,
-	HTMLParagraphElement
->) {
-	return <p className="text-red-500" {...props} />;
+	field,
+}: {
+	field: AnyFieldApi;
+}) {
+	return (
+		<>
+			{field.state.meta.isTouched && !field.state.meta.isValid ? (
+				<em className="text-red-500 text-sm">
+					{field.state.meta.errors.map((err) => err.message).join(",")}
+				</em>
+			) : null}
+			{field.state.meta.isValidating && "Validating"}
+		</>
+	);
 }
