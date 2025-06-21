@@ -8,7 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useCookies } from "react-cookie";
 
-export const Route = createFileRoute("/admin/dashboard/")({
+export const Route = createFileRoute("/admin/_admin/dashboard")({
 	component: RouteComponent,
 	beforeLoad: ({ context }) => {
 		console.log(context.authentication.role);

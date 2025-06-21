@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type GenerusBase = {
+export type GenerusBase = {
 	id: string;
 	nama: string;
 	jenis_kelamin: "Laki_Laki" | "Perempuan";
@@ -25,6 +25,15 @@ type GenerusBase = {
 	keterangan: "Pendatang" | "Pribumi";
 	alamat_asal?: string;
 	kelompok_id?: string;
+};
+
+export type GenerusFilter = {
+	query?: string;
+	pendidikan_terakhir?: GenerusBase["pendidikan_terakhir"];
+	keterangan?: GenerusBase["keterangan"];
+	jenis_kelamin?: GenerusBase["jenis_kelamin"];
+	jenjang?: GenerusBase["jenjang"];
+	sambung?: GenerusBase["sambung"];
 };
 
 export type GenerusRequest = Omit<GenerusBase, "id">;

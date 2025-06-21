@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type EventBase = {
+export type EventBase = {
 	id: string;
 	title: string;
 	start_date: Date;
