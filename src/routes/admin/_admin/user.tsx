@@ -22,7 +22,7 @@ import type {
 	GenerusResponseArray,
 } from "../../../types/generus";
 
-export const Route = createFileRoute("/admin/_admin/kelompok")({
+export const Route = createFileRoute("/admin/_admin/user")({
 	component: RouteComponent,
 });
 

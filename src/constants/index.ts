@@ -1,3 +1,5 @@
+import { SidebarMenuItem } from "../types";
+
 export const jenjangOptions = [
 	{ value: "Paud", label: "Paud" },
 	{ value: "Caberawit", label: "Caberawit" },
@@ -42,22 +44,3 @@ export const colorMap = {
 		Tidak_Aktif: "red",
 	},
 };
-
-export const SIDEBAR_MENU = [
-	{
-		title: "Dashboard",
-		link: "/admin/dashboard",
-	},
-	{
-		title: "Desa",
-		link: "/admin/desa",
-	},
-	{
-		title: "Generus",
-		link: "/admin/generus",
-	},
-	{
-		title: "Kegiatan",
-		link: "/admin/kegiatan",
-	},
-];

@@ -1,28 +1,27 @@
-import Button from "@/components/Button";
-import SearchBar from "@/components/SearchBar";
-import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
 import Alert from "../../../components/Alert";
+import Button from "../../../components/Button";
 import Dialog from "../../../components/Dialog";
+import SearchBar from "../../../components/SearchBar";
 import type {
-	GenerusBase,
-	GenerusFilter,
-	GenerusResponse,
-	GenerusResponseArray,
-} from "../../../types/generus";
+	EventBase,
+	EventResponse,
+	EventResponseArray,
+} from "../../../types/event";
+import { useProfile } from "../../../utils/useProfile";
 
-export const Route = createFileRoute("/admin/_admin/kelompok")({
+export const Route = createFileRoute("/admin/_admin/kegiatan")({
 	component: RouteComponent,
 });
 
@@ -30,7 +29,7 @@ function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
-	const [selectedData, setSelectedData] = useState<GenerusBase | null>(null);
+	const [selectedData, setSelectedData] = useState<EventBase | null>(null);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [alertType, setAlertType] = useState<"success" | "error">("success");
@@ -43,7 +42,7 @@ function RouteComponent() {
 
 	const deleteGenerus = async (id: string) => {
 		const response = await fetch(
-			`${import.meta.env.VITE_DEV_LINK}/generus/${id}`,
+			`${import.meta.env.VITE_DEV_LINK}/event/${id}`,
 			{
 				method: "DELETE",
 				headers: {
@@ -59,8 +58,8 @@ function RouteComponent() {
 
 	const mutation = useMutation({
 		mutationFn: deleteGenerus,
-		onSuccess: (success: GenerusResponse) => {
-			queryClient.invalidateQueries({ queryKey: ["generusData"] });
+		onSuccess: (success: EventResponse) => {
+			queryClient.invalidateQueries({ queryKey: ["eventData"] });
 			handleAlertSuccess(success.message);
 		},
 		onError: (error) => {
@@ -68,21 +67,20 @@ function RouteComponent() {
 		},
 	});
 
-	const columnHelper = createColumnHelper<GenerusBase>();
+	const columnHelper = createColumnHelper<EventBase>();
 
-	const handleEdit = (row: GenerusBase) => {
+	const handleEdit = (row: EventBase) => {
 		setSelectedData(row);
 		setSheetUpdate(true);
 	};
 
 	const handleDeleteConfirm = () => {
 		mutation.mutate(deleteId);
-		console.log(mutation.isSuccess);
 		setDialog(false);
 		setDeleteId("");
 	};
 
-	const handleDelete = (row: GenerusBase) => {
+	const handleDelete = (row: EventBase) => {
 		setDeleteId(row.id);
 		setDialog(true);
 	};
@@ -92,7 +90,7 @@ function RouteComponent() {
 		if (debouncedSearch) {
 			params.append("q", debouncedSearch);
 		}
-		const url = `${import.meta.env.VITE_DEV_LINK}/generus?${params.toString()}`;
+		const url = `${import.meta.env.VITE_DEV_LINK}/event?${params.toString()}`;
 		const response = await fetch(url, {
 			headers: {
 				Authorization: `Bearer ${cookies.access_token}`,
@@ -101,20 +99,19 @@ function RouteComponent() {
 		return response.json();
 	};
 
-	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
-		queryKey: ["generusData", debouncedSearch],
+	const { isPending, error, isError, data } = useQuery<EventResponseArray>({
+		queryKey: ["eventData", debouncedSearch],
 		queryFn: fetchData,
 	});
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
-		columnHelper.accessor("nama", { header: "Nama" }),
-		columnHelper.accessor("jenis_kelamin", { header: "Jenis Kelamin" }),
-		columnHelper.accessor("jenjang", { header: "Jenjang" }),
-		columnHelper.accessor("alamat_tempat_tinggal", {
-			header: "Alamat Tempat Tinggal",
-		}),
-		columnHelper.accessor("sambung", { header: "Sambung" }),
+		columnHelper.accessor("title", { header: "Judul" }),
+		columnHelper.accessor("start_date", { header: "Tanggal Mulai" }),
+		columnHelper.accessor("end_date", { header: "Tanggal Selesai" }),
+		columnHelper.accessor("latitude", { header: "Latitude" }),
+		columnHelper.accessor("longitude", { header: "Longitude" }),
+		columnHelper.accessor("description", { header: "Deskripsi" }),
 		columnHelper.display({
 			id: "actions",
 			header: "Action",

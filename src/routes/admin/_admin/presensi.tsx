@@ -22,7 +22,7 @@ import type {
 	GenerusResponseArray,
 } from "../../../types/generus";
 
-export const Route = createFileRoute("/admin/_admin/kelompok")({
+export const Route = createFileRoute("/admin/_admin/presensi")({
 	component: RouteComponent,
 });
 
@@ -50,12 +50,12 @@ function RouteComponent() {
 					Authorization: `Bearer ${cookies.access_token}`,
 				},
 			},
-		);
+		)
 		if (!response.ok) {
 			throw new Error("Failed to delete data");
 		}
 		return response.json();
-	};
+	}
 
 	const mutation = useMutation({
 		mutationFn: deleteGenerus,
@@ -73,19 +73,19 @@ function RouteComponent() {
 	const handleEdit = (row: GenerusBase) => {
 		setSelectedData(row);
 		setSheetUpdate(true);
-	};
+	}
 
 	const handleDeleteConfirm = () => {
 		mutation.mutate(deleteId);
 		console.log(mutation.isSuccess);
 		setDialog(false);
 		setDeleteId("");
-	};
+	}
 
 	const handleDelete = (row: GenerusBase) => {
 		setDeleteId(row.id);
 		setDialog(true);
-	};
+	}
 
 	const fetchData = async () => {
 		const params = new URLSearchParams();
@@ -97,9 +97,9 @@ function RouteComponent() {
 			headers: {
 				Authorization: `Bearer ${cookies.access_token}`,
 			},
-		});
+		})
 		return response.json();
-	};
+	}
 
 	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
 		queryKey: ["generusData", debouncedSearch],
@@ -137,12 +137,12 @@ function RouteComponent() {
 							/>
 						</button>
 					</div>
-				);
+				)
 			},
 			enableHiding: true,
 			meta: { hidden: role === "User" },
 		}),
-	];
+	]
 
 	const table = useReactTable({
 		data: data?.data || [],
@@ -158,18 +158,18 @@ function RouteComponent() {
 		setAlertType("error");
 		setAlert(true);
 		setTimeout(() => setAlert(false), 3000);
-	};
+	}
 
 	const handleAlertSuccess = (message: string) => {
 		setAlertMessage(message);
 		setAlertType("success");
 		setAlert(true);
 		setTimeout(() => setAlert(false), 3000);
-	};
+	}
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
-	};
+	}
 
 	return (
 		<>
@@ -226,5 +226,5 @@ function RouteComponent() {
 				</tbody>
 			</table>
 		</>
-	);
+	)
 }
