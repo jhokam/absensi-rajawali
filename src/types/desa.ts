@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type DesaBase = {
+export type DesaBase = {
 	id: number;
 	nama: string;
 };
