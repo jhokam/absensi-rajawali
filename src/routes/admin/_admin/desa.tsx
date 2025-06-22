@@ -1,5 +1,6 @@
 import Alert from "@/components/Alert";
 import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
 import type { DesaBase, DesaResponseArray } from "@/types/desa";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -13,7 +14,6 @@ import {
 import { type ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
-import Skeleton from "../../../components/Skeleton";
 
 export const Route = createFileRoute("/admin/_admin/desa")({
 	component: RouteComponent,

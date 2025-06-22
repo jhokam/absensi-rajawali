@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type KelompokBase = {
+export type KelompokBase = {
 	id: string;
 	nama: string;
 	desa_id: number;

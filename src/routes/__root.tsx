@@ -1,9 +1,9 @@
+import { TanStackRouterDevtools } from "@/components/TanStackRouterDevtools.tsx";
+import ThemedLink from "@/components/ThemedLink.tsx";
+import type { UserContextType } from "@/utils/useProfile.tsx";
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
-import { TanStackRouterDevtools } from "../components/TanStackRouterDevtools.tsx";
-import ThemedLink from "../components/ThemedLink.tsx";
-import type { UserContextType } from "../utils/useProfile.tsx";
 
 type RouteContext = {
 	authentication: UserContextType;

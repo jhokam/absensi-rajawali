@@ -1,4 +1,4 @@
-import { SidebarMenuItem } from "../types";
+import { SidebarMenuItem } from "@/types";
 
 export const jenjangOptions = [
 	{ value: "Paud", label: "Paud" },

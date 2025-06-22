@@ -1,8 +1,8 @@
+import Dialog from "@/components/Dialog";
+import { SIDEBAR_MENU } from "@/constants";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
-import Dialog from "../components/Dialog";
-import { SIDEBAR_MENU } from "../constants";
 import Button from "./Button";
 
 export default function Sidebar() {

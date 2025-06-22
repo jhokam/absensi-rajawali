@@ -1,14 +1,14 @@
-import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
-import { z } from "zod";
 import {
 	jenisKelaminOptions,
 	jenjangOptions,
 	roleOptions,
 	sambungOptions,
-} from "../constants";
-import type { GenerusRequest, GenerusResponse } from "../types/api";
+} from "@/constants";
+import type { GenerusRequest, GenerusResponse } from "@/types/api";
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { z } from "zod";
 import Button from "./Button";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";

@@ -1,5 +1,5 @@
+import cn from "@/utils/cn";
 import type { DetailedHTMLProps, InputHTMLAttributes } from "react";
-import cn from "../utils/cn";
 
 type SearchBarProps = DetailedHTMLProps<
 	InputHTMLAttributes<HTMLInputElement>,
