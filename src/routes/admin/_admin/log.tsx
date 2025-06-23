@@ -1,5 +1,14 @@
+import Alert from "@/components/Alert";
 import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
+import type {
+	GenerusBase,
+	GenerusFilter,
+	GenerusResponse,
+	GenerusResponseArray,
+} from "@/types/generus";
 import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,14 +22,6 @@ import {
 import { ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
-import Alert from "../../../components/Alert";
-import Dialog from "../../../components/Dialog";
-import type {
-	GenerusBase,
-	GenerusFilter,
-	GenerusResponse,
-	GenerusResponseArray,
-} from "../../../types/generus";
 
 export const Route = createFileRoute("/admin/_admin/log")({
 	component: RouteComponent,
@@ -214,15 +215,20 @@ function RouteComponent() {
 					))}
 				</thead>
 				<tbody>
-					{table.getRowModel().rows.map((row) => (
-						<tr key={row.id} className="bg-white border-b">
-							{row.getVisibleCells().map((cell) => (
-								<td key={cell.id} className="px-6 py-4">
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</td>
+					{isPending
+						? Skeleton(table, {})
+						: table.getRowModel().rows.map((row) => (
+								<tr key={row.id} className="bg-white border-b">
+									{row.getVisibleCells().map((cell) => (
+										<td key={cell.id} className="px-6 py-4">
+											{flexRender(
+												cell.column.columnDef.cell,
+												cell.getContext(),
+											)}
+										</td>
+									))}
+								</tr>
 							))}
-						</tr>
-					))}
 				</tbody>
 			</table>
 		</>

@@ -1,26 +1,22 @@
+import Alert from "@/components/Alert";
 import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
+import type { UserBase, UserResponseArray } from "@/types/user";
 import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChangeEvent, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
-import Alert from "../../../components/Alert";
-import Dialog from "../../../components/Dialog";
-import type {
-	GenerusBase,
-	GenerusFilter,
-	GenerusResponse,
-	GenerusResponseArray,
-} from "../../../types/generus";
 
 export const Route = createFileRoute("/admin/_admin/user")({
 	component: RouteComponent,
@@ -30,7 +26,7 @@ function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
-	const [selectedData, setSelectedData] = useState<GenerusBase | null>(null);
+	const [selectedData, setSelectedData] = useState<UserBase | null>(null);
 	const [alert, setAlert] = useState(false);
 	const [alertMessage, setAlertMessage] = useState("");
 	const [alertType, setAlertType] = useState<"success" | "error">("success");
@@ -41,9 +37,9 @@ function RouteComponent() {
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 
-	const deleteGenerus = async (id: string) => {
+	const deleteUser = async (id: string) => {
 		const response = await fetch(
-			`${import.meta.env.VITE_DEV_LINK}/generus/${id}`,
+			`${import.meta.env.VITE_DEV_LINK}/users/${id}`,
 			{
 				method: "DELETE",
 				headers: {
@@ -58,9 +54,9 @@ function RouteComponent() {
 	};
 
 	const mutation = useMutation({
-		mutationFn: deleteGenerus,
-		onSuccess: (success: GenerusResponse) => {
-			queryClient.invalidateQueries({ queryKey: ["generusData"] });
+		mutationFn: deleteUser,
+		onSuccess: (success: UserResponse) => {
+			queryClient.invalidateQueries({ queryKey: ["userData"] });
 			handleAlertSuccess(success.message);
 		},
 		onError: (error) => {
@@ -68,9 +64,9 @@ function RouteComponent() {
 		},
 	});
 
-	const columnHelper = createColumnHelper<GenerusBase>();
+	const columnHelper = createColumnHelper<UserBase>();
 
-	const handleEdit = (row: GenerusBase) => {
+	const handleEdit = (row: UserBase) => {
 		setSelectedData(row);
 		setSheetUpdate(true);
 	};
@@ -82,7 +78,7 @@ function RouteComponent() {
 		setDeleteId("");
 	};
 
-	const handleDelete = (row: GenerusBase) => {
+	const handleDelete = (row: UserBase) => {
 		setDeleteId(row.id);
 		setDialog(true);
 	};
@@ -92,7 +88,7 @@ function RouteComponent() {
 		if (debouncedSearch) {
 			params.append("q", debouncedSearch);
 		}
-		const url = `${import.meta.env.VITE_DEV_LINK}/generus?${params.toString()}`;
+		const url = `${import.meta.env.VITE_DEV_LINK}/users?${params.toString()}`;
 		const response = await fetch(url, {
 			headers: {
 				Authorization: `Bearer ${cookies.access_token}`,
@@ -101,20 +97,15 @@ function RouteComponent() {
 		return response.json();
 	};
 
-	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
-		queryKey: ["generusData", debouncedSearch],
+	const { isPending, error, isError, data } = useQuery<UserResponseArray>({
+		queryKey: ["userData", debouncedSearch],
 		queryFn: fetchData,
 	});
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
-		columnHelper.accessor("nama", { header: "Nama" }),
-		columnHelper.accessor("jenis_kelamin", { header: "Jenis Kelamin" }),
-		columnHelper.accessor("jenjang", { header: "Jenjang" }),
-		columnHelper.accessor("alamat_tempat_tinggal", {
-			header: "Alamat Tempat Tinggal",
-		}),
-		columnHelper.accessor("sambung", { header: "Sambung" }),
+		columnHelper.accessor("username", { header: "Username" }),
+		columnHelper.accessor("role", { header: "Role" }),
 		columnHelper.display({
 			id: "actions",
 			header: "Action",
@@ -195,7 +186,7 @@ function RouteComponent() {
 					value={searchValue}
 				/>
 				<Button typeof="button" onClick={() => setSheetCreate(true)}>
-					Create Generus
+					Create User
 				</Button>
 			</div>
 			<table className="w-full text-left text-sm text-gray-500">
@@ -214,15 +205,20 @@ function RouteComponent() {
 					))}
 				</thead>
 				<tbody>
-					{table.getRowModel().rows.map((row) => (
-						<tr key={row.id} className="bg-white border-b">
-							{row.getVisibleCells().map((cell) => (
-								<td key={cell.id} className="px-6 py-4">
-									{flexRender(cell.column.columnDef.cell, cell.getContext())}
-								</td>
+					{isPending
+						? Skeleton(table, {})
+						: table.getRowModel().rows.map((row) => (
+								<tr key={row.id} className="bg-white border-b">
+									{row.getVisibleCells().map((cell) => (
+										<td key={cell.id} className="px-6 py-4">
+											{flexRender(
+												cell.column.columnDef.cell,
+												cell.getContext(),
+											)}
+										</td>
+									))}
+								</tr>
 							))}
-						</tr>
-					))}
 				</tbody>
 			</table>
 		</>

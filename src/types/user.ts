@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type UserBase = {
+export type UserBase = {
 	id: string;
 	username: string;
 	password: string;

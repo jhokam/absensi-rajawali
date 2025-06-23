@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type PresenceBase = {
+export type PresenceBase = {
 	id: string;
 	status: "Hadir" | "Izin" | "Tidak Hadir";
 	event_id: string;
