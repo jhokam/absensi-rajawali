@@ -12,9 +12,9 @@ type RouteContext = {
 export const Route = createRootRouteWithContext<RouteContext>()({
 	component: () => (
 		<CookiesProvider>
-			<Outlet />
+			<TanStackRouterDevtools />
 			<Suspense>
-				<TanStackRouterDevtools />
+				<Outlet />
 			</Suspense>
 		</CookiesProvider>
 	),

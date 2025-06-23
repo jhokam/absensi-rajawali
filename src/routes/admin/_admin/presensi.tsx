@@ -1,11 +1,8 @@
 import Alert from "@/components/Alert";
-import Button from "@/components/Button";
-import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
-import { useProfile } from "@/utils/useProfile";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { PresenceBase, PresenceResponseArray } from "@/types/presence";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -16,7 +13,6 @@ import {
 import { type ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
-import { PresenceBase, PresenceResponseArray } from "../../../types/presence";
 
 export const Route = createFileRoute("/admin/_admin/presensi")({
 	component: RouteComponent,
@@ -24,12 +20,6 @@ export const Route = createFileRoute("/admin/_admin/presensi")({
 
 function RouteComponent() {
 	const [cookies] = useCookies(["access_token"]);
-	const [alert, setAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
-	const [alertType, setAlertType] = useState<"success" | "error">("success");
-	const [dialog, setDialog] = useState(false);
-	const queryClient = useQueryClient();
-	const { role } = useProfile();
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 

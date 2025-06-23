@@ -1,6 +1,6 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
-type LogBase = {
+export type LogBase = {
 	id: string;
 	event: string;
 	description: string;

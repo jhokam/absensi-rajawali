@@ -6,6 +6,7 @@ import { useProfile } from "./utils/useProfile";
 const router = createRouter({
 	routeTree,
 	context: { authentication: undefined! },
+	notFoundMode: "root",
 });
 
 declare module "@tanstack/react-router" {
