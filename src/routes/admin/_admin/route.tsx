@@ -1,12 +1,12 @@
+import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { Cookies } from "react-cookie";
 import Sidebar from "@/components/Sidebar";
-import { getCookie } from "@/utils/cookies";
-import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/_admin")({
 	component: RouteComponent,
-	beforeLoad: () => {
-		const cookies = getCookie({ name: "access_token" });
-		if (!cookies) {
+	beforeLoad: async () => {
+		const cookie = new Cookies();
+		if (!cookie.get("access_token")) {
 			throw redirect({
 				to: "/admin/login",
 			});

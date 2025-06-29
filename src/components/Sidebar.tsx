@@ -1,13 +1,12 @@
-import Dialog from "@/components/Dialog";
-import { SIDEBAR_MENU } from "@/constants";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
+import Dialog from "@/components/Dialog";
 import Button from "./Button";
 
 export default function Sidebar() {
 	const [logoutDialog, setLogoutDialog] = useState(false);
-	const [cookies, setCookie, removeCookie] = useCookies(["access_token"]);
+	const [_cookies, _setCookie, removeCookie] = useCookies(["access_token"]);
 	const navigate = useNavigate();
 
 	const handleLogout = () => {
@@ -42,6 +41,14 @@ export default function Sidebar() {
 						Desa
 					</Link>
 				</li>
+				<li key="Kelompok">
+					<Link
+						to="/admin/kelompok"
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
+					>
+						Kelompok
+					</Link>
+				</li>
 				<li key="Generus">
 					<Link
 						to="/admin/generus"
@@ -58,14 +65,6 @@ export default function Sidebar() {
 						Kegiatan
 					</Link>
 				</li>
-				<li key="Log">
-					<Link
-						to="/admin/log"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
-						Log
-					</Link>
-				</li>
 				<li key="Presensi">
 					<Link
 						to="/admin/presensi"
@@ -74,12 +73,12 @@ export default function Sidebar() {
 						Presensi
 					</Link>
 				</li>
-				<li key="Kelompok">
+				<li key="Log">
 					<Link
-						to="/admin/kelompok"
+						to="/admin/log"
 						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
 					>
-						Kelompok
+						Log
 					</Link>
 				</li>
 				<li key="User">

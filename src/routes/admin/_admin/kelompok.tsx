@@ -1,7 +1,3 @@
-import Alert from "@/components/Alert";
-import SearchBar from "@/components/SearchBar";
-import Skeleton from "@/components/Skeleton";
-import type { KelompokBase, KelompokResponseArray } from "@/types/kelompok";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -13,6 +9,10 @@ import {
 import { type ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
+import Alert from "@/components/Alert";
+import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
+import type { KelompokBase, KelompokResponseArray } from "@/types/kelompok";
 
 export const Route = createFileRoute("/admin/_admin/kelompok")({
 	component: RouteComponent,
@@ -40,7 +40,7 @@ function RouteComponent() {
 	};
 
 	const { isPending, error, isError, data } = useQuery<KelompokResponseArray>({
-		queryKey: ["generusData", debouncedSearch],
+		queryKey: ["kelompokData", debouncedSearch],
 		queryFn: fetchData,
 	});
 

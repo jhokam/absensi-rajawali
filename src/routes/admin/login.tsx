@@ -1,16 +1,24 @@
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { Cookies, useCookies } from "react-cookie";
+import { z } from "zod";
 import Alert from "@/components/Alert.tsx";
 import Button from "@/components/Button.tsx";
 import TextError from "@/components/TextError.tsx";
 import ThemedInput from "@/components/ThemedInput.tsx";
 import type { LoginRequest, LoginResponse } from "@/types/api.ts";
-import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useCookies } from "react-cookie";
-import { z } from "zod";
 
 export const Route = createFileRoute("/admin/login")({
 	component: LoginPage,
+	beforeLoad: async () => {
+		const cookie = new Cookies();
+		if (cookie.get("access_token")) {
+			throw redirect({
+				to: "/admin/dashboard",
+			});
+		}
+	},
 });
 
 const loginSchema = z.object({
@@ -19,7 +27,8 @@ const loginSchema = z.object({
 });
 
 function LoginPage() {
-	const [cookies, setCookie] = useCookies(["access_token"]);
+	const [_, setCookie] = useCookies(["access_token"]);
+
 	const navigate = useNavigate();
 
 	const handleLogin = async (data: LoginRequest) => {
@@ -48,7 +57,9 @@ function LoginPage() {
 		mutationKey: ["login"],
 		mutationFn: handleLogin,
 		onSuccess: (data) => {
-			setCookie("access_token", data.data.access_token);
+			setCookie("access_token", data.data.access_token, {
+				expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+			});
 			navigate({
 				to: "/admin/dashboard",
 			});

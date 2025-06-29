@@ -1,5 +1,3 @@
-import { SidebarMenuItem } from "@/types";
-
 export const jenjangOptions = [
 	{ value: "Paud", label: "Paud" },
 	{ value: "Caberawit", label: "Caberawit" },

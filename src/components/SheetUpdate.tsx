@@ -1,3 +1,7 @@
+import { useForm } from "@tanstack/react-form";
+import { useMutation } from "@tanstack/react-query";
+import { useCookies } from "react-cookie";
+import { z } from "zod";
 import {
 	jenisKelaminOptions,
 	jenjangOptions,
@@ -5,15 +9,11 @@ import {
 	sambungOptions,
 } from "@/constants";
 import type {
+	GenerusBase,
 	GenerusRequest,
 	GenerusResponse,
-	PublicGenerus,
-} from "@/types/api";
+} from "@/types/generus";
 import { useProfile } from "@/utils/useProfile";
-import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
-import { z } from "zod";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
 import ThemedSelect from "./ThemedSelect";
@@ -23,7 +23,7 @@ export default function SheetUpdate({
 	selectedData,
 }: {
 	closeSheet: () => void;
-	selectedData: PublicGenerus;
+	selectedData: GenerusBase;
 }) {
 	const [cookies] = useCookies(["access_token"]);
 	const { role } = useProfile();
