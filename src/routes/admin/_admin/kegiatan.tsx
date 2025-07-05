@@ -1,3 +1,15 @@
+import { Icon } from "@iconify/react/dist/iconify.js";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import {
+	createColumnHelper,
+	flexRender,
+	getCoreRowModel,
+	useReactTable,
+} from "@tanstack/react-table";
+import { type ChangeEvent, useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
+import { useDebounce } from "use-debounce";
 import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
@@ -9,18 +21,6 @@ import type {
 	EventResponseArray,
 } from "@/types/event";
 import { useProfile } from "@/utils/useProfile";
-import { Icon } from "@iconify/react/dist/iconify.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import {
-	createColumnHelper,
-	flexRender,
-	getCoreRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
-import { type ChangeEvent, useState } from "react";
-import { useCookies } from "react-cookie";
-import { useDebounce } from "use-debounce";
 
 export const Route = createFileRoute("/admin/_admin/kegiatan")({
 	component: RouteComponent,
@@ -31,9 +31,6 @@ function RouteComponent() {
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
 	const [selectedData, setSelectedData] = useState<EventBase | null>(null);
-	const [alert, setAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
-	const [alertType, setAlertType] = useState<"success" | "error">("success");
 	const [dialog, setDialog] = useState(false);
 	const [deleteId, setDeleteId] = useState<string>("");
 	const queryClient = useQueryClient();
@@ -97,6 +94,16 @@ function RouteComponent() {
 				Authorization: `Bearer ${cookies.access_token}`,
 			},
 		});
+
+		if (!response.ok) {
+			const errorData: EventResponseArray = await response
+				.json()
+				.catch(() => ({}));
+			const errorMessage =
+				errorData.error?.message || `HTTP error! status: ${response.status}`;
+			throw new Error(errorMessage);
+		}
+
 		return response.json();
 	};
 
@@ -151,23 +158,15 @@ function RouteComponent() {
 		},
 	});
 
-	const handleAlertError = (message: string) => {
-		setAlertMessage(message);
-		setAlertType("error");
-		setAlert(true);
-		setTimeout(() => setAlert(false), 3000);
-	};
-
-	const handleAlertSuccess = (message: string) => {
-		setAlertMessage(message);
-		setAlertType("success");
-		setAlert(true);
-		setTimeout(() => setAlert(false), 3000);
-	};
-
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
+
+	useEffect(() => {
+		if (isError) {
+			setAlert(error.message, "error");
+		}
+	}, [isError, error]);
 
 	return (
 		<>
@@ -230,4 +229,7 @@ function RouteComponent() {
 			</table>
 		</>
 	);
+}
+function setAlert(message: string, arg1: string) {
+	throw new Error("Function not implemented.");
 }

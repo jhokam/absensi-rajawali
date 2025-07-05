@@ -1,7 +1,3 @@
-import Alert from "@/components/Alert";
-import SearchBar from "@/components/SearchBar";
-import Skeleton from "@/components/Skeleton";
-import type { LogBase, LogResponseArray } from "@/types/log";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
@@ -10,9 +6,13 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
+import Alert from "@/components/Alert";
+import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
+import type { LogBase, LogResponseArray } from "@/types/log";
 
 export const Route = createFileRoute("/admin/_admin/log")({
 	component: RouteComponent,
@@ -36,6 +36,15 @@ function RouteComponent() {
 				Authorization: `Bearer ${cookies.access_token}`,
 			},
 		});
+
+		if (!response.ok) {
+			const errorData: LogResponseArray = await response
+				.json()
+				.catch(() => ({}));
+			const errorMessage =
+				errorData.error?.message || `HTTP error! status: ${response.status}`;
+			throw new Error(errorMessage);
+		}
 		return response.json();
 	};
 
@@ -60,6 +69,12 @@ function RouteComponent() {
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
+
+	useEffect(() => {
+		if (isError) {
+			setAlert(error.message, "error");
+		}
+	}, [isError, error]);
 
 	return (
 		<>
@@ -109,4 +124,7 @@ function RouteComponent() {
 			</table>
 		</>
 	);
+}
+function setAlert(message: string, arg1: string) {
+	throw new Error("Function not implemented.");
 }

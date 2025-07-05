@@ -1,6 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
+import { AlertProvider } from "./utils/useAlert";
 import { useProfile } from "./utils/useProfile";
 
 const router = createRouter({
@@ -21,7 +22,9 @@ export default function App() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<RouterProvider router={router} context={{ authentication: profile }} />
+			<AlertProvider>
+				<RouterProvider router={router} context={{ authentication: profile }} />
+			</AlertProvider>
 		</QueryClientProvider>
 	);
 }

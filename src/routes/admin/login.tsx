@@ -8,6 +8,7 @@ import Button from "@/components/Button.tsx";
 import TextError from "@/components/TextError.tsx";
 import ThemedInput from "@/components/ThemedInput.tsx";
 import type { LoginRequest, LoginResponse } from "@/types/api.ts";
+import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/login")({
 	component: LoginPage,
@@ -28,7 +29,7 @@ const loginSchema = z.object({
 
 function LoginPage() {
 	const [_, setCookie] = useCookies(["access_token"]);
-
+	const { setAlert } = useAlert();
 	const navigate = useNavigate();
 
 	const handleLogin = async (data: LoginRequest) => {
@@ -43,8 +44,10 @@ function LoginPage() {
 			},
 		);
 		if (!response.ok) {
-			const error = await response.json();
-			throw new Error(error.message);
+			const errorData: LoginResponse = await response.json().catch(() => ({}));
+			const errorMessage =
+				errorData.error?.message || `HTTP error! status: ${response.status}`;
+			throw new Error(errorMessage);
 		}
 		return response.json();
 	};
@@ -57,12 +60,16 @@ function LoginPage() {
 		mutationKey: ["login"],
 		mutationFn: handleLogin,
 		onSuccess: (data) => {
+			setAlert(data.message, "success");
 			setCookie("access_token", data.data.access_token, {
 				expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
 			});
 			navigate({
 				to: "/admin/dashboard",
 			});
+		},
+		onError: (error) => {
+			setAlert(error.message, "error");
 		},
 	});
 

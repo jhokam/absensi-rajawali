@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ThemedLink from "@/components/ThemedLink.tsx";
 import type { UserContextType } from "@/utils/useProfile.tsx";
+import { CustomAlert } from "../components/CustomAlert";
 
 type RouteContext = {
 	authentication: UserContextType;
@@ -14,6 +15,7 @@ export const Route = createRootRouteWithContext<RouteContext>()({
 		<CookiesProvider>
 			<TanStackRouterDevtools />
 			<Suspense>
+				<CustomAlert />
 				<Outlet />
 			</Suspense>
 		</CookiesProvider>

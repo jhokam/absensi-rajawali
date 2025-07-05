@@ -1,32 +1,43 @@
-import Alert from "@/components/Alert";
-import Button from "@/components/Button";
-import Dialog from "@/components/Dialog";
-import SearchBar from "@/components/SearchBar";
-import Skeleton from "@/components/Skeleton";
-import type {
-	GenerusBase,
-	GenerusFilter,
-	GenerusResponse,
-	GenerusResponseArray,
-} from "@/types/generus";
-import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+	createFileRoute,
+	redirect,
+	useRouterState,
+} from "@tanstack/react-router";
 import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChangeEvent, useState } from "react";
-import { useCookies } from "react-cookie";
+import { ChangeEvent, useEffect, useState } from "react";
+import { Cookies, useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
+import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
+import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
+import type {
+	GenerusBase,
+	GenerusResponse,
+	GenerusResponseArray,
+} from "@/types/generus";
+import { useAlert } from "@/utils/useAlert";
+import { useProfile } from "@/utils/useProfile";
 
 export const Route = createFileRoute("/admin/_admin/generus")({
 	// validateSearch: generusFilterSchema,
 
 	component: RouteComponent,
+	beforeLoad: async () => {
+		const cookie = new Cookies();
+		if (!cookie.get("access_token")) {
+			throw redirect({
+				to: "/admin/login",
+			});
+		}
+	},
 });
 
 function RouteComponent() {
@@ -34,15 +45,13 @@ function RouteComponent() {
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
 	const [selectedData, setSelectedData] = useState<GenerusBase | null>(null);
-	const [alert, setAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
-	const [alertType, setAlertType] = useState<"success" | "error">("success");
 	const [dialog, setDialog] = useState(false);
 	const [deleteId, setDeleteId] = useState<string>("");
 	const queryClient = useQueryClient();
 	const { role } = useProfile();
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
+	const { setAlert } = useAlert();
 
 	const deleteGenerus = async (id: string) => {
 		const response = await fetch(
@@ -55,7 +64,12 @@ function RouteComponent() {
 			},
 		);
 		if (!response.ok) {
-			throw new Error("Failed to delete data");
+			const errorData: GenerusResponse = await response
+				.json()
+				.catch(() => ({}));
+			const errorMessage =
+				errorData.error?.message || `HTTP error! status: ${response.status}`;
+			throw new Error(errorMessage);
 		}
 		return response.json();
 	};
@@ -64,10 +78,10 @@ function RouteComponent() {
 		mutationFn: deleteGenerus,
 		onSuccess: (success: GenerusResponse) => {
 			queryClient.invalidateQueries({ queryKey: ["generusData"] });
-			handleAlertSuccess(success.message);
+			setAlert(success.message, "success");
 		},
 		onError: (error) => {
-			handleAlertError(error.message);
+			setAlert(error.message, "error");
 		},
 	});
 
@@ -90,21 +104,31 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const fetchData = async () => {
-		const params = new URLSearchParams();
-		if (debouncedSearch) {
-			params.append("q", debouncedSearch);
-		}
-		const url = `${import.meta.env.VITE_DEV_LINK}/generus?${params.toString()}`;
-		const response = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${cookies.access_token}`,
+	const fetchData: () => Promise<GenerusResponseArray> = async () => {
+		const response = await fetch(
+			`${import.meta.env.VITE_DEV_LINK}/generus?${new URLSearchParams({
+				q: debouncedSearch,
+			}).toString()}`,
+			{
+				headers: {
+					Authorization: `Bearer ${cookies.access_token}`,
+				},
 			},
-		});
+		);
+
+		if (!response.ok) {
+			const errorData: GenerusResponseArray = await response
+				.json()
+				.catch(() => ({}));
+			const errorMessage =
+				errorData.error?.message || `HTTP error! status: ${response.status}`;
+			throw new Error(errorMessage);
+		}
+
 		return response.json();
 	};
 
-	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
+	const { isPending, error, isError, data } = useQuery({
 		queryKey: ["generusData", debouncedSearch],
 		queryFn: fetchData,
 	});
@@ -156,23 +180,15 @@ function RouteComponent() {
 		},
 	});
 
-	const handleAlertError = (message: string) => {
-		setAlertMessage(message);
-		setAlertType("error");
-		setAlert(true);
-		setTimeout(() => setAlert(false), 3000);
-	};
-
-	const handleAlertSuccess = (message: string) => {
-		setAlertMessage(message);
-		setAlertType("success");
-		setAlert(true);
-		setTimeout(() => setAlert(false), 3000);
-	};
-
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setSearchValue(e.target.value);
 	};
+
+	useEffect(() => {
+		if (isError) {
+			setAlert(error.message, "error");
+		}
+	}, [isError, error]);
 
 	return (
 		<>
@@ -185,11 +201,6 @@ function RouteComponent() {
 					handleConfirm={handleDeleteConfirm}
 					description="This action cannot be undone."
 				/>
-			)}
-			{isError && (
-				<Alert variant="error" className="z-50">
-					{error.message}
-				</Alert>
 			)}
 			<div className="flex justify-between">
 				<SearchBar

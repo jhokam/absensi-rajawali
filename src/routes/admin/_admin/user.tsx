@@ -1,10 +1,3 @@
-import Alert from "@/components/Alert";
-import Button from "@/components/Button";
-import Dialog from "@/components/Dialog";
-import SearchBar from "@/components/SearchBar";
-import Skeleton from "@/components/Skeleton";
-import type { UserBase, UserResponseArray } from "@/types/user";
-import { useProfile } from "@/utils/useProfile";
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
@@ -17,6 +10,13 @@ import {
 import { type ChangeEvent, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
+import Alert from "@/components/Alert";
+import Button from "@/components/Button";
+import Dialog from "@/components/Dialog";
+import SearchBar from "@/components/SearchBar";
+import Skeleton from "@/components/Skeleton";
+import type { UserBase, UserResponse, UserResponseArray } from "@/types/user";
+import { useProfile } from "@/utils/useProfile";
 
 export const Route = createFileRoute("/admin/_admin/user")({
 	component: RouteComponent,
@@ -27,9 +27,6 @@ function RouteComponent() {
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
 	const [selectedData, setSelectedData] = useState<UserBase | null>(null);
-	const [alert, setAlert] = useState(false);
-	const [alertMessage, setAlertMessage] = useState("");
-	const [alertType, setAlertType] = useState<"success" | "error">("success");
 	const [dialog, setDialog] = useState(false);
 	const [deleteId, setDeleteId] = useState<string>("");
 	const queryClient = useQueryClient();
@@ -48,7 +45,10 @@ function RouteComponent() {
 			},
 		);
 		if (!response.ok) {
-			throw new Error("Failed to delete data");
+			const errorData: UserResponse = await response.json().catch(() => ({}));
+			const errorMessage =
+				errorData.error?.message || `HTTP error! status: ${response.status}`;
+			throw new Error(errorMessage);
 		}
 		return response.json();
 	};
