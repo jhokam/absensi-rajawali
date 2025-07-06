@@ -18,9 +18,11 @@ import { Route as AdminAdminPresensiRouteImport } from './routes/admin/_admin/pr
 import { Route as AdminAdminLogRouteImport } from './routes/admin/_admin/log'
 import { Route as AdminAdminKelompokRouteImport } from './routes/admin/_admin/kelompok'
 import { Route as AdminAdminKegiatanRouteImport } from './routes/admin/_admin/kegiatan'
-import { Route as AdminAdminGenerusRouteImport } from './routes/admin/_admin/generus'
 import { Route as AdminAdminDesaRouteImport } from './routes/admin/_admin/desa'
 import { Route as AdminAdminDashboardRouteImport } from './routes/admin/_admin/dashboard'
+import { Route as AdminAdminGenerusIndexRouteImport } from './routes/admin/_admin/generus/index'
+import { Route as AdminAdminGenerusCreateRouteImport } from './routes/admin/_admin/generus/create'
+import { Route as AdminAdminGenerusUpdateIdRouteImport } from './routes/admin/_admin/generus/update.$id'
 
 const AdminRouteImport = createFileRoute('/admin')()
 
@@ -63,11 +65,6 @@ const AdminAdminKegiatanRoute = AdminAdminKegiatanRouteImport.update({
   path: '/kegiatan',
   getParentRoute: () => AdminAdminRouteRoute,
 } as any)
-const AdminAdminGenerusRoute = AdminAdminGenerusRouteImport.update({
-  id: '/generus',
-  path: '/generus',
-  getParentRoute: () => AdminAdminRouteRoute,
-} as any)
 const AdminAdminDesaRoute = AdminAdminDesaRouteImport.update({
   id: '/desa',
   path: '/desa',
@@ -78,30 +75,50 @@ const AdminAdminDashboardRoute = AdminAdminDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AdminAdminRouteRoute,
 } as any)
+const AdminAdminGenerusIndexRoute = AdminAdminGenerusIndexRouteImport.update({
+  id: '/generus/',
+  path: '/generus/',
+  getParentRoute: () => AdminAdminRouteRoute,
+} as any)
+const AdminAdminGenerusCreateRoute = AdminAdminGenerusCreateRouteImport.update({
+  id: '/generus/create',
+  path: '/generus/create',
+  getParentRoute: () => AdminAdminRouteRoute,
+} as any)
+const AdminAdminGenerusUpdateIdRoute =
+  AdminAdminGenerusUpdateIdRouteImport.update({
+    id: '/generus/update/$id',
+    path: '/generus/update/$id',
+    getParentRoute: () => AdminAdminRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard': typeof AdminAdminDashboardRoute
   '/admin/desa': typeof AdminAdminDesaRoute
-  '/admin/generus': typeof AdminAdminGenerusRoute
   '/admin/kegiatan': typeof AdminAdminKegiatanRoute
   '/admin/kelompok': typeof AdminAdminKelompokRoute
   '/admin/log': typeof AdminAdminLogRoute
   '/admin/presensi': typeof AdminAdminPresensiRoute
   '/admin/user': typeof AdminAdminUserRoute
+  '/admin/generus/create': typeof AdminAdminGenerusCreateRoute
+  '/admin/generus': typeof AdminAdminGenerusIndexRoute
+  '/admin/generus/update/$id': typeof AdminAdminGenerusUpdateIdRoute
 }
 export interface FileRoutesByTo {
   '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard': typeof AdminAdminDashboardRoute
   '/admin/desa': typeof AdminAdminDesaRoute
-  '/admin/generus': typeof AdminAdminGenerusRoute
   '/admin/kegiatan': typeof AdminAdminKegiatanRoute
   '/admin/kelompok': typeof AdminAdminKelompokRoute
   '/admin/log': typeof AdminAdminLogRoute
   '/admin/presensi': typeof AdminAdminPresensiRoute
   '/admin/user': typeof AdminAdminUserRoute
+  '/admin/generus/create': typeof AdminAdminGenerusCreateRoute
+  '/admin/generus': typeof AdminAdminGenerusIndexRoute
+  '/admin/generus/update/$id': typeof AdminAdminGenerusUpdateIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -110,12 +127,14 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/_admin/dashboard': typeof AdminAdminDashboardRoute
   '/admin/_admin/desa': typeof AdminAdminDesaRoute
-  '/admin/_admin/generus': typeof AdminAdminGenerusRoute
   '/admin/_admin/kegiatan': typeof AdminAdminKegiatanRoute
   '/admin/_admin/kelompok': typeof AdminAdminKelompokRoute
   '/admin/_admin/log': typeof AdminAdminLogRoute
   '/admin/_admin/presensi': typeof AdminAdminPresensiRoute
   '/admin/_admin/user': typeof AdminAdminUserRoute
+  '/admin/_admin/generus/create': typeof AdminAdminGenerusCreateRoute
+  '/admin/_admin/generus/': typeof AdminAdminGenerusIndexRoute
+  '/admin/_admin/generus/update/$id': typeof AdminAdminGenerusUpdateIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -124,24 +143,28 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/dashboard'
     | '/admin/desa'
-    | '/admin/generus'
     | '/admin/kegiatan'
     | '/admin/kelompok'
     | '/admin/log'
     | '/admin/presensi'
     | '/admin/user'
+    | '/admin/generus/create'
+    | '/admin/generus'
+    | '/admin/generus/update/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/admin'
     | '/admin/login'
     | '/admin/dashboard'
     | '/admin/desa'
-    | '/admin/generus'
     | '/admin/kegiatan'
     | '/admin/kelompok'
     | '/admin/log'
     | '/admin/presensi'
     | '/admin/user'
+    | '/admin/generus/create'
+    | '/admin/generus'
+    | '/admin/generus/update/$id'
   id:
     | '__root__'
     | '/admin'
@@ -149,12 +172,14 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/_admin/dashboard'
     | '/admin/_admin/desa'
-    | '/admin/_admin/generus'
     | '/admin/_admin/kegiatan'
     | '/admin/_admin/kelompok'
     | '/admin/_admin/log'
     | '/admin/_admin/presensi'
     | '/admin/_admin/user'
+    | '/admin/_admin/generus/create'
+    | '/admin/_admin/generus/'
+    | '/admin/_admin/generus/update/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -219,13 +244,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminKegiatanRouteImport
       parentRoute: typeof AdminAdminRouteRoute
     }
-    '/admin/_admin/generus': {
-      id: '/admin/_admin/generus'
-      path: '/generus'
-      fullPath: '/admin/generus'
-      preLoaderRoute: typeof AdminAdminGenerusRouteImport
-      parentRoute: typeof AdminAdminRouteRoute
-    }
     '/admin/_admin/desa': {
       id: '/admin/_admin/desa'
       path: '/desa'
@@ -240,29 +258,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAdminDashboardRouteImport
       parentRoute: typeof AdminAdminRouteRoute
     }
+    '/admin/_admin/generus/': {
+      id: '/admin/_admin/generus/'
+      path: '/generus'
+      fullPath: '/admin/generus'
+      preLoaderRoute: typeof AdminAdminGenerusIndexRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
+    }
+    '/admin/_admin/generus/create': {
+      id: '/admin/_admin/generus/create'
+      path: '/generus/create'
+      fullPath: '/admin/generus/create'
+      preLoaderRoute: typeof AdminAdminGenerusCreateRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
+    }
+    '/admin/_admin/generus/update/$id': {
+      id: '/admin/_admin/generus/update/$id'
+      path: '/generus/update/$id'
+      fullPath: '/admin/generus/update/$id'
+      preLoaderRoute: typeof AdminAdminGenerusUpdateIdRouteImport
+      parentRoute: typeof AdminAdminRouteRoute
+    }
   }
 }
 
 interface AdminAdminRouteRouteChildren {
   AdminAdminDashboardRoute: typeof AdminAdminDashboardRoute
   AdminAdminDesaRoute: typeof AdminAdminDesaRoute
-  AdminAdminGenerusRoute: typeof AdminAdminGenerusRoute
   AdminAdminKegiatanRoute: typeof AdminAdminKegiatanRoute
   AdminAdminKelompokRoute: typeof AdminAdminKelompokRoute
   AdminAdminLogRoute: typeof AdminAdminLogRoute
   AdminAdminPresensiRoute: typeof AdminAdminPresensiRoute
   AdminAdminUserRoute: typeof AdminAdminUserRoute
+  AdminAdminGenerusCreateRoute: typeof AdminAdminGenerusCreateRoute
+  AdminAdminGenerusIndexRoute: typeof AdminAdminGenerusIndexRoute
+  AdminAdminGenerusUpdateIdRoute: typeof AdminAdminGenerusUpdateIdRoute
 }
 
 const AdminAdminRouteRouteChildren: AdminAdminRouteRouteChildren = {
   AdminAdminDashboardRoute: AdminAdminDashboardRoute,
   AdminAdminDesaRoute: AdminAdminDesaRoute,
-  AdminAdminGenerusRoute: AdminAdminGenerusRoute,
   AdminAdminKegiatanRoute: AdminAdminKegiatanRoute,
   AdminAdminKelompokRoute: AdminAdminKelompokRoute,
   AdminAdminLogRoute: AdminAdminLogRoute,
   AdminAdminPresensiRoute: AdminAdminPresensiRoute,
   AdminAdminUserRoute: AdminAdminUserRoute,
+  AdminAdminGenerusCreateRoute: AdminAdminGenerusCreateRoute,
+  AdminAdminGenerusIndexRoute: AdminAdminGenerusIndexRoute,
+  AdminAdminGenerusUpdateIdRoute: AdminAdminGenerusUpdateIdRoute,
 }
 
 const AdminAdminRouteRouteWithChildren = AdminAdminRouteRoute._addFileChildren(

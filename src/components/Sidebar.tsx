@@ -18,7 +18,7 @@ export default function Sidebar() {
 	};
 
 	return (
-		<div className="bg-gray-50 h-screen w-64 flex flex-col shadow-md">
+		<div className="bg-gray-50 h-screen w-64 flex flex-col shadow-md sticky top-0">
 			<img
 				src="/logo-rajawali.png"
 				alt="Logo Rajawali"

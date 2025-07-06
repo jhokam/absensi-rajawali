@@ -1,6 +1,6 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
 	createColumnHelper,
 	flexRender,
@@ -9,12 +9,10 @@ import {
 } from "@tanstack/react-table";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
-import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
-import SheetCreate from "@/components/SheetCreate";
-import SheetUpdate from "@/components/SheetUpdate";
 import Skeleton from "@/components/Skeleton";
+import ThemedLink from "@/components/ThemedLink";
 import type {
 	GenerusBase,
 	GenerusResponse,
@@ -24,14 +22,13 @@ import { api } from "@/utils/api";
 import { useAlert } from "@/utils/useAlert";
 import { useProfile } from "@/utils/useProfile";
 
-export const Route = createFileRoute("/admin/_admin/generus")({
+
+export const Route = createFileRoute("/admin/_admin/generus/")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const [sheetCreate, setSheetCreate] = useState(false);
-	const [sheetUpdate, setSheetUpdate] = useState(false);
-	const [selectedData, setSelectedData] = useState<GenerusBase | null>(null);
+	const navigate = useNavigate()
 	const [dialog, setDialog] = useState(false);
 	const [deleteId, setDeleteId] = useState<string>("");
 	const queryClient = useQueryClient();
@@ -41,7 +38,7 @@ function RouteComponent() {
 	const { setAlert } = useAlert();
 
 	const mutation = useMutation({
-		mutationFn: (id: string) => api(`/generus/${id}`, { method: "DELETE" }),
+		mutationFn: (id: string) => api(`/generus/${id}`, { method: `DELETE` }),
 		onSuccess: (success: GenerusResponse) => {
 			queryClient.invalidateQueries({ queryKey: ["generusData"] });
 			setAlert(success.message, "success");
@@ -52,11 +49,6 @@ function RouteComponent() {
 	});
 
 	const columnHelper = createColumnHelper<GenerusBase>();
-
-	const handleEdit = (row: GenerusBase) => {
-		setSelectedData(row);
-		setSheetUpdate(true);
-	};
 
 	const handleDeleteConfirm = () => {
 		mutation.mutate(deleteId);
@@ -73,7 +65,6 @@ function RouteComponent() {
 		queryKey: ["generusData", debouncedSearch],
 		queryFn: () => api("/generus"),
 	});
-
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
 		columnHelper.accessor("nama", { header: "Nama" }),
@@ -90,7 +81,9 @@ function RouteComponent() {
 				const row = props.row.original;
 				return (
 					<div className="flex space-x-2">
-						<button type="button" onClick={() => handleEdit(row)}>
+						<button type="button" onClick={() => {
+							return navigate({to: `/admin/generus/update/${row.id}`})
+						}}>
 							<Icon
 								icon="line-md:edit"
 								fontSize={20}
@@ -129,7 +122,7 @@ function RouteComponent() {
 		if (isError) {
 			setAlert(error.message, "error");
 		}
-	}, [isError, error, setAlert]);
+	}, [isError, error]);
 
 	return (
 		<>
@@ -143,22 +136,13 @@ function RouteComponent() {
 					description="This action cannot be undone."
 				/>
 			)}
-			{sheetUpdate && selectedData && (
-				<SheetUpdate
-					closeSheet={() => setSheetUpdate(false)}
-					selectedData={selectedData}
-				/>
-			)}
-			{sheetCreate && <SheetCreate closeSheet={() => setSheetCreate(false)} />}
 			<div className="flex justify-between">
 				<SearchBar
 					onChange={handleChange}
 					placeholder="Search by Name"
 					value={searchValue}
 				/>
-				<Button typeof="button" onClick={() => setSheetCreate(true)}>
-					Create Generus
-				</Button>
+				<ThemedLink to="/admin/generus/create">Create Generus</ThemedLink>
 			</div>
 			<table className="w-full text-left text-sm text-gray-500">
 				<thead className="text-xs text-gray-700 uppercase bg-gray-50">
