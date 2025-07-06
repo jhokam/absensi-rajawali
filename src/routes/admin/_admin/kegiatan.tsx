@@ -126,7 +126,7 @@ function RouteComponent() {
 		if (isError) {
 			setAlert(error.message, "error");
 		}
-	}, [isError, error]);
+	}, [isError, error, setAlert]);
 
 	return (
 		<>

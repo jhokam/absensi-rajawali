@@ -1,10 +1,6 @@
 import type { AnyFieldApi } from "@tanstack/react-form";
 
-export default function TextError({
-	field,
-}: {
-	field: AnyFieldApi;
-}) {
+export default function TextError({ field }: { field: AnyFieldApi }) {
 	return (
 		<>
 			{field.state.meta.isTouched && !field.state.meta.isValid ? (

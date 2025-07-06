@@ -78,7 +78,7 @@ function LoginPage() {
 		if (isError) {
 			setAlert(error.message, "error");
 		}
-	}, [isError, error]);
+	}, [isError, error, setAlert]);
 
 	return (
 		<div className="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
@@ -98,8 +98,7 @@ function LoginPage() {
 						e.preventDefault();
 						e.stopPropagation();
 						form.handleSubmit();
-					}}
-				>
+					}}>
 					<div>
 						<form.Field
 							name="username"

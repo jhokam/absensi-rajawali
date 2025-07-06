@@ -1,6 +1,6 @@
-import cn from "@/utils/cn";
 import { cva } from "class-variance-authority";
 import type { DetailedHTMLProps, HTMLAttributes } from "react";
+import cn from "@/utils/cn";
 
 type BadgeProps = DetailedHTMLProps<
 	HTMLAttributes<HTMLSpanElement>,

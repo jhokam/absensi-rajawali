@@ -32,8 +32,7 @@ export default function ThemedSelect({
 				onChange={(e) => field.handleChange(e.target.value)}
 				onBlur={field.handleBlur}
 				required={required}
-				className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-			>
+				className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 text-sm placeholder-gray-400 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500">
 				<option value="" disabled>
 					{placeholder}
 				</option>

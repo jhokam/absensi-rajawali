@@ -60,13 +60,11 @@ export default function ThemedInput({
 		<>
 			<label
 				htmlFor={htmlFor}
-				className={`block mb-2 text-sm font-medium ${getLabelClasses(variant)}`}
-			>
+				className={`block mb-2 text-sm font-medium ${getLabelClasses(variant)}`}>
 				{label}
 			</label>
 			<div
-				className={`flex space-x-2 border sm:text-sm rounded-lg w-full p-2.5 ring-offset-2 focus-within:ring-2 transition-colors ${getVariantClasses(variant)} ${className}`}
-			>
+				className={`flex space-x-2 border sm:text-sm rounded-lg w-full p-2.5 ring-offset-2 focus-within:ring-2 transition-colors ${getVariantClasses(variant)} ${className}`}>
 				<input
 					type={type === "password" && showPassword ? "text" : type}
 					className="focus:outline-none w-full bg-transparent"
@@ -76,8 +74,7 @@ export default function ThemedInput({
 					<button
 						type="button"
 						onClick={() => setShowPassword(!showPassword)}
-						className="focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md p-1"
-					>
+						className="focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md p-1">
 						<Icon
 							icon={showPassword ? "mdi:eye" : "mdi:eye-off"}
 							color={getIconColor(variant)}

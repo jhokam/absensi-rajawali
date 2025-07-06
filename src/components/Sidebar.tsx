@@ -28,64 +28,56 @@ export default function Sidebar() {
 				<li key="Dashboard">
 					<Link
 						to="/admin/dashboard"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Dashboard
 					</Link>
 				</li>
 				<li key="Desa">
 					<Link
 						to="/admin/desa"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Desa
 					</Link>
 				</li>
 				<li key="Kelompok">
 					<Link
 						to="/admin/kelompok"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Kelompok
 					</Link>
 				</li>
 				<li key="Generus">
 					<Link
 						to="/admin/generus"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Generus
 					</Link>
 				</li>
 				<li key="Kegiatan">
 					<Link
 						to="/admin/kegiatan"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Kegiatan
 					</Link>
 				</li>
 				<li key="Presensi">
 					<Link
 						to="/admin/presensi"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Presensi
 					</Link>
 				</li>
 				<li key="Log">
 					<Link
 						to="/admin/log"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						Log
 					</Link>
 				</li>
 				<li key="User">
 					<Link
 						to="/admin/user"
-						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800"
-					>
+						className="block py-2 px-4 rounded-md hover:bg-gray-100 text-gray-800">
 						User
 					</Link>
 				</li>
@@ -94,8 +86,7 @@ export default function Sidebar() {
 				<Button
 					type="button"
 					onClick={() => setLogoutDialog(true)}
-					className="w-full"
-				>
+					className="w-full">
 					Logout
 				</Button>
 			</div>

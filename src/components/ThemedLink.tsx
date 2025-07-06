@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { type LinkComponent, createLink } from "@tanstack/react-router";
+import { createLink, type LinkComponent } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, forwardRef } from "react";
 
 interface BasicLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

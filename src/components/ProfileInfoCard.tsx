@@ -18,8 +18,7 @@ export default function ProfileInfoCard({
 			{details.map((detail) => (
 				<div
 					key={detail.label}
-					className="border-b border-gray-200 pb-2 last:border-b-0"
-				>
+					className="border-b border-gray-200 pb-2 last:border-b-0">
 					<p className="text-sm text-gray-500">{detail.label}</p>
 					<p className="text-gray-800 font-medium">{detail.value}</p>
 				</div>
