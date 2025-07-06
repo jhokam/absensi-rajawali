@@ -36,6 +36,7 @@ function RouteComponent() {
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 	const { setAlert } = useAlert();
+	const params = new URLSearchParams({ q: debouncedSearch });
 
 	const mutation = useMutation({
 		mutationFn: (id: string) => api(`/generus/${id}`, { method: `DELETE` }),
@@ -63,7 +64,7 @@ function RouteComponent() {
 
 	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
 		queryKey: ["generusData", debouncedSearch],
-		queryFn: () => api("/generus"),
+		queryFn: () => api(`/generus?${params.toString()}`),
 	});
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

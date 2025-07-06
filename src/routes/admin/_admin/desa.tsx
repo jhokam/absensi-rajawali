@@ -25,9 +25,10 @@ function RouteComponent() {
 
 	const columnHelper = createColumnHelper<DesaBase>();
 
+	const params = new URLSearchParams({ q: debouncedSearch });
 	const { isPending, error, isError, data } = useQuery<DesaResponseArray>({
 		queryKey: ["desaData", debouncedSearch],
-		queryFn: () => api("/desa"),
+		queryFn: () => api(`/desa?${params.toString()}`),
 	});
 
 	const columns = [

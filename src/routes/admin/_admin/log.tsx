@@ -22,12 +22,13 @@ function RouteComponent() {
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 	const { setAlert } = useAlert();
+	const params = new URLSearchParams({ q: debouncedSearch });
 
 	const columnHelper = createColumnHelper<LogBase>();
 
 	const { isPending, error, isError, data } = useQuery<LogResponseArray>({
 		queryKey: ["logData", debouncedSearch],
-		queryFn: () => api("/log"),
+		queryFn: () => api(`/log?${params.toString()}`),
 	});
 
 	const columns = [

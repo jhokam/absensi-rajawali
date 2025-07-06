@@ -33,6 +33,7 @@ function RouteComponent() {
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 	const { setAlert } = useAlert();
+	const params = new URLSearchParams({ q: debouncedSearch });
 
 	const mutation = useMutation({
 		mutationFn: (id: string) => api(`/users/${id}`, { method: "DELETE" }),
@@ -65,7 +66,7 @@ function RouteComponent() {
 
 	const { isPending, error, isError, data } = useQuery<UserResponseArray>({
 		queryKey: ["userData", debouncedSearch],
-		queryFn: () => api("/users"),
+		queryFn: () => api(`/users?${params.toString()}`),
 	});
 
 	const columns = [

@@ -22,12 +22,13 @@ function RouteComponent() {
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 	const { setAlert } = useAlert();
+	const params = new URLSearchParams({ q: debouncedSearch });
 
 	const columnHelper = createColumnHelper<PresenceBase>();
 
 	const { isPending, error, isError, data } = useQuery<PresenceResponseArray>({
 		queryKey: ["presenceData", debouncedSearch],
-		queryFn: () => api("/presence"),
+		queryFn: () => api(`/presence?${params.toString()}`),
 	});
 
 	const columns = [

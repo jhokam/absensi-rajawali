@@ -22,12 +22,13 @@ function RouteComponent() {
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 	const { setAlert } = useAlert();
+	const params = new URLSearchParams({ q: debouncedSearch });
 
 	const columnHelper = createColumnHelper<KelompokBase>();
 
 	const { isPending, error, isError, data } = useQuery<KelompokResponseArray>({
 		queryKey: ["kelompokData", debouncedSearch],
-		queryFn: () => api("/kelompok"),
+		queryFn: () => api(`/kelompok?${params.toString()}`),
 	});
 
 	const columns = [

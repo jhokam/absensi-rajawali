@@ -1,4 +1,5 @@
 import type { ResponseBase, ResponseBaseWithArray } from "./api";
+import z from "zod";
 
 export type KelompokBase = {
 	id: string;
@@ -9,3 +10,8 @@ export type KelompokBase = {
 export type KelompokResponseArray = ResponseBaseWithArray<KelompokBase>;
 
 export type KelompokResponse = ResponseBase<KelompokBase>;
+
+export const kelompokSchema = z.object({
+	nama: z.string().nonempty("Nama tidak boleh kosong"),
+	desa_id: z.number().nonempty("Desa tidak boleh kosong"),
+});
