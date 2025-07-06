@@ -1,14 +1,19 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { useCookies } from "react-cookie";
-import { z } from "zod";
 import {
 	jenisKelaminOptions,
 	jenjangOptions,
-	roleOptions,
+	kelompokOptions,
+	keteranganOptions,
+	pendidikanTerakhirOptions,
 	sambungOptions,
 } from "@/constants";
-import type { GenerusRequest, GenerusResponse } from "@/types/generus";
+import {
+	type GenerusRequest,
+	type GenerusResponse,
+	generusSchema,
+} from "@/types/generus";
+import { api } from "@/utils/api";
 import Button from "./Button";
 import TextError from "./TextError";
 import ThemedInput from "./ThemedInput";
@@ -19,71 +24,42 @@ export default function SheetCreate({
 }: {
 	closeSheet: () => void;
 }) {
-	const [cookies] = useCookies(["access_token"]);
-
-	const createGenerusSchema = z.object({
-		nama: z.string().nonempty("Nama tidak boleh kosong"),
-		username: z.string().nonempty("Username tidak boleh kosong"),
-		jenis_kelamin: z.enum(["Laki_Laki", "Perempuan"], {
-			required_error: "Jenis Kelamin tidak boleh kosong",
-		}),
-		jenjang: z.enum(
-			["Paud", "Caberawit", "Pra_Remaja", "Remaja", "Pra_Nikah"],
-			{
-				required_error: "Jenjang tidak boleh kosong",
-			},
-		),
-		alamat: z.string().nonempty("Alamat tidak boleh kosong"),
-		sambung: z.enum(["Aktif", "Tidak_Aktif"], {
-			required_error: "Sambung tidak boleh kosong",
-		}),
-		role: z.enum(["Admin", "User"], {
-			required_error: "Role tidak boleh kosong",
-		}),
-		password: z.string().nonempty("Password tidak boleh kosong"),
-	});
-
 	const { mutateAsync, isError, error } = useMutation<
 		GenerusResponse,
 		Error,
 		GenerusRequest
 	>({
 		mutationFn: async (data: GenerusRequest) => {
-			const response = await fetch(`${import.meta.env.DEV_LINK}/generus`, {
+			return api("/generus", {
 				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${cookies.access_token}`,
-				},
 				body: JSON.stringify(data),
 			});
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.message);
-			}
-
-			return response.json();
 		},
 	});
 
-	const form = useForm<GenerusRequest>({
+	const form = useForm({
 		defaultValues: {
 			nama: "",
-			username: "",
 			jenis_kelamin: "Laki_Laki",
+			tempat_lahir: "",
+			tanggal_lahir: new Date(),
 			jenjang: "Paud",
-			alamat: "",
+			nomer_whatsapp: "",
+			pendidikan_terakhir: "PAUD",
+			nama_orang_tua: "",
+			nomer_whatsapp_orang_tua: "",
+			alamat_tempat_tinggal: "",
+			keterangan: "Pendatang",
+			alamat_asal: "",
 			sambung: "Tidak_Aktif",
-			role: "User",
-			password: "",
+			kelompok_id: "",
 		},
 		onSubmit: async ({ value }) => {
-			await mutateAsync(value);
+			await mutateAsync(value as GenerusRequest);
 			closeSheet();
 		},
 		validators: {
-			onSubmit: createGenerusSchema,
+			onSubmit: generusSchema,
 		},
 	});
 
@@ -121,33 +97,7 @@ export default function SheetCreate({
 										required={true}
 										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
 									/>
-									{field.state.meta.errors.length > 0 ? (
-										<TextError>{field.state.meta.errors.join(", ")}</TextError>
-									) : null}
-								</>
-							)}
-						/>
-
-						<form.Field
-							name="username"
-							children={(field) => (
-								<>
-									<ThemedInput
-										label="Username"
-										htmlFor={field.name}
-										type="text"
-										name={field.name}
-										id={field.name}
-										value={field.state.value}
-										onBlur={field.handleBlur}
-										onChange={(e) => field.handleChange(e.target.value)}
-										placeholder="john"
-										required={true}
-										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-									/>
-									{field.state.meta.errors.length > 0 ? (
-										<TextError>{field.state.meta.errors.join(", ")}</TextError>
-									) : null}
+									<TextError field={field} />
 								</>
 							)}
 						/>
@@ -169,6 +119,52 @@ export default function SheetCreate({
 						/>
 
 						<form.Field
+							name="tempat_lahir"
+							children={(field) => (
+								<>
+									<ThemedInput
+										label="Tempat Lahir"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="John Doe"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
+								</>
+							)}
+						/>
+
+						<form.Field
+							name="tanggal_lahir"
+							children={(field) => (
+								<>
+									<ThemedInput
+										label="Tanggal Lahir"
+										htmlFor={field.name}
+										type="date"
+										name={field.name}
+										id={field.name}
+										value={String(field.state.value)}
+										onBlur={field.handleBlur}
+										onChange={(e) =>
+											field.handleChange(new Date(e.target.value))
+										}
+										placeholder="John Doe"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
+								</>
+							)}
+						/>
+
+						<form.Field
 							name="jenjang"
 							children={(field) => (
 								<div className="space-y-1">
@@ -185,11 +181,11 @@ export default function SheetCreate({
 						/>
 
 						<form.Field
-							name="alamat"
+							name="nomer_whatsapp"
 							children={(field) => (
 								<>
 									<ThemedInput
-										label="Alamat"
+										label="Nomor WhatsApp"
 										htmlFor={field.name}
 										type="text"
 										name={field.name}
@@ -197,13 +193,71 @@ export default function SheetCreate({
 										value={field.state.value}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										placeholder="Jl. Madukoro No. 1"
+										placeholder="08123456789"
 										required={true}
 										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
 									/>
-									{field.state.meta.errors.length > 0 ? (
-										<TextError>{field.state.meta.errors.join(", ")}</TextError>
-									) : null}
+									<TextError field={field} />
+								</>
+							)}
+						/>
+
+						<form.Field
+							name="pendidikan_terakhir"
+							children={(field) => (
+								<div className="space-y-1">
+									<ThemedSelect
+										name={field.name}
+										label="Pendidikan Terakhir"
+										options={pendidikanTerakhirOptions}
+										field={field}
+										placeholder="Pilih Pendidikan Terakhir"
+										required={true}
+									/>
+								</div>
+							)}
+						/>
+
+						<form.Field
+							name="nama_orang_tua"
+							children={(field) => (
+								<>
+									<ThemedInput
+										label="Nama Orang Tua"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="John Doe"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
+								</>
+							)}
+						/>
+
+						<form.Field
+							name="nomer_whatsapp_orang_tua"
+							children={(field) => (
+								<>
+									<ThemedInput
+										label="Nomor WhatsApp Orang Tua"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="08123456789"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
 								</>
 							)}
 						/>
@@ -225,15 +279,37 @@ export default function SheetCreate({
 						/>
 
 						<form.Field
-							name="role"
+							name="alamat_tempat_tinggal"
+							children={(field) => (
+								<>
+									<ThemedInput
+										label="Alamat Tempat Tinggal"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="Jl. Madukoro No. 1"
+										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
+								</>
+							)}
+						/>
+
+						<form.Field
+							name="keterangan"
 							children={(field) => (
 								<div className="space-y-1">
 									<ThemedSelect
 										name={field.name}
-										label="Role"
-										options={roleOptions}
+										label="Keterangan"
+										options={keteranganOptions}
 										field={field}
-										placeholder="Pilih Role"
+										placeholder="Pilih Keterangan"
 										required={true}
 									/>
 								</div>
@@ -241,26 +317,40 @@ export default function SheetCreate({
 						/>
 
 						<form.Field
-							name="password"
+							name="alamat_asal"
 							children={(field) => (
 								<>
 									<ThemedInput
-										label="Password"
+										label="Alamat Asal"
 										htmlFor={field.name}
-										type="password"
+										type="text"
 										name={field.name}
 										id={field.name}
 										value={field.state.value}
 										onBlur={field.handleBlur}
 										onChange={(e) => field.handleChange(e.target.value)}
-										placeholder="Make sure it's strong"
+										placeholder="Jl. Madukoro No. 1"
 										required={true}
 										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
 									/>
-									{field.state.meta.errors.length > 0 ? (
-										<TextError>{field.state.meta.errors.join(", ")}</TextError>
-									) : null}
+									<TextError field={field} />
 								</>
+							)}
+						/>
+
+						<form.Field
+							name="kelompok_id"
+							children={(field) => (
+								<div className="space-y-1">
+									<ThemedSelect
+										name={field.name}
+										label="Kelompok"
+										options={kelompokOptions}
+										field={field}
+										placeholder="Pilih Kelompok"
+										required={true}
+									/>
+								</div>
 							)}
 						/>
 					</div>
