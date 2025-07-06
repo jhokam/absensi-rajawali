@@ -1,3 +1,8 @@
+export const jenisKelaminOptions = [
+	{ value: "Laki_Laki", label: "Laki-Laki" },
+	{ value: "Perempuan", label: "Perempuan" },
+];
+
 export const jenjangOptions = [
 	{ value: "Paud", label: "Paud" },
 	{ value: "Caberawit", label: "Caberawit" },
@@ -6,9 +11,16 @@ export const jenjangOptions = [
 	{ value: "Pra_Nikah", label: "Pra Nikah" },
 ];
 
-export const jenisKelaminOptions = [
-	{ value: "Laki_Laki", label: "Laki-Laki" },
-	{ value: "Perempuan", label: "Perempuan" },
+export const pendidikanTerakhirOptions = [
+	{ value: "PAUD", label: "PAUD" },
+	{ value: "TK", label: "TK" },
+	{ value: "SD", label: "SD" },
+	{ value: "SMP", label: "SMP" },
+	{ value: "SMA_SMK", label: "SMA_SMK" },
+	{ value: "D1_D3", label: "D1_D3" },
+	{ value: "S1_D4", label: "S1_D4" },
+	{ value: "S2", label: "S2" },
+	{ value: "S3", label: "S3" },
 ];
 
 export const roleOptions = [
@@ -19,6 +31,16 @@ export const roleOptions = [
 export const sambungOptions = [
 	{ value: "Aktif", label: "Aktif" },
 	{ value: "Tidak_Aktif", label: "Tidak Aktif" },
+];
+
+export const keteranganOptions = [
+	{ value: "Pendatang", label: "Pendatang" },
+	{ value: "Pribumi", label: "Pribumi" },
+];
+
+export const kelompokOptions = [
+	{ value: "Kanguru", label: "Kanguru" },
+	{ value: "Gajah", label: "Gajah" },
 ];
 
 export const colorMap = {

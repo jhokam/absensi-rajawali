@@ -1,13 +1,14 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
 import { Cookies, useCookies } from "react-cookie";
 import { z } from "zod";
-import Alert from "@/components/Alert.tsx";
-import Button from "@/components/Button.tsx";
-import TextError from "@/components/TextError.tsx";
-import ThemedInput from "@/components/ThemedInput.tsx";
-import type { LoginRequest, LoginResponse } from "@/types/api.ts";
+import Button from "@/components/Button";
+import TextError from "@/components/TextError";
+import ThemedInput from "@/components/ThemedInput";
+import type { LoginRequest, LoginResponse } from "@/types/api";
+import { api } from "@/utils/api";
 import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/login")({
@@ -33,26 +34,13 @@ function LoginPage() {
 	const navigate = useNavigate();
 
 	const handleLogin = async (data: LoginRequest) => {
-		const response = await fetch(
-			`${import.meta.env.VITE_DEV_LINK}/auth/login`,
-			{
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(data),
-			},
-		);
-		if (!response.ok) {
-			const errorData: LoginResponse = await response.json().catch(() => ({}));
-			const errorMessage =
-				errorData.error?.message || `HTTP error! status: ${response.status}`;
-			throw new Error(errorMessage);
-		}
-		return response.json();
+		return await api("/auth/login", {
+			method: "POST",
+			body: JSON.stringify(data),
+		});
 	};
 
-	const { mutateAsync, error } = useMutation<
+	const { mutateAsync, error, isError } = useMutation<
 		LoginResponse,
 		Error,
 		LoginRequest
@@ -86,9 +74,14 @@ function LoginPage() {
 		},
 	});
 
+	useEffect(() => {
+		if (isError) {
+			setAlert(error.message, "error");
+		}
+	}, [isError, error]);
+
 	return (
 		<div className="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">
-			{error && <Alert variant="error">{error.message}</Alert>}
 			<img
 				src="/logo-rajawali.png"
 				className="h-24 mb-10"

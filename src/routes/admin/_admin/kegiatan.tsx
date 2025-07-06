@@ -8,9 +8,7 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
-import Alert from "@/components/Alert";
 import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
@@ -20,6 +18,8 @@ import type {
 	EventResponse,
 	EventResponseArray,
 } from "@/types/event";
+import { api } from "@/utils/api";
+import { useAlert } from "@/utils/useAlert";
 import { useProfile } from "@/utils/useProfile";
 
 export const Route = createFileRoute("/admin/_admin/kegiatan")({
@@ -27,7 +27,6 @@ export const Route = createFileRoute("/admin/_admin/kegiatan")({
 });
 
 function RouteComponent() {
-	const [cookies] = useCookies(["access_token"]);
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
 	const [selectedData, setSelectedData] = useState<EventBase | null>(null);
@@ -37,31 +36,16 @@ function RouteComponent() {
 	const { role } = useProfile();
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
-
-	const deleteGenerus = async (id: string) => {
-		const response = await fetch(
-			`${import.meta.env.VITE_DEV_LINK}/event/${id}`,
-			{
-				method: "DELETE",
-				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
-				},
-			},
-		);
-		if (!response.ok) {
-			throw new Error("Failed to delete data");
-		}
-		return response.json();
-	};
+	const { setAlert } = useAlert();
 
 	const mutation = useMutation({
-		mutationFn: deleteGenerus,
+		mutationFn: (id: string) => api(`/event/${id}`, { method: "DELETE" }),
 		onSuccess: (success: EventResponse) => {
 			queryClient.invalidateQueries({ queryKey: ["eventData"] });
-			handleAlertSuccess(success.message);
+			setAlert(success.message, "success");
 		},
 		onError: (error) => {
-			handleAlertError(error.message);
+			setAlert(error.message, "error");
 		},
 	});
 
@@ -83,33 +67,9 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const fetchData = async () => {
-		const params = new URLSearchParams();
-		if (debouncedSearch) {
-			params.append("q", debouncedSearch);
-		}
-		const url = `${import.meta.env.VITE_DEV_LINK}/event?${params.toString()}`;
-		const response = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${cookies.access_token}`,
-			},
-		});
-
-		if (!response.ok) {
-			const errorData: EventResponseArray = await response
-				.json()
-				.catch(() => ({}));
-			const errorMessage =
-				errorData.error?.message || `HTTP error! status: ${response.status}`;
-			throw new Error(errorMessage);
-		}
-
-		return response.json();
-	};
-
 	const { isPending, error, isError, data } = useQuery<EventResponseArray>({
 		queryKey: ["eventData", debouncedSearch],
-		queryFn: fetchData,
+		queryFn: () => api("/event"),
 	});
 
 	const columns = [
@@ -180,11 +140,6 @@ function RouteComponent() {
 					description="This action cannot be undone."
 				/>
 			)}
-			{isError && (
-				<Alert variant="error" className="z-50">
-					{error.message}
-				</Alert>
-			)}
 			<div className="flex justify-between">
 				<SearchBar
 					onChange={handleChange}
@@ -212,7 +167,7 @@ function RouteComponent() {
 				</thead>
 				<tbody>
 					{isPending
-						? Skeleton(table, {})
+						? Skeleton(table)
 						: table.getRowModel().rows.map((row) => (
 								<tr key={row.id} className="bg-white border-b">
 									{row.getVisibleCells().map((cell) => (
@@ -229,7 +184,4 @@ function RouteComponent() {
 			</table>
 		</>
 	);
-}
-function setAlert(message: string, arg1: string) {
-	throw new Error("Function not implemented.");
 }

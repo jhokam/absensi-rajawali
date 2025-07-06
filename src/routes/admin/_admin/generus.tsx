@@ -1,47 +1,34 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-	createFileRoute,
-	redirect,
-	useRouterState,
-} from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { ChangeEvent, useEffect, useState } from "react";
-import { Cookies, useCookies } from "react-cookie";
+import { type ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
+import SheetCreate from "@/components/SheetCreate";
+import SheetUpdate from "@/components/SheetUpdate";
 import Skeleton from "@/components/Skeleton";
 import type {
 	GenerusBase,
 	GenerusResponse,
 	GenerusResponseArray,
 } from "@/types/generus";
+import { api } from "@/utils/api";
 import { useAlert } from "@/utils/useAlert";
 import { useProfile } from "@/utils/useProfile";
 
 export const Route = createFileRoute("/admin/_admin/generus")({
-	// validateSearch: generusFilterSchema,
-
 	component: RouteComponent,
-	beforeLoad: async () => {
-		const cookie = new Cookies();
-		if (!cookie.get("access_token")) {
-			throw redirect({
-				to: "/admin/login",
-			});
-		}
-	},
 });
 
 function RouteComponent() {
-	const [cookies] = useCookies(["access_token"]);
 	const [sheetCreate, setSheetCreate] = useState(false);
 	const [sheetUpdate, setSheetUpdate] = useState(false);
 	const [selectedData, setSelectedData] = useState<GenerusBase | null>(null);
@@ -53,29 +40,8 @@ function RouteComponent() {
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
 	const { setAlert } = useAlert();
 
-	const deleteGenerus = async (id: string) => {
-		const response = await fetch(
-			`${import.meta.env.VITE_DEV_LINK}/generus/${id}`,
-			{
-				method: "DELETE",
-				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
-				},
-			},
-		);
-		if (!response.ok) {
-			const errorData: GenerusResponse = await response
-				.json()
-				.catch(() => ({}));
-			const errorMessage =
-				errorData.error?.message || `HTTP error! status: ${response.status}`;
-			throw new Error(errorMessage);
-		}
-		return response.json();
-	};
-
 	const mutation = useMutation({
-		mutationFn: deleteGenerus,
+		mutationFn: (id: string) => api(`/generus/${id}`, { method: "DELETE" }),
 		onSuccess: (success: GenerusResponse) => {
 			queryClient.invalidateQueries({ queryKey: ["generusData"] });
 			setAlert(success.message, "success");
@@ -94,7 +60,6 @@ function RouteComponent() {
 
 	const handleDeleteConfirm = () => {
 		mutation.mutate(deleteId);
-		console.log(mutation.isSuccess);
 		setDialog(false);
 		setDeleteId("");
 	};
@@ -104,33 +69,9 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const fetchData: () => Promise<GenerusResponseArray> = async () => {
-		const response = await fetch(
-			`${import.meta.env.VITE_DEV_LINK}/generus?${new URLSearchParams({
-				q: debouncedSearch,
-			}).toString()}`,
-			{
-				headers: {
-					Authorization: `Bearer ${cookies.access_token}`,
-				},
-			},
-		);
-
-		if (!response.ok) {
-			const errorData: GenerusResponseArray = await response
-				.json()
-				.catch(() => ({}));
-			const errorMessage =
-				errorData.error?.message || `HTTP error! status: ${response.status}`;
-			throw new Error(errorMessage);
-		}
-
-		return response.json();
-	};
-
-	const { isPending, error, isError, data } = useQuery({
+	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
 		queryKey: ["generusData", debouncedSearch],
-		queryFn: fetchData,
+		queryFn: () => api("/generus"),
 	});
 
 	const columns = [
@@ -188,7 +129,7 @@ function RouteComponent() {
 		if (isError) {
 			setAlert(error.message, "error");
 		}
-	}, [isError, error]);
+	}, [isError, error, setAlert]);
 
 	return (
 		<>
@@ -202,6 +143,13 @@ function RouteComponent() {
 					description="This action cannot be undone."
 				/>
 			)}
+			{sheetUpdate && selectedData && (
+				<SheetUpdate
+					closeSheet={() => setSheetUpdate(false)}
+					selectedData={selectedData}
+				/>
+			)}
+			{sheetCreate && <SheetCreate closeSheet={() => setSheetCreate(false)} />}
 			<div className="flex justify-between">
 				<SearchBar
 					onChange={handleChange}
@@ -229,7 +177,7 @@ function RouteComponent() {
 				</thead>
 				<tbody>
 					{isPending
-						? Skeleton(table, {})
+						? Skeleton(table)
 						: table.getRowModel().rows.map((row) => (
 								<tr key={row.id} className="bg-white border-b">
 									{row.getVisibleCells().map((cell) => (

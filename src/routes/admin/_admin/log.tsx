@@ -7,50 +7,27 @@ import {
 	useReactTable,
 } from "@tanstack/react-table";
 import { type ChangeEvent, useEffect, useState } from "react";
-import { useCookies } from "react-cookie";
 import { useDebounce } from "use-debounce";
-import Alert from "@/components/Alert";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
 import type { LogBase, LogResponseArray } from "@/types/log";
+import { api } from "@/utils/api";
+import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/log")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const [cookies] = useCookies(["access_token"]);
 	const [searchValue, setSearchValue] = useState("");
 	const [debouncedSearch] = useDebounce(searchValue, 1000);
+	const { setAlert } = useAlert();
 
 	const columnHelper = createColumnHelper<LogBase>();
 
-	const fetchData = async () => {
-		const params = new URLSearchParams();
-		if (debouncedSearch) {
-			params.append("q", debouncedSearch);
-		}
-		const url = `${import.meta.env.VITE_DEV_LINK}/log?${params.toString()}`;
-		const response = await fetch(url, {
-			headers: {
-				Authorization: `Bearer ${cookies.access_token}`,
-			},
-		});
-
-		if (!response.ok) {
-			const errorData: LogResponseArray = await response
-				.json()
-				.catch(() => ({}));
-			const errorMessage =
-				errorData.error?.message || `HTTP error! status: ${response.status}`;
-			throw new Error(errorMessage);
-		}
-		return response.json();
-	};
-
 	const { isPending, error, isError, data } = useQuery<LogResponseArray>({
 		queryKey: ["logData", debouncedSearch],
-		queryFn: fetchData,
+		queryFn: () => api("/log"),
 	});
 
 	const columns = [
@@ -78,11 +55,6 @@ function RouteComponent() {
 
 	return (
 		<>
-			{isError && (
-				<Alert variant="error" className="z-50">
-					{error.message}
-				</Alert>
-			)}
 			<div className="flex justify-between">
 				<SearchBar
 					onChange={handleChange}
@@ -107,7 +79,7 @@ function RouteComponent() {
 				</thead>
 				<tbody>
 					{isPending
-						? Skeleton(table, {})
+						? Skeleton(table)
 						: table.getRowModel().rows.map((row) => (
 								<tr key={row.id} className="bg-white border-b">
 									{row.getVisibleCells().map((cell) => (
@@ -124,7 +96,4 @@ function RouteComponent() {
 			</table>
 		</>
 	);
-}
-function setAlert(message: string, arg1: string) {
-	throw new Error("Function not implemented.");
 }
