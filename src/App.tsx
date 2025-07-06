@@ -5,6 +5,7 @@ import { AlertProvider } from "./utils/useAlert";
 import { useProfile } from "./utils/useProfile";
 
 const router = createRouter({
+	scrollRestoration: true,
 	routeTree,
 	context: { authentication: undefined! },
 	notFoundMode: "root",

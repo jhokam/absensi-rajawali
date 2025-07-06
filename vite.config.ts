@@ -1,12 +1,18 @@
 import tailwindcss from "@tailwindcss/vite";
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import tanstackRouter from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react-swc";
 import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig(() => {
 	return {
-		plugins: [react(), tailwindcss(), TanStackRouterVite()],
+		plugins: [
+			react(),
+			tailwindcss(),
+			tanstackRouter({
+				autoCodeSplitting: true,
+			}),
+		],
 		resolve: {
 			alias: {
 				"@": "/src",
