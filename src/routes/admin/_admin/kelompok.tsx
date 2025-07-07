@@ -6,7 +6,8 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { useQueryState } from "nuqs";
+import { type ChangeEvent, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
@@ -19,8 +20,11 @@ export const Route = createFileRoute("/admin/_admin/kelompok")({
 });
 
 function RouteComponent() {
-	const [searchValue, setSearchValue] = useState("");
-	const [debouncedSearch] = useDebounce(searchValue, 1000);
+	const [searchValue, setSearchValue] = useQueryState("q", {
+		defaultValue: "",
+		throttleMs: 2000,
+	});
+	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
 	const params = new URLSearchParams({ q: debouncedSearch });
 

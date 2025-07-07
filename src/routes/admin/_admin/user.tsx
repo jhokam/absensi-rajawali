@@ -7,6 +7,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import { useQueryState } from "nuqs";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import Button from "@/components/Button";
@@ -30,8 +31,11 @@ function RouteComponent() {
 	const [deleteId, setDeleteId] = useState<string>("");
 	const queryClient = useQueryClient();
 	const { role } = useProfile();
-	const [searchValue, setSearchValue] = useState("");
-	const [debouncedSearch] = useDebounce(searchValue, 1000);
+	const [searchValue, setSearchValue] = useQueryState("q", {
+		defaultValue: "",
+		throttleMs: 2000,
+	});
+	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
 	const params = new URLSearchParams({ q: debouncedSearch });
 

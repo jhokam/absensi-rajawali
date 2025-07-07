@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { NuqsAdapter } from "nuqs/adapters/react";
 import { routeTree } from "./routeTree.gen";
 import { AlertProvider } from "./utils/useAlert";
 import { useProfile } from "./utils/useProfile";
@@ -23,9 +24,14 @@ export default function App() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
-			<AlertProvider>
-				<RouterProvider router={router} context={{ authentication: profile }} />
-			</AlertProvider>
+			<NuqsAdapter>
+				<AlertProvider>
+					<RouterProvider
+						router={router}
+						context={{ authentication: profile }}
+					/>
+				</AlertProvider>
+			</NuqsAdapter>
 		</QueryClientProvider>
 	);
 }

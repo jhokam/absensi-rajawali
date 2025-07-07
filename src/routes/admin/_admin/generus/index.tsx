@@ -7,7 +7,8 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { useQueryState } from "nuqs";
+import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
@@ -22,19 +23,21 @@ import { api } from "@/utils/api";
 import { useAlert } from "@/utils/useAlert";
 import { useProfile } from "@/utils/useProfile";
 
-
 export const Route = createFileRoute("/admin/_admin/generus/")({
 	component: RouteComponent,
 });
 
 function RouteComponent() {
-	const navigate = useNavigate()
+	const navigate = useNavigate();
 	const [dialog, setDialog] = useState(false);
-	const [deleteId, setDeleteId] = useState<string>("");
+	const [deleteId, setDeleteId] = useState("");
 	const queryClient = useQueryClient();
 	const { role } = useProfile();
-	const [searchValue, setSearchValue] = useState("");
-	const [debouncedSearch] = useDebounce(searchValue, 1000);
+	const [searchValue, setSearchValue] = useQueryState("q", {
+		defaultValue: "",
+		throttleMs: 2000,
+	});
+	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
 	const params = new URLSearchParams({ q: debouncedSearch });
 
@@ -82,9 +85,11 @@ function RouteComponent() {
 				const row = props.row.original;
 				return (
 					<div className="flex space-x-2">
-						<button type="button" onClick={() => {
-							return navigate({to: `/admin/generus/update/${row.id}`})
-						}}>
+						<button
+							type="button"
+							onClick={() => {
+								return navigate({ to: `/admin/generus/update/${row.id}` });
+							}}>
 							<Icon
 								icon="line-md:edit"
 								fontSize={20}
@@ -115,10 +120,6 @@ function RouteComponent() {
 		},
 	});
 
-	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-		setSearchValue(e.target.value);
-	};
-
 	useEffect(() => {
 		if (isError) {
 			setAlert(error.message, "error");
@@ -139,7 +140,7 @@ function RouteComponent() {
 			)}
 			<div className="flex justify-between">
 				<SearchBar
-					onChange={handleChange}
+					onChange={(e) => setSearchValue(e.target.value)}
 					placeholder="Search by Name"
 					value={searchValue}
 				/>
