@@ -84,9 +84,8 @@ function RouteComponent() {
 				}}
 				className="space-y-4">
 				<div className="space-y-4">
-					<form.Field
-						name="nama"
-						children={(field) => (
+					<form.Field name="nama">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Nama"
@@ -105,11 +104,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="jenis_kelamin"
-						children={(field) => (
+					<form.Field name="jenis_kelamin">
+						{(field) => (
 							<div className="space-y-1">
 								<ThemedSelect
 									name={field.name}
@@ -121,11 +119,10 @@ function RouteComponent() {
 								/>
 							</div>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="tempat_lahir"
-						children={(field) => (
+					<form.Field name="tempat_lahir">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Tempat Lahir"
@@ -143,11 +140,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="tanggal_lahir"
-						children={(field) => (
+					<form.Field name="tanggal_lahir">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Tanggal Lahir"
@@ -167,11 +163,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="jenjang"
-						children={(field) => (
+					<form.Field name="jenjang">
+						{(field) => (
 							<div className="space-y-1">
 								<ThemedSelect
 									name={field.name}
@@ -183,11 +178,10 @@ function RouteComponent() {
 								/>
 							</div>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="nomer_whatsapp"
-						children={(field) => (
+					<form.Field name="nomer_whatsapp">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Nomor WhatsApp"
@@ -205,11 +199,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="pendidikan_terakhir"
-						children={(field) => (
+					<form.Field name="pendidikan_terakhir">
+						{(field) => (
 							<div className="space-y-1">
 								<ThemedSelect
 									name={field.name}
@@ -221,11 +214,10 @@ function RouteComponent() {
 								/>
 							</div>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="nama_orang_tua"
-						children={(field) => (
+					<form.Field name="nama_orang_tua">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Nama Orang Tua"
@@ -243,11 +235,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="nomer_whatsapp_orang_tua"
-						children={(field) => (
+					<form.Field name="nomer_whatsapp_orang_tua">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Nomor WhatsApp Orang Tua"
@@ -265,11 +256,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="sambung"
-						children={(field) => (
+					<form.Field name="sambung">
+						{(field) => (
 							<div className="space-y-1">
 								<ThemedSelect
 									name={field.name}
@@ -281,11 +271,10 @@ function RouteComponent() {
 								/>
 							</div>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="alamat_tempat_tinggal"
-						children={(field) => (
+					<form.Field name="alamat_tempat_tinggal">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Alamat Tempat Tinggal"
@@ -303,11 +292,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="keterangan"
-						children={(field) => (
+					<form.Field name="keterangan">
+						{(field) => (
 							<div className="space-y-1">
 								<ThemedSelect
 									name={field.name}
@@ -319,11 +307,10 @@ function RouteComponent() {
 								/>
 							</div>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="alamat_asal"
-						children={(field) => (
+					<form.Field name="alamat_asal">
+						{(field) => (
 							<>
 								<ThemedInput
 									label="Alamat Asal"
@@ -341,11 +328,10 @@ function RouteComponent() {
 								<TextError field={field} />
 							</>
 						)}
-					/>
+					</form.Field>
 
-					<form.Field
-						name="kelompok_id"
-						children={(field) => (
+					<form.Field name="kelompok_id">
+						{(field) => (
 							<div className="space-y-1">
 								<ThemedSelect
 									name={field.name}
@@ -357,19 +343,19 @@ function RouteComponent() {
 								/>
 							</div>
 						)}
-					/>
+					</form.Field>
 				</div>
 
 				<div className="flex justify-end space-x-4 mt-6">
 					<ThemedLink to="/admin/generus">Close</ThemedLink>
 					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-						children={([canSubmit, isSubmitting]) => (
+						selector={(state) => [state.canSubmit, state.isSubmitting]}>
+						{([canSubmit, isSubmitting]) => (
 							<Button type="submit" disabled={!canSubmit}>
 								{isSubmitting ? "Memproses..." : "Submit"}
 							</Button>
 						)}
-					/>
+					</form.Subscribe>
 				</div>
 			</form>
 		</div>

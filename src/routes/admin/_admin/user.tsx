@@ -13,6 +13,8 @@ import { useDebounce } from "use-debounce";
 import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
+import SheetCreateUser from "@/components/Sheet/Create/User";
+import SheetUpdateUser from "@/components/Sheet/Update/User";
 import Skeleton from "@/components/Skeleton";
 import type { UserBase, UserResponse, UserResponseArray } from "@/types/user";
 import { api } from "@/utils/api";
@@ -135,6 +137,15 @@ function RouteComponent() {
 					handleCancel={() => setDialog(false)}
 					handleConfirm={handleDeleteConfirm}
 					description="This action cannot be undone."
+				/>
+			)}
+			{sheetCreate && (
+				<SheetCreateUser closeSheet={() => setSheetCreate(false)} />
+			)}
+			{sheetUpdate && selectedData && (
+				<SheetUpdateUser
+					closeSheet={() => setSheetUpdate(false)}
+					selectedData={selectedData}
 				/>
 			)}
 			<div className="flex justify-between">

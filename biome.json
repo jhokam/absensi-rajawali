@@ -7,23 +7,7 @@
 		"lineEnding": "crlf"
 	},
 	"linter": {
-		"enabled": true,
-		"rules": {
-			"style": {
-				"useNamingConvention": "off",
-				"noDefaultExport": "off"
-			},
-			"suspicious": {
-				"noReactSpecificProps": "off",
-				"noEmptyBlockStatements": "off"
-			},
-			"complexity": {
-				"noExcessiveCognitiveComplexity": "off"
-			},
-			"correctness": {
-				"noChildrenProp": "off"
-			}
-		}
+		"enabled": true
 	},
 	"files": {
 		"ignoreUnknown": true

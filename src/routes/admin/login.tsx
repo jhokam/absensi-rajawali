@@ -100,9 +100,8 @@ function LoginPage() {
 						form.handleSubmit();
 					}}>
 					<div>
-						<form.Field
-							name="username"
-							children={(field) => (
+						<form.Field name="username">
+							{(field) => (
 								<>
 									<ThemedInput
 										label="Username"
@@ -119,12 +118,11 @@ function LoginPage() {
 									<TextError field={field} />
 								</>
 							)}
-						/>
+						</form.Field>
 					</div>
 					<div>
-						<form.Field
-							name="password"
-							children={(field) => (
+						<form.Field name="password">
+							{(field) => (
 								<>
 									<ThemedInput
 										label="Password"
@@ -142,16 +140,16 @@ function LoginPage() {
 									<TextError field={field} />
 								</>
 							)}
-						/>
+						</form.Field>
 					</div>
 					<form.Subscribe
-						selector={(state) => [state.canSubmit, state.isSubmitting]}
-						children={([canSubmit, isSubmitting]) => (
+						selector={(state) => [state.canSubmit, state.isSubmitting]}>
+						{([canSubmit, isSubmitting]) => (
 							<Button type="submit" disabled={!canSubmit}>
 								{isSubmitting ? "Memproses..." : "Masuk"}
 							</Button>
 						)}
-					/>
+					</form.Subscribe>
 				</form>
 			</div>
 		</div>

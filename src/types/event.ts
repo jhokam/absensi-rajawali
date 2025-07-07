@@ -1,5 +1,5 @@
-import type { ResponseBase, ResponseBaseWithArray } from "./api";
 import z from "zod";
+import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
 export type EventBase = {
 	id: string;
@@ -34,3 +34,11 @@ export const eventSchema = z.object({
 	description: z.string().nonempty("Deskripsi tidak boleh kosong"),
 });
 
+export const defaultValueEvent: EventRequest = {
+	title: "",
+	start_date: new Date(),
+	end_date: new Date(),
+	latitude: 0,
+	longitude: 0,
+	description: "",
+};

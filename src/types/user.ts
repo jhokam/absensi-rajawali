@@ -1,5 +1,5 @@
-import type { ResponseBase, ResponseBaseWithArray } from "./api";
 import z from "zod";
+import type { ResponseBase, ResponseBaseWithArray } from "./api";
 
 export type UserBase = {
 	id: string;
@@ -21,3 +21,9 @@ export const userSchema = z.object({
 		required_error: "Role tidak boleh kosong",
 	}),
 });
+
+export const defaultValueUser: UserRequest = {
+	username: "",
+	password: "",
+	role: "User",
+};
