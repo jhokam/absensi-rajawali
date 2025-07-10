@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -11,8 +10,8 @@ import { type ChangeEvent, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
-import type { LogBase, LogResponseArray } from "@/types/log";
-import { api } from "@/utils/api";
+import type { LogBase } from "@/types/log";
+import { useLog } from "@/utils/fetch/useLog";
 import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/log")({
@@ -30,10 +29,7 @@ function RouteComponent() {
 
 	const columnHelper = createColumnHelper<LogBase>();
 
-	const { isPending, error, isError, data } = useQuery<LogResponseArray>({
-		queryKey: ["logData", debouncedSearch],
-		queryFn: () => api(`/log?${params.toString()}`),
-	});
+	const { data, isPending, error, isError } = useLog(params, debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

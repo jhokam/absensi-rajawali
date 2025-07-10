@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -16,12 +16,9 @@ import SearchBar from "@/components/SearchBar";
 import SheetCreateEvent from "@/components/Sheet/Create/Event";
 import SheetUpdateEvent from "@/components/Sheet/Update/Event";
 import Skeleton from "@/components/Skeleton";
-import type {
-	EventBase,
-	EventResponse,
-	EventResponseArray,
-} from "@/types/event";
+import type { EventBase, EventResponse } from "@/types/event";
 import { api } from "@/utils/api";
+import { useEvent } from "@/utils/fetch/useEvent";
 import { useAlert } from "@/utils/useAlert";
 import { useProfile } from "@/utils/useProfile";
 
@@ -74,10 +71,7 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const { isPending, error, isError, data } = useQuery<EventResponseArray>({
-		queryKey: ["eventData", debouncedSearch],
-		queryFn: () => api(`/event?${params.toString()}`),
-	});
+	const { isPending, error, isError, data } = useEvent(params, debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

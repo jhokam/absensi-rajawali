@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -11,8 +10,8 @@ import { type ChangeEvent, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
-import type { KelompokBase, KelompokResponseArray } from "@/types/kelompok";
-import { api } from "@/utils/api";
+import type { KelompokBase } from "@/types/kelompok";
+import { useKelompok } from "@/utils/fetch/useKelompok";
 import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/kelompok")({
@@ -28,12 +27,12 @@ function RouteComponent() {
 	const { setAlert } = useAlert();
 	const params = new URLSearchParams({ q: debouncedSearch });
 
-	const columnHelper = createColumnHelper<KelompokBase>();
+	const { isPending, error, isError, data } = useKelompok(
+		params,
+		debouncedSearch,
+	);
 
-	const { isPending, error, isError, data } = useQuery<KelompokResponseArray>({
-		queryKey: ["kelompokData", debouncedSearch],
-		queryFn: () => api(`/kelompok?${params.toString()}`),
-	});
+	const columnHelper = createColumnHelper<KelompokBase>();
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

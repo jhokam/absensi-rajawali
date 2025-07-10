@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -11,8 +10,8 @@ import { type ChangeEvent, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
-import type { PresenceBase, PresenceResponseArray } from "@/types/presence";
-import { api } from "@/utils/api";
+import type { PresenceBase } from "@/types/presence";
+import { usePresence } from "@/utils/fetch/usePresence";
 import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/presensi")({
@@ -30,10 +29,10 @@ function RouteComponent() {
 
 	const columnHelper = createColumnHelper<PresenceBase>();
 
-	const { isPending, error, isError, data } = useQuery<PresenceResponseArray>({
-		queryKey: ["presenceData", debouncedSearch],
-		queryFn: () => api(`/presence?${params.toString()}`),
-	});
+	const { data, isPending, error, isError } = usePresence(
+		params,
+		debouncedSearch,
+	);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

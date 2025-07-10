@@ -20,6 +20,7 @@ import {
 	generusSchema,
 } from "@/types/generus";
 import { api } from "@/utils/api";
+import { useKelompok } from "@/utils/fetch/useKelompok";
 import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/generus/create")({
@@ -44,6 +45,8 @@ function RouteComponent() {
 			setAlert(error.message, "error");
 		},
 	});
+
+	const { data } = useKelompok();
 
 	const form = useForm({
 		defaultValues: {

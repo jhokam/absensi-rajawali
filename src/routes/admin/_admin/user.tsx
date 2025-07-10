@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -16,8 +16,9 @@ import SearchBar from "@/components/SearchBar";
 import SheetCreateUser from "@/components/Sheet/Create/User";
 import SheetUpdateUser from "@/components/Sheet/Update/User";
 import Skeleton from "@/components/Skeleton";
-import type { UserBase, UserResponse, UserResponseArray } from "@/types/user";
+import type { UserBase, UserResponse } from "@/types/user";
 import { api } from "@/utils/api";
+import { useUser } from "@/utils/fetch/useUser";
 import { useAlert } from "@/utils/useAlert";
 import { useProfile } from "@/utils/useProfile";
 
@@ -70,10 +71,7 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const { isPending, error, isError, data } = useQuery<UserResponseArray>({
-		queryKey: ["userData", debouncedSearch],
-		queryFn: () => api(`/users?${params.toString()}`),
-	});
+	const { data, isPending, error, isError } = useUser(params, debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

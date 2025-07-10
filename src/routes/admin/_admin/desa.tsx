@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -11,8 +10,8 @@ import { type ChangeEvent, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
-import type { DesaBase, DesaResponseArray } from "@/types/desa";
-import { api } from "@/utils/api";
+import type { DesaBase } from "@/types/desa";
+import { useDesa } from "@/utils/fetch/useDesa";
 import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/desa")({
@@ -30,10 +29,8 @@ function RouteComponent() {
 	const columnHelper = createColumnHelper<DesaBase>();
 
 	const params = new URLSearchParams({ q: debouncedSearch });
-	const { isPending, error, isError, data } = useQuery<DesaResponseArray>({
-		queryKey: ["desaData", debouncedSearch],
-		queryFn: () => api(`/desa?${params.toString()}`),
-	});
+
+	const { isPending, error, isError, data } = useDesa(params, debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
