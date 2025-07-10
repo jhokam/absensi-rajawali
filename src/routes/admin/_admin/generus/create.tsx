@@ -13,7 +13,7 @@ import {
 	keteranganOptions,
 	pendidikanTerakhirOptions,
 	sambungOptions,
-} from "@/constants";
+} from "@/constants/generus";
 import {
 	type GenerusRequest,
 	type GenerusResponse,
@@ -113,9 +113,10 @@ function RouteComponent() {
 									name={field.name}
 									label="Jenis Kelamin"
 									options={jenisKelaminOptions}
-									field={field}
 									placeholder="Pilih Jenis Kelamin"
 									required={true}
+									value={field.state.value}
+									onChange={(e) => field.handleChange(e.target.value)}
 								/>
 							</div>
 						)}
@@ -172,9 +173,10 @@ function RouteComponent() {
 									name={field.name}
 									label="Jenjang"
 									options={jenjangOptions}
-									field={field}
 									placeholder="Pilih Jenjang"
 									required={true}
+									value={field.state.value}
+									onChange={(e) => field.handleChange(e.target.value)}
 								/>
 							</div>
 						)}
@@ -208,9 +210,10 @@ function RouteComponent() {
 									name={field.name}
 									label="Pendidikan Terakhir"
 									options={pendidikanTerakhirOptions}
-									field={field}
 									placeholder="Pilih Pendidikan Terakhir"
 									required={true}
+									value={field.state.value}
+									onChange={(e) => field.handleChange(e.target.value)}
 								/>
 							</div>
 						)}
@@ -265,9 +268,10 @@ function RouteComponent() {
 									name={field.name}
 									label="Sambung"
 									options={sambungOptions}
-									field={field}
 									placeholder="Pilih Sambung"
 									required={true}
+									value={field.state.value}
+									onChange={(e) => field.handleChange(e.target.value)}
 								/>
 							</div>
 						)}
@@ -301,8 +305,9 @@ function RouteComponent() {
 									name={field.name}
 									label="Keterangan"
 									options={keteranganOptions}
-									field={field}
 									placeholder="Pilih Keterangan"
+									value={field.state.value}
+									onChange={(e) => field.handleChange(e.target.value)}
 									required={true}
 								/>
 							</div>
@@ -337,9 +342,10 @@ function RouteComponent() {
 									name={field.name}
 									label="Kelompok"
 									options={kelompokOptions}
-									field={field}
 									placeholder="Pilih Kelompok"
 									required={true}
+									value={field.state.value}
+									onChange={(e) => field.handleChange(e.target.value)}
 								/>
 							</div>
 						)}

@@ -3,11 +3,14 @@ import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Cookies, useCookies } from "react-cookie";
-import { z } from "zod";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
-import type { LoginRequest, LoginResponse } from "@/types/api";
+import {
+	type LoginRequest,
+	type LoginResponse,
+	loginSchema,
+} from "@/types/api";
 import { api } from "@/utils/api";
 import { useAlert } from "@/utils/useAlert";
 
@@ -21,11 +24,6 @@ export const Route = createFileRoute("/admin/login")({
 			});
 		}
 	},
-});
-
-const loginSchema = z.object({
-	username: z.string().nonempty("Username tidak boleh kosong"),
-	password: z.string().nonempty("Password tidak boleh kosong"),
 });
 
 function LoginPage() {

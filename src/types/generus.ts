@@ -30,11 +30,11 @@ export type GenerusBase = {
 
 export type GenerusFilter = {
 	query?: string;
-	pendidikan_terakhir?: GenerusBase["pendidikan_terakhir"];
-	keterangan?: GenerusBase["keterangan"];
 	jenis_kelamin?: GenerusBase["jenis_kelamin"];
 	jenjang?: GenerusBase["jenjang"];
+	pendidikan_terakhir?: GenerusBase["pendidikan_terakhir"];
 	sambung?: GenerusBase["sambung"];
+	keterangan?: GenerusBase["keterangan"];
 };
 
 export type GenerusRequest = Omit<GenerusBase, "id">;

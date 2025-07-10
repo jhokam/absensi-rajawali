@@ -53,3 +53,8 @@ export const filterOptions = [
 	{ value: "sambung", label: "Sambung", options: sambungOptions },
 	{ value: "keterangan", label: "Keterangan", options: keteranganOptions },
 ];
+
+export const kelompokOptions = [
+	{ value: "Kanguru", label: "Kanguru" },
+	{ value: "Gajah", label: "Gajah" },
+];

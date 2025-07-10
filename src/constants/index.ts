@@ -1,4 +1,4 @@
-export const kelompokOptions = [
-	{ value: "Kanguru", label: "Kanguru" },
-	{ value: "Gajah", label: "Gajah" },
+export const roleOptions = [
+	{ value: "Admin", label: "Admin" },
+	{ value: "User", label: "User" },
 ];

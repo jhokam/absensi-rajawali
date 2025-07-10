@@ -112,8 +112,9 @@ export default function SheetUpdateUser({
 										name={field.name}
 										label="Role"
 										options={roleOptions}
-										field={field}
 										placeholder="Pilih Role"
+										value={field.state.value}
+										onChange={(e) => field.handleChange(e.target.value as typeof field.state.value)}
 										required={true}
 									/>
 								</div>

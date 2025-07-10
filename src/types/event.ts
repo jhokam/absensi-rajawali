@@ -11,12 +11,6 @@ export type EventBase = {
 	description?: string;
 };
 
-export type EventRequest = Omit<EventBase, "id">;
-
-export type EventResponseArray = ResponseBaseWithArray<EventBase>;
-
-export type EventResponse = ResponseBase<EventBase>;
-
 export const eventSchema = z.object({
 	title: z.string().nonempty("Judul tidak boleh kosong"),
 	start_date: z.date({
@@ -31,8 +25,14 @@ export const eventSchema = z.object({
 	longitude: z.number({
 		required_error: "Longitude tidak boleh kosong",
 	}),
-	description: z.string().nonempty("Deskripsi tidak boleh kosong"),
+	description: z.string().optional(),
 });
+
+export type EventRequest = Omit<EventBase, "id">;
+
+export type EventResponseArray = ResponseBaseWithArray<EventBase>;
+
+export type EventResponse = ResponseBase<EventBase>;
 
 export const defaultValueEvent: EventRequest = {
 	title: "",

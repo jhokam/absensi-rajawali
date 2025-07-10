@@ -1,4 +1,3 @@
-import { Icon } from "@iconify/react/dist/iconify.js";
 import { createLink, type LinkComponent } from "@tanstack/react-router";
 import { type AnchorHTMLAttributes, forwardRef } from "react";
 

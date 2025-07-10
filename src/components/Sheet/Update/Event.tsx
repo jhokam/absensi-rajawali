@@ -37,6 +37,7 @@ export default function SheetUpdateEvent({
 			title: selectedData.title,
 			start_date: selectedData.start_date,
 			end_date: selectedData.end_date,
+			description: selectedData.description,
 			latitude: selectedData.latitude,
 			longitude: selectedData.longitude,
 		},
@@ -168,6 +169,28 @@ export default function SheetUpdateEvent({
 										onChange={(e) => field.handleChange(Number(e.target.value))}
 										placeholder="John Doe"
 										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
+								</>
+							)}
+						</form.Field>
+
+						<form.Field name="description">
+							{(field) => (
+								<>
+									<ThemedInput
+										label="Description"
+										variant="secondary"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value || ""}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="John Doe"
+										required={false}
 										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
 									/>
 									<TextError field={field} />
