@@ -51,6 +51,9 @@ function LoginPage() {
 			setAlert(data.message, "success");
 			setCookie("access_token", data.data.access_token, {
 				expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+				secure: true,
+				sameSite: "strict",
+				path: "/admin",
 			});
 			navigate({
 				to: "/admin/dashboard",
