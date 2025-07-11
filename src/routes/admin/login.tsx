@@ -1,12 +1,13 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { AxiosError } from "axios";
 import { Cookies, useCookies } from "react-cookie";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
 import {
+	type ErrorBase,
 	type LoginRequest,
 	type LoginResponse,
 	loginSchema,
@@ -31,20 +32,19 @@ function LoginPage() {
 	const { setAlert } = useAlert();
 	const navigate = useNavigate();
 
-	const handleLogin = async (data: LoginRequest) => {
-		return await api("/auth/login", {
-			method: "POST",
-			body: JSON.stringify(data),
-		});
-	};
-
-	const { mutateAsync, error, isError } = useMutation<
+	const mutateLogin = useMutation<
 		LoginResponse,
-		Error,
+		AxiosError<ErrorBase>,
 		LoginRequest
 	>({
 		mutationKey: ["login"],
-		mutationFn: handleLogin,
+		mutationFn: (data) => api.post("/auth/login", data),
+		onError: (error) => {
+			setAlert(
+				error.response?.data.error.message || "Internal Server Error",
+				"error",
+			);
+		},
 		onSuccess: (data) => {
 			setAlert(data.message, "success");
 			setCookie("access_token", data.data.access_token, {
@@ -57,9 +57,6 @@ function LoginPage() {
 				to: "/admin/dashboard",
 			});
 		},
-		onError: (error) => {
-			setAlert(error.message, "error");
-		},
 	});
 
 	const form = useForm({
@@ -68,18 +65,12 @@ function LoginPage() {
 			password: "",
 		},
 		onSubmit: async (values) => {
-			await mutateAsync(values.value);
+			await mutateLogin.mutateAsync(values.value);
 		},
 		validators: {
 			onChange: loginSchema,
 		},
 	});
-
-	useEffect(() => {
-		if (isError) {
-			setAlert(error.message, "error");
-		}
-	}, [isError, error]);
 
 	return (
 		<div className="flex flex-col items-center justify-center px-6 pt-8 mx-auto md:h-screen pt:mt-0 dark:bg-gray-900">

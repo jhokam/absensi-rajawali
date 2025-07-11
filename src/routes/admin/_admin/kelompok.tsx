@@ -25,12 +25,8 @@ function RouteComponent() {
 	});
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
-	const params = new URLSearchParams({ q: debouncedSearch });
 
-	const { isPending, error, isError, data } = useKelompok(
-		params,
-		debouncedSearch,
-	);
+	const { isPending, error, isError, data } = useKelompok(debouncedSearch);
 
 	const columnHelper = createColumnHelper<KelompokBase>();
 

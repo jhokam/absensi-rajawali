@@ -7,6 +7,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
+import type { AxiosError } from "axios";
 import { useQueryState } from "nuqs";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -16,11 +17,11 @@ import SearchBar from "@/components/SearchBar";
 import SheetCreateUser from "@/components/Sheet/Create/User";
 import SheetUpdateUser from "@/components/Sheet/Update/User";
 import Skeleton from "@/components/Skeleton";
+import type { ErrorBase } from "@/types/api";
 import type { UserBase, UserResponse } from "@/types/user";
 import { api } from "@/utils/api";
 import { useUser } from "@/utils/fetch/useUser";
 import { useAlert } from "@/utils/useAlert";
-import { useProfile } from "@/utils/useProfile";
 
 export const Route = createFileRoute("/admin/_admin/user")({
 	component: RouteComponent,
@@ -31,25 +32,27 @@ function RouteComponent() {
 	const [sheetUpdate, setSheetUpdate] = useState(false);
 	const [selectedData, setSelectedData] = useState<UserBase | null>(null);
 	const [dialog, setDialog] = useState(false);
-	const [deleteId, setDeleteId] = useState<string>("");
+	const [deleteId, setDeleteId] = useState("");
 	const queryClient = useQueryClient();
-	const { role } = useProfile();
 	const [searchValue, setSearchValue] = useQueryState("q", {
 		defaultValue: "",
 		throttleMs: 2000,
 	});
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
-	const params = new URLSearchParams({ q: debouncedSearch });
 
-	const mutation = useMutation({
-		mutationFn: (id: string) => api(`/users/${id}`, { method: "DELETE" }),
-		onSuccess: (success: UserResponse) => {
+	//! Need to console.log error.message (dicoba error.success apakah bisa?)
+	const mutation = useMutation<UserResponse, AxiosError<ErrorBase>, string>({
+		mutationFn: (id: string) => api.delete(`/users/${id}`),
+		onSuccess: (success) => {
 			queryClient.invalidateQueries({ queryKey: ["userData"] });
 			setAlert(success.message, "success");
 		},
 		onError: (error) => {
-			setAlert(error.message, "error");
+			setAlert(
+				error.response?.data.error.message || "Internal Server Error",
+				"error",
+			);
 		},
 	});
 
@@ -71,7 +74,7 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const { data, isPending, error, isError } = useUser(params, debouncedSearch);
+	const { data, isPending, error, isError } = useUser(debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
@@ -102,7 +105,6 @@ function RouteComponent() {
 				);
 			},
 			enableHiding: true,
-			meta: { hidden: role === "User" },
 		}),
 	];
 
@@ -110,9 +112,6 @@ function RouteComponent() {
 		data: data?.data || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		state: {
-			columnVisibility: { actions: role !== "User" },
-		},
 	});
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

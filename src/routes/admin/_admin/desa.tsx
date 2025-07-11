@@ -28,9 +28,7 @@ function RouteComponent() {
 
 	const columnHelper = createColumnHelper<DesaBase>();
 
-	const params = new URLSearchParams({ q: debouncedSearch });
-
-	const { isPending, error, isError, data } = useDesa(params, debouncedSearch);
+	const { isPending, error, isError, data } = useDesa(debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

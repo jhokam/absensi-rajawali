@@ -25,14 +25,10 @@ function RouteComponent() {
 	});
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
-	const params = new URLSearchParams({ q: debouncedSearch });
 
 	const columnHelper = createColumnHelper<PresenceBase>();
 
-	const { data, isPending, error, isError } = usePresence(
-		params,
-		debouncedSearch,
-	);
+	const { data, isPending, error, isError } = usePresence(debouncedSearch);
 
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),

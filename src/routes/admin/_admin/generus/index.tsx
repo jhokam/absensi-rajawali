@@ -1,5 +1,5 @@
 import { Icon } from "@iconify/react/dist/iconify.js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
 	createColumnHelper,
@@ -10,18 +10,24 @@ import {
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import Button from "@/components/Button";
 import Dialog from "@/components/Dialog";
 import SearchBar from "@/components/SearchBar";
+import SheetFilter from "@/components/SheetFilter";
 import Skeleton from "@/components/Skeleton";
 import ThemedLink from "@/components/ThemedLink";
-import type {
-	GenerusBase,
-	GenerusResponse,
-	GenerusResponseArray,
-} from "@/types/generus";
+import ThemedSelect from "@/components/ThemedSelect";
+import {
+	jenisKelaminOptions,
+	jenjangOptions,
+	keteranganOptions,
+	pendidikanTerakhirOptions,
+	sambungOptions,
+} from "@/constants/generus";
+import type { GenerusBase, GenerusResponse } from "@/types/generus";
 import { api } from "@/utils/api";
+import { useGenerus } from "@/utils/fetch/useGenerus";
 import { useAlert } from "@/utils/useAlert";
-import { useProfile } from "@/utils/useProfile";
 
 export const Route = createFileRoute("/admin/_admin/generus/")({
 	component: RouteComponent,
@@ -30,16 +36,44 @@ export const Route = createFileRoute("/admin/_admin/generus/")({
 function RouteComponent() {
 	const navigate = useNavigate();
 	const [dialog, setDialog] = useState(false);
+	const [sheetFilter, setSheetFilter] = useState(false);
 	const [deleteId, setDeleteId] = useState("");
 	const queryClient = useQueryClient();
-	const { role } = useProfile();
 	const [searchValue, setSearchValue] = useQueryState("q", {
 		defaultValue: "",
 		throttleMs: 2000,
 	});
+	const [jenisKelaminParam, setJenisKelaminParam] = useQueryState(
+		"jenis_kelamin",
+		{
+			defaultValue: "",
+		},
+	);
+	const [jenjangParam, setJenjangParam] = useQueryState("jenjang", {
+		defaultValue: "",
+	});
+	const [pendidikanTerakhirParam, setPendidikanTerakhirParam] = useQueryState(
+		"pendidikan_terakhir",
+		{
+			defaultValue: "",
+		},
+	);
+	const [sambungParam, setSambungParam] = useQueryState("sambung", {
+		defaultValue: "",
+	});
+	const [keteranganParam, setKeteranganParam] = useQueryState("keterangan", {
+		defaultValue: "",
+	});
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
-	const params = new URLSearchParams({ q: debouncedSearch });
+	const params = new URLSearchParams({
+		q: debouncedSearch,
+		jenis_kelamin: jenisKelaminParam,
+		jenjang: jenjangParam,
+		pendidikan_terakhir: pendidikanTerakhirParam,
+		sambung: sambungParam,
+		keterangan: keteranganParam,
+	});
 
 	const mutation = useMutation({
 		mutationFn: (id: string) => api(`/generus/${id}`, { method: `DELETE` }),
@@ -65,10 +99,15 @@ function RouteComponent() {
 		setDialog(true);
 	};
 
-	const { isPending, error, isError, data } = useQuery<GenerusResponseArray>({
-		queryKey: ["generusData", debouncedSearch],
-		queryFn: () => api(`/generus?${params.toString()}`),
-	});
+	const { data, isPending, isError, error } = useGenerus(
+		debouncedSearch,
+		jenisKelaminParam,
+		jenjangParam,
+		pendidikanTerakhirParam,
+		sambungParam,
+		keteranganParam,
+	);
+
 	const columns = [
 		columnHelper.accessor("id", { header: "ID" }),
 		columnHelper.accessor("nama", { header: "Nama" }),
@@ -107,7 +146,6 @@ function RouteComponent() {
 				);
 			},
 			enableHiding: true,
-			meta: { hidden: role === "User" },
 		}),
 	];
 
@@ -115,16 +153,25 @@ function RouteComponent() {
 		data: data?.data || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
-		state: {
-			columnVisibility: { actions: role !== "User" },
-		},
 	});
 
 	useEffect(() => {
 		if (isError) {
-			setAlert(error.message, "error");
+			setAlert(
+				error.response?.data.message || "Internal Server Error",
+				"error",
+			);
 		}
 	}, [isError, error]);
+
+	// const handleFilter = (value) => {
+	// 	setJenisKelaminParam(value.value);
+	// 	setJenjangParam(value.value);
+	// 	setPendidikanTerakhirParam(value.value);
+	// 	setSambungParam(value.value);
+	// 	setKeteranganParam(value.value);
+	// 	setSheetFilter(false);
+	// };
 
 	return (
 		<>
@@ -138,12 +185,59 @@ function RouteComponent() {
 					description="This action cannot be undone."
 				/>
 			)}
+			{sheetFilter && (
+				<SheetFilter
+					closeSheet={() => setSheetFilter(false)}
+					submitFilter={() => setSheetFilter(false)}>
+					<ThemedSelect
+						name="jenis_kelamin"
+						label="Jenis Kelamin"
+						options={jenisKelaminOptions}
+						placeholder="Pilih Jenis Kelamin"
+						value={jenisKelaminParam}
+						onChange={(e) => setJenisKelaminParam(e.target.value)}
+					/>
+					<ThemedSelect
+						name="jenjang"
+						label="Jenjang"
+						options={jenjangOptions}
+						placeholder="Pilih Jenjang"
+						value={jenjangParam}
+						onChange={(e) => setJenjangParam(e.target.value)}
+					/>
+					<ThemedSelect
+						name="pendidikan_terakhir"
+						label="Pendidikan Terakhir"
+						options={pendidikanTerakhirOptions}
+						placeholder="Pilih Pendidikan Terakhir"
+						value={pendidikanTerakhirParam}
+						onChange={(e) => setPendidikanTerakhirParam(e.target.value)}
+					/>
+					<ThemedSelect
+						name="sambung"
+						label="Sambung"
+						options={sambungOptions}
+						placeholder="Pilih Sambung"
+						value={sambungParam}
+						onChange={(e) => setSambungParam(e.target.value)}
+					/>
+					<ThemedSelect
+						name="keterangan"
+						label="Keterangan"
+						options={keteranganOptions}
+						placeholder="Pilih Keterangan"
+						value={keteranganParam}
+						onChange={(e) => setKeteranganParam(e.target.value)}
+					/>
+				</SheetFilter>
+			)}
 			<div className="flex justify-between">
 				<SearchBar
 					onChange={(e) => setSearchValue(e.target.value)}
 					placeholder="Search by Name"
 					value={searchValue}
 				/>
+				<Button onClick={() => setSheetFilter(true)}>Filter</Button>
 				<ThemedLink to="/admin/generus/create">Create Generus</ThemedLink>
 			</div>
 			<table className="w-full text-left text-sm text-gray-500">

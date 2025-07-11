@@ -1,19 +1,18 @@
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { Suspense } from "react";
 import { CookiesProvider } from "react-cookie";
 import ThemedLink from "@/components/ThemedLink.tsx";
-import type { UserContextType } from "@/utils/useProfile.tsx";
 import { CustomAlert } from "../components/CustomAlert";
 
-type RouteContext = {
-	authentication: UserContextType;
-};
+type RouteContext = {};
 
 export const Route = createRootRouteWithContext<RouteContext>()({
 	component: () => (
 		<CookiesProvider>
 			<TanStackRouterDevtools />
+			<ReactQueryDevtools />
 			<Suspense>
 				<CustomAlert />
 				<Outlet />

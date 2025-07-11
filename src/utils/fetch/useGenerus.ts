@@ -1,9 +1,8 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { GenerusResponseArray } from "@/types/generus";
 import { api } from "../api";
 
 export function useGenerus(
-	params?: URLSearchParams,
 	debouncedSearch?: string,
 	jenisKelaminParam?: string,
 	jenjangParam?: string,
@@ -21,8 +20,17 @@ export function useGenerus(
 			sambungParam,
 			keteranganParam,
 		],
-		queryFn: () => api(`/generus?${params?.toString()}`),
-		placeholderData: keepPreviousData,
+		queryFn: async () =>
+			await api.get(`generus`, {
+				params: {
+					q: debouncedSearch,
+					jenis_kelamin: jenisKelaminParam,
+					jenjang: jenjangParam,
+					pendidikan_terakhir: pendidikanTerakhirParam,
+					sambung: sambungParam,
+					keterangan: keteranganParam,
+				},
+			}),
 	});
 
 	return data;

@@ -26,6 +26,13 @@ export type ResponseBaseWithArray<T> = {
 	data: T[];
 };
 
+export type ErrorBase = {
+	success: boolean;
+	message: string;
+	data: null;
+	error: ErrorResponse;
+};
+
 export type LoginBase = {
 	access_token: string;
 };

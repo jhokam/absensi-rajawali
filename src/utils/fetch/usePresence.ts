@@ -1,15 +1,11 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import type { PresenceResponseArray } from "@/types/presence";
 import { api } from "../api";
 
-export function usePresence(
-	params?: URLSearchParams,
-	debouncedSearch?: string,
-) {
+export function usePresence(debouncedSearch?: string) {
 	const data = useQuery<PresenceResponseArray>({
 		queryKey: ["presenceData", debouncedSearch],
-		queryFn: () => api(`/presence?${params?.toString()}`),
-		placeholderData: keepPreviousData,
+		queryFn: () => api.get(`/presence`, { params: { q: debouncedSearch } }),
 	});
 
 	return data;
