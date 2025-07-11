@@ -7,7 +7,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import { useQueryState } from "nuqs";
 import { type ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -41,12 +41,12 @@ function RouteComponent() {
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
 
-	const mutation = useMutation<EventResponse, AxiosError<ErrorBase>, string>({
+	const mutation = useMutation<
+		AxiosResponse<EventResponse>,
+		AxiosError<ErrorBase>,
+		string
+	>({
 		mutationFn: (id: string) => api.delete(`/event/${id}`),
-		onSuccess: (success) => {
-			queryClient.invalidateQueries({ queryKey: ["eventData"] });
-			setAlert(success.message, "success");
-		},
 		onError: (error) => {
 			setAlert(
 				error.response?.data.error.message || "Internal Server Error",
@@ -63,7 +63,12 @@ function RouteComponent() {
 	};
 
 	const handleDeleteConfirm = () => {
-		mutation.mutate(deleteId);
+		mutation.mutate(deleteId, {
+			onSuccess: (data) => {
+				queryClient.invalidateQueries({ queryKey: ["eventData"] });
+				setAlert(data.data.message, "success");
+			},
+		});
 		setDialog(false);
 		setDeleteId("");
 	};

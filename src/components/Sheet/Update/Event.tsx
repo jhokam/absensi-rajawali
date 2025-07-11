@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError, AxiosResponse } from "axios";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
 import type { ErrorBase } from "@/types/api";
@@ -21,9 +21,10 @@ export default function SheetUpdateEvent({
 	selectedData: EventBase;
 }) {
 	const { setAlert } = useAlert();
+	const queryClient = useQueryClient();
 
-	const { mutateAsync } = useMutation<
-		EventResponse,
+	const { mutate } = useMutation<
+		AxiosResponse<EventResponse>,
 		AxiosError<ErrorBase>,
 		EventRequest
 	>({
@@ -36,10 +37,6 @@ export default function SheetUpdateEvent({
 				"error",
 			);
 		},
-		onSuccess: (data) => {
-			setAlert(data.message, "success");
-			closeSheet();
-		},
 	});
 
 	const form = useForm({
@@ -51,8 +48,14 @@ export default function SheetUpdateEvent({
 			latitude: selectedData.latitude,
 			longitude: selectedData.longitude,
 		},
-		onSubmit: async ({ value }) => {
-			await mutateAsync(value);
+		onSubmit: ({ value }) => {
+			mutate(value, {
+				onSuccess: (data) => {
+					queryClient.invalidateQueries({ queryKey: ["eventData"] });
+					setAlert(data.data.message, "success");
+					closeSheet();
+				},
+			});
 			closeSheet();
 		},
 		validators: {

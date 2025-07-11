@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
@@ -34,19 +34,17 @@ function RouteComponent() {
 	const { data } = Route.useLoaderData();
 
 	const { setAlert } = useAlert();
+	const queryClient = useQueryClient();
 
-	const { mutateAsync } = useMutation<
-		GenerusResponse,
+	const { mutate } = useMutation<
+		AxiosResponse<GenerusResponse>,
 		AxiosError<ErrorBase>,
 		GenerusRequest
 	>({
 		mutationFn: async (request) => {
 			return api.put(`/generus/${data.id}`, request);
 		},
-		onSuccess: (data) => {
-			setAlert(data.message, "success");
-			redirect({ to: "/admin/generus" });
-		},
+
 		onError: (error) => {
 			setAlert(
 				error.response?.data.error.message || "Internal Server Error",
@@ -72,8 +70,14 @@ function RouteComponent() {
 			sambung: data.sambung,
 			kelompok_id: data.kelompok_id,
 		},
-		onSubmit: async ({ value }) => {
-			await mutateAsync(value);
+		onSubmit: ({ value }) => {
+			mutate(value, {
+				onSuccess: (data) => {
+					queryClient.invalidateQueries({ queryKey: ["generusData"] });
+					setAlert(data.data.message, "success");
+					redirect({ to: "/admin/generus" });
+				},
+			});
 		},
 		validators: {
 			onSubmit: generusSchema,

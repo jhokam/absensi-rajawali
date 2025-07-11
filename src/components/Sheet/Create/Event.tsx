@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError, AxiosResponse } from "axios";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
 import type { ErrorBase } from "@/types/api";
@@ -19,18 +19,15 @@ export default function SheetCreateEvent({
 	closeSheet: () => void;
 }) {
 	const { setAlert } = useAlert();
+	const queryClient = useQueryClient();
 
-	const { mutateAsync } = useMutation<
-		EventResponse,
+	const { mutate } = useMutation<
+		AxiosResponse<EventResponse>,
 		AxiosError<ErrorBase>,
 		EventRequest
 	>({
-		mutationFn: async (data: EventRequest) => {
+		mutationFn: (data: EventRequest) => {
 			return api.post("/event", data);
-		},
-		onSuccess: (data) => {
-			setAlert(data.message, "success");
-			closeSheet();
 		},
 		onError: (error) => {
 			setAlert(
@@ -42,9 +39,14 @@ export default function SheetCreateEvent({
 
 	const form = useForm({
 		defaultValues: defaultValueEvent,
-		onSubmit: async ({ value }) => {
-			await mutateAsync(value as EventRequest);
-			closeSheet();
+		onSubmit: ({ value }) => {
+			mutate(value as EventRequest, {
+				onSuccess: (data) => {
+					setAlert(data.data.message, "success");
+					queryClient.invalidateQueries({ queryKey: ["eventData"] });
+					closeSheet();
+				},
+			});
 		},
 		validators: {
 			onSubmit: eventSchema,

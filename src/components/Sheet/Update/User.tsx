@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError, AxiosResponse } from "axios";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
 import ThemedSelect from "@/components/ThemedSelect";
@@ -23,9 +23,10 @@ export default function SheetUpdateUser({
 	selectedData: UserBase;
 }) {
 	const { setAlert } = useAlert();
+	const queryClient = useQueryClient();
 
-	const { mutateAsync } = useMutation<
-		UserResponse,
+	const { mutate } = useMutation<
+		AxiosResponse<UserResponse>,
 		AxiosError<ErrorBase>,
 		UserRequest
 	>({
@@ -38,10 +39,6 @@ export default function SheetUpdateUser({
 				"error",
 			);
 		},
-		onSuccess: (data) => {
-			setAlert(data.message, "success");
-			closeSheet();
-		},
 	});
 
 	const form = useForm({
@@ -50,8 +47,14 @@ export default function SheetUpdateUser({
 			password: "",
 			role: selectedData.role,
 		},
-		onSubmit: async ({ value }) => {
-			await mutateAsync(value);
+		onSubmit: ({ value }) => {
+			mutate(value, {
+				onSuccess: (data) => {
+					queryClient.invalidateQueries({ queryKey: ["userData"] });
+					setAlert(data.data.message, "success");
+					closeSheet();
+				},
+			});
 			closeSheet();
 		},
 		validators: {

@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import { Cookies, useCookies } from "react-cookie";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
@@ -33,29 +33,16 @@ function LoginPage() {
 	const navigate = useNavigate();
 
 	const mutateLogin = useMutation<
-		LoginResponse,
+		AxiosResponse<LoginResponse>,
 		AxiosError<ErrorBase>,
 		LoginRequest
 	>({
-		mutationKey: ["login"],
 		mutationFn: (data) => api.post("/auth/login", data),
 		onError: (error) => {
 			setAlert(
 				error.response?.data.error.message || "Internal Server Error",
 				"error",
 			);
-		},
-		onSuccess: (data) => {
-			setAlert(data.message, "success");
-			setCookie("access_token", data.data.access_token, {
-				expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-				secure: true,
-				sameSite: "strict",
-				path: "/admin",
-			});
-			navigate({
-				to: "/admin/dashboard",
-			});
 		},
 	});
 
@@ -64,8 +51,21 @@ function LoginPage() {
 			username: "",
 			password: "",
 		},
-		onSubmit: async (values) => {
-			await mutateLogin.mutateAsync(values.value);
+		onSubmit: ({ value }) => {
+			mutateLogin.mutate(value, {
+				onSuccess: (data) => {
+					setAlert(data.data.message, "success");
+					setCookie("access_token", data.data.data.access_token, {
+						expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+						secure: true,
+						sameSite: "strict",
+						path: "/admin",
+					});
+					navigate({
+						to: "/admin/dashboard",
+					});
+				},
+			});
 		},
 		validators: {
 			onChange: loginSchema,

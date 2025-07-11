@@ -23,9 +23,13 @@ declare module "@tanstack/react-router" {
 	}
 }
 
+type QueryKey = ["desaData" | "eventData" | "generusData" | "kelompokData" | "logData" | "presenceData" | "userData"];
+
 declare module "@tanstack/react-query" {
 	interface Register {
 		defaultError: AxiosError<ErrorBase>;
+		mutationKey: QueryKey;
+		queryKey: QueryKey;
 	}
 }
 

@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { AxiosError, AxiosResponse } from "axios";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
@@ -22,18 +22,15 @@ export default function SheetCreateUser({
 	closeSheet: () => void;
 }) {
 	const { setAlert } = useAlert();
+	const queryClient = useQueryClient();
 
-	const { mutateAsync } = useMutation<
-		UserResponse,
+	const { mutate } = useMutation<
+		AxiosResponse<UserResponse>,
 		AxiosError<ErrorBase>,
 		UserRequest
 	>({
 		mutationFn: async (data: UserRequest) => {
 			return api.post("/user", data);
-		},
-		onSuccess: (data) => {
-			setAlert(data.message, "success");
-			closeSheet();
 		},
 		onError: (error) => {
 			setAlert(
@@ -45,8 +42,13 @@ export default function SheetCreateUser({
 
 	const form = useForm({
 		defaultValues: defaultValueUser,
-		onSubmit: async ({ value }) => {
-			await mutateAsync(value as UserRequest);
+		onSubmit: ({ value }) => {
+			mutate(value as UserRequest, {
+				onSuccess: (data) => {
+					queryClient.invalidateQueries({ queryKey: ["userData"] });
+					setAlert(data.data.message, "success");
+				},
+			});
 			closeSheet();
 		},
 		validators: {

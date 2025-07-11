@@ -7,7 +7,7 @@ import {
 	getCoreRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
-import type { AxiosError } from "axios";
+import type { AxiosError, AxiosResponse } from "axios";
 import { useQueryState } from "nuqs";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
@@ -77,12 +77,12 @@ function RouteComponent() {
 		keterangan: keteranganParam,
 	});
 
-	const mutation = useMutation<GenerusResponse, AxiosError<ErrorBase>, string>({
+	const mutation = useMutation<
+		AxiosResponse<GenerusResponse>,
+		AxiosError<ErrorBase>,
+		string
+	>({
 		mutationFn: (id: string) => api.delete(`/generus/${id}`),
-		onSuccess: (success: GenerusResponse) => {
-			queryClient.invalidateQueries({ queryKey: ["generusData"] });
-			setAlert(success.message, "success");
-		},
 		onError: (error) => {
 			setAlert(
 				error.response?.data.error.message || "Internal Server Error",
@@ -94,7 +94,12 @@ function RouteComponent() {
 	const columnHelper = createColumnHelper<GenerusBase>();
 
 	const handleDeleteConfirm = () => {
-		mutation.mutate(deleteId);
+		mutation.mutate(deleteId, {
+			onSuccess: (data) => {
+				queryClient.invalidateQueries({ queryKey: ["generusData"] });
+				setAlert(data.data.message, "success");
+			},
+		});
 		setDialog(false);
 		setDeleteId("");
 	};
