@@ -1,6 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import type { AxiosError } from "axios";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
@@ -14,6 +15,7 @@ import {
 	pendidikanTerakhirOptions,
 	sambungOptions,
 } from "@/constants/generus";
+import type { ErrorBase } from "@/types/api";
 import {
 	type GenerusRequest,
 	type GenerusResponse,
@@ -33,22 +35,23 @@ function RouteComponent() {
 
 	const { setAlert } = useAlert();
 
-	const { mutateAsync } = useMutation<GenerusResponse, Error, GenerusRequest>({
+	const { mutateAsync } = useMutation<
+		GenerusResponse,
+		AxiosError<ErrorBase>,
+		GenerusRequest
+	>({
 		mutationFn: async (request) => {
-			return api(`/generus/${data.id}`, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(request),
-			});
+			return api.put(`/generus/${data.id}`, request);
 		},
 		onSuccess: (data) => {
 			setAlert(data.message, "success");
 			redirect({ to: "/admin/generus" });
 		},
 		onError: (error) => {
-			setAlert(error.message, "error");
+			setAlert(
+				error.response?.data.error.message || "Internal Server Error",
+				"error",
+			);
 		},
 	});
 

@@ -3,9 +3,20 @@ import type { KelompokResponseArray } from "@/types/kelompok";
 import { api } from "../api";
 
 export function useKelompok(debouncedSearch?: string) {
-	const data = useQuery<KelompokResponseArray>({
+	const fetchKelompok = async (
+		debouncedSearch?: string,
+	): Promise<KelompokResponseArray> => {
+		const response = await api.get("/kelompok", {
+			params: {
+				q: debouncedSearch,
+			},
+		});
+		return response.data;
+	};
+
+	const data = useQuery({
 		queryKey: ["kelompokData", debouncedSearch],
-		queryFn: () => api.get(`/kelompok`, { params: { q: debouncedSearch } }),
+		queryFn: () => fetchKelompok(debouncedSearch),
 	});
 
 	return data;

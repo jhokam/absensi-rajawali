@@ -3,9 +3,20 @@ import type { LogResponseArray } from "@/types/log";
 import { api } from "../api";
 
 export function useLog(debouncedSearch?: string) {
-	const data = useQuery<LogResponseArray>({
+	const fetchLog = async (
+		debouncedSearch?: string,
+	): Promise<LogResponseArray> => {
+		const response = await api.get("/log", {
+			params: {
+				q: debouncedSearch,
+			},
+		});
+		return response.data;
+	};
+
+	const data = useQuery({
 		queryKey: ["logData", debouncedSearch],
-		queryFn: () => api.get(`/log`, { params: { q: debouncedSearch } }),
+		queryFn: () => fetchLog(debouncedSearch),
 	});
 
 	return data;

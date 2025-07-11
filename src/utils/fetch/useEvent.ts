@@ -3,9 +3,20 @@ import type { EventResponseArray } from "@/types/event";
 import { api } from "../api";
 
 export function useEvent(debouncedSearch?: string) {
-	const data = useQuery<EventResponseArray>({
+	const fetchEvent = async (
+		debouncedSearch?: string,
+	): Promise<EventResponseArray> => {
+		const response = await api.get("/event", {
+			params: {
+				q: debouncedSearch,
+			},
+		});
+		return response.data;
+	};
+
+	const data = useQuery({
 		queryKey: ["eventData", debouncedSearch],
-		queryFn: () => api.get(`/event`, { params: { q: debouncedSearch } }),
+		queryFn: () => fetchEvent(debouncedSearch),
 	});
 
 	return data;

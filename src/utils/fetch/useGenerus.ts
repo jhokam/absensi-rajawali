@@ -10,7 +10,28 @@ export function useGenerus(
 	sambungParam?: string,
 	keteranganParam?: string,
 ) {
-	const data = useQuery<GenerusResponseArray>({
+	const fetchGenerus = async (
+		debouncedSearch?: string,
+		jenisKelaminParam?: string,
+		jenjangParam?: string,
+		pendidikanTerakhirParam?: string,
+		sambungParam?: string,
+		keteranganParam?: string,
+	): Promise<GenerusResponseArray> => {
+		const response = await api.get("/generus", {
+			params: {
+				q: debouncedSearch,
+				jenis_kelamin: jenisKelaminParam,
+				jenjang: jenjangParam,
+				pendidikan_terakhir: pendidikanTerakhirParam,
+				sambung: sambungParam,
+				keterangan: keteranganParam,
+			},
+		});
+		return response.data;
+	};
+
+	const data = useQuery({
 		queryKey: [
 			"generusData",
 			debouncedSearch,
@@ -20,17 +41,15 @@ export function useGenerus(
 			sambungParam,
 			keteranganParam,
 		],
-		queryFn: async () =>
-			await api.get(`generus`, {
-				params: {
-					q: debouncedSearch,
-					jenis_kelamin: jenisKelaminParam,
-					jenjang: jenjangParam,
-					pendidikan_terakhir: pendidikanTerakhirParam,
-					sambung: sambungParam,
-					keterangan: keteranganParam,
-				},
-			}),
+		queryFn: () =>
+			fetchGenerus(
+				debouncedSearch,
+				jenisKelaminParam,
+				jenjangParam,
+				pendidikanTerakhirParam,
+				sambungParam,
+				keteranganParam,
+			),
 	});
 
 	return data;

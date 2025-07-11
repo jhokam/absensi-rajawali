@@ -41,7 +41,6 @@ function RouteComponent() {
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
 
-	//! Need to console.log error.message (dicoba error.success apakah bisa?)
 	const mutation = useMutation<UserResponse, AxiosError<ErrorBase>, string>({
 		mutationFn: (id: string) => api.delete(`/users/${id}`),
 		onSuccess: (success) => {

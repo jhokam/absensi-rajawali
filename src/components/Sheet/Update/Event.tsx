@@ -1,7 +1,9 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
+import type { ErrorBase } from "@/types/api";
 import {
 	type EventBase,
 	type EventRequest,
@@ -20,15 +22,23 @@ export default function SheetUpdateEvent({
 }) {
 	const { setAlert } = useAlert();
 
-	const { mutateAsync } = useMutation<EventResponse, Error, EventRequest>({
+	const { mutateAsync } = useMutation<
+		EventResponse,
+		AxiosError<ErrorBase>,
+		EventRequest
+	>({
 		mutationFn: async (data: EventRequest) => {
-			return api(`/event/${selectedData.id}`, {
-				method: "PUT",
-				body: JSON.stringify(data),
-			});
+			return api.put(`/event/${selectedData.id}`, data);
 		},
 		onError: (error) => {
-			setAlert(error.message, "error");
+			setAlert(
+				error.response?.data.error.message || "Internal Server Error",
+				"error",
+			);
+		},
+		onSuccess: (data) => {
+			setAlert(data.message, "success");
+			closeSheet();
 		},
 	});
 

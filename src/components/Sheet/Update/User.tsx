@@ -1,9 +1,11 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
+import type { AxiosError } from "axios";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
 import ThemedSelect from "@/components/ThemedSelect";
 import { roleOptions } from "@/constants";
+import type { ErrorBase } from "@/types/api";
 import {
 	type UserBase,
 	type UserRequest,
@@ -22,15 +24,23 @@ export default function SheetUpdateUser({
 }) {
 	const { setAlert } = useAlert();
 
-	const { mutateAsync } = useMutation<UserResponse, Error, UserRequest>({
+	const { mutateAsync } = useMutation<
+		UserResponse,
+		AxiosError<ErrorBase>,
+		UserRequest
+	>({
 		mutationFn: async (data: UserRequest) => {
-			return api(`/user/${selectedData.id}`, {
-				method: "PUT",
-				body: JSON.stringify(data),
-			});
+			return api.put(`/user/${selectedData.id}`, data);
 		},
 		onError: (error) => {
-			setAlert(error.message, "error");
+			setAlert(
+				error.response?.data.error.message || "Internal Server Error",
+				"error",
+			);
+		},
+		onSuccess: (data) => {
+			setAlert(data.message, "success");
+			closeSheet();
 		},
 	});
 
@@ -114,7 +124,11 @@ export default function SheetUpdateUser({
 										options={roleOptions}
 										placeholder="Pilih Role"
 										value={field.state.value}
-										onChange={(e) => field.handleChange(e.target.value as typeof field.state.value)}
+										onChange={(e) =>
+											field.handleChange(
+												e.target.value as typeof field.state.value,
+											)
+										}
 										required={true}
 									/>
 								</div>
