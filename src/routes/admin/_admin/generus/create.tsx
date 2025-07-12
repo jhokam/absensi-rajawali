@@ -43,13 +43,19 @@ function RouteComponent() {
 		},
 		onError: (error) => {
 			setAlert(
-				error.response?.data.error.message || "Internal Server Error",
+				error.response?.data.message || "Internal Server Error",
 				"error",
 			);
 		},
 	});
 
-	const { data } = useKelompok();
+	const kelompokValue = useKelompok();
+
+	const kelompokOptions =
+		kelompokValue.data?.data.items.map((item) => ({
+			value: item.id,
+			label: item.nama,
+		})) || [];
 
 	const form = useForm({
 		defaultValues: {
@@ -74,12 +80,6 @@ function RouteComponent() {
 					setAlert(data.data.message, "success");
 					queryClient.invalidateQueries({ queryKey: ["generusData"] });
 					redirect({ to: "/admin/generus" });
-				},
-				onError: (error) => {
-					setAlert(
-						error.response?.data.error.message || "Internal Server Error",
-						"error",
-					);
 				},
 			});
 		},
@@ -170,11 +170,13 @@ function RouteComponent() {
 									type="date"
 									name={field.name}
 									id={field.name}
-									value={field.state.value?.toISOString().split("T")[0] || ""}
-									onBlur={field.handleBlur}
-									onChange={(e) =>
-										field.handleChange(e.target.valueAsDate || new Date())
+									value={
+										field.state.value instanceof Date
+											? field.state.value.toISOString().split("T")[0]
+											: ""
 									}
+									onBlur={field.handleBlur}
+									onChange={(e) => field.handleChange(new Date(e.target.value))}
 									placeholder="John Doe"
 									required={true}
 									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"

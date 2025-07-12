@@ -31,7 +31,7 @@ export default function SheetCreateEvent({
 		},
 		onError: (error) => {
 			setAlert(
-				error.response?.data.error.message || "Internal Server Error",
+				error.response?.data.message || "Internal Server Error",
 				"error",
 			);
 		},
@@ -100,7 +100,7 @@ export default function SheetCreateEvent({
 										type="date"
 										name={field.name}
 										id={field.name}
-										value={field.state.value.toString()}
+										value={field.state.value.toISOString().split("T")[0]}
 										onBlur={field.handleBlur}
 										onChange={(e) =>
 											field.handleChange(new Date(e.target.value))
@@ -124,7 +124,7 @@ export default function SheetCreateEvent({
 										type="date"
 										name={field.name}
 										id={field.name}
-										value={field.state.value.toString()}
+										value={field.state.value.toISOString().split("T")[0]}
 										onBlur={field.handleBlur}
 										onChange={(e) =>
 											field.handleChange(new Date(e.target.value))
@@ -174,6 +174,27 @@ export default function SheetCreateEvent({
 										onChange={(e) => field.handleChange(Number(e.target.value))}
 										placeholder="John Doe"
 										required={true}
+										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+									/>
+									<TextError field={field} />
+								</>
+							)}
+						</form.Field>
+
+						<form.Field name="description">
+							{(field) => (
+								<>
+									<ThemedInput
+										label="Deskripsi"
+										variant="secondary"
+										htmlFor={field.name}
+										type="text"
+										name={field.name}
+										id={field.name}
+										value={field.state.value}
+										onBlur={field.handleBlur}
+										onChange={(e) => field.handleChange(e.target.value)}
+										placeholder="John Doe"
 										className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
 									/>
 									<TextError field={field} />

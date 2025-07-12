@@ -160,7 +160,7 @@ function RouteComponent() {
 	];
 
 	const table = useReactTable({
-		data: data?.data || [],
+		data: data?.data.items || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	});

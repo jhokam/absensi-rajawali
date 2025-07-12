@@ -1,12 +1,3 @@
-import z from "zod";
-
-export const loginSchema = z.object({
-	username: z.string().nonempty("Username tidak boleh kosong"),
-	password: z.string().nonempty("Password tidak boleh kosong"),
-});
-
-export type LoginRequest = z.infer<typeof loginSchema>;
-
 export type ErrorResponse = {
 	name: string;
 	message: string;
@@ -22,8 +13,22 @@ export type ResponseBase<T> = {
 export type ResponseBaseWithArray<T> = {
 	success: boolean;
 	message: string;
-	error: ErrorResponse | null;
 	data: T[];
+	error: ErrorResponse | null;
+};
+
+export type ResponseBasePagination<T> = {
+	success: boolean;
+	message: string;
+	data: { items: T; pagination: Pagination };
+	error: ErrorResponse | null;
+};
+
+export type ResponseBaseWithArrayPagination<T> = {
+	success: boolean;
+	message: string;
+	data: { items: T[]; pagination: Pagination };
+	error: ErrorResponse | null;
 };
 
 export type ErrorBase = {
@@ -33,8 +38,9 @@ export type ErrorBase = {
 	error: ErrorResponse;
 };
 
-export type LoginBase = {
-	access_token: string;
+export type Pagination = {
+	total: number;
+	page: number;
+	limit: number;
+	totalPages: number;
 };
-
-export type LoginResponse = ResponseBase<LoginBase>;

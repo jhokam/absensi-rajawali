@@ -1,5 +1,8 @@
-import type { ResponseBase, ResponseBaseWithArray } from "./api";
 import z from "zod";
+import type {
+	ResponseBasePagination,
+	ResponseBaseWithArrayPagination,
+} from "./api";
 
 export type KelompokBase = {
 	id: string;
@@ -7,11 +10,12 @@ export type KelompokBase = {
 	desa_id: number;
 };
 
-export type KelompokResponseArray = ResponseBaseWithArray<KelompokBase>;
+export type KelompokResponseArray =
+	ResponseBaseWithArrayPagination<KelompokBase>;
 
-export type KelompokResponse = ResponseBase<KelompokBase>;
+export type KelompokResponse = ResponseBasePagination<KelompokBase>;
 
 export const kelompokSchema = z.object({
 	nama: z.string().nonempty("Nama tidak boleh kosong"),
-	desa_id: z.number().nonempty("Desa tidak boleh kosong"),
+	desa_id: z.number().min(1, "Desa tidak boleh kosong"),
 });

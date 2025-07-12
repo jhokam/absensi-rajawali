@@ -42,8 +42,8 @@ export default function SheetUpdateEvent({
 	const form = useForm({
 		defaultValues: {
 			title: selectedData.title,
-			start_date: selectedData.start_date,
-			end_date: selectedData.end_date,
+			start_date: new Date(selectedData.start_date),
+			end_date: new Date(selectedData.end_date),
 			description: selectedData.description,
 			latitude: selectedData.latitude,
 			longitude: selectedData.longitude,
@@ -108,7 +108,11 @@ export default function SheetUpdateEvent({
 										type="date"
 										name={field.name}
 										id={field.name}
-										value={field.state.value.toString()}
+										value={
+											field.state.value instanceof Date
+												? field.state.value.toISOString().split("T")[0]
+												: ""
+										}
 										onBlur={field.handleBlur}
 										onChange={(e) =>
 											field.handleChange(new Date(e.target.value))
@@ -132,7 +136,11 @@ export default function SheetUpdateEvent({
 										type="date"
 										name={field.name}
 										id={field.name}
-										value={field.state.value.toString()}
+										value={
+											field.state.value instanceof Date
+												? field.state.value.toISOString().split("T")[0]
+												: ""
+										}
 										onBlur={field.handleBlur}
 										onChange={(e) =>
 											field.handleChange(new Date(e.target.value))

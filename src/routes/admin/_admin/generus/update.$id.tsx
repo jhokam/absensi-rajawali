@@ -26,12 +26,13 @@ import { useAlert } from "@/utils/useAlert";
 
 export const Route = createFileRoute("/admin/_admin/generus/update/$id")({
 	component: RouteComponent,
-	loader: async ({ params }): Promise<GenerusResponse> =>
+	loader: async ({ params }): Promise<{ data: GenerusResponse }> =>
 		api(`/generus/${params.id}`),
 });
 
 function RouteComponent() {
-	const { data } = Route.useLoaderData();
+	const loaderData = Route.useLoaderData();
+	const dataItems = loaderData.data.data.items;
 
 	const { setAlert } = useAlert();
 	const queryClient = useQueryClient();
@@ -42,7 +43,7 @@ function RouteComponent() {
 		GenerusRequest
 	>({
 		mutationFn: async (request) => {
-			return api.put(`/generus/${data.id}`, request);
+			return api.put(`/generus/${dataItems.id}`, request);
 		},
 
 		onError: (error) => {
@@ -55,20 +56,20 @@ function RouteComponent() {
 
 	const form = useForm({
 		defaultValues: {
-			nama: data.nama,
-			jenis_kelamin: data.jenis_kelamin,
-			tempat_lahir: data.tempat_lahir,
-			tanggal_lahir: data.tanggal_lahir,
-			jenjang: data.jenjang,
-			nomer_whatsapp: data.nomer_whatsapp,
-			pendidikan_terakhir: data.pendidikan_terakhir,
-			nama_orang_tua: data.nama_orang_tua,
-			nomer_whatsapp_orang_tua: data.nomer_whatsapp_orang_tua,
-			alamat_tempat_tinggal: data.alamat_tempat_tinggal,
-			keterangan: data.keterangan,
-			alamat_asal: data.alamat_asal,
-			sambung: data.sambung,
-			kelompok_id: data.kelompok_id,
+			nama: dataItems.nama,
+			jenis_kelamin: dataItems.jenis_kelamin,
+			tempat_lahir: dataItems.tempat_lahir,
+			tanggal_lahir: dataItems.tanggal_lahir,
+			jenjang: dataItems.jenjang,
+			nomer_whatsapp: dataItems.nomer_whatsapp,
+			pendidikan_terakhir: dataItems.pendidikan_terakhir,
+			nama_orang_tua: dataItems.nama_orang_tua,
+			nomer_whatsapp_orang_tua: dataItems.nomer_whatsapp_orang_tua,
+			alamat_tempat_tinggal: dataItems.alamat_tempat_tinggal,
+			keterangan: dataItems.keterangan,
+			alamat_asal: dataItems.alamat_asal,
+			sambung: dataItems.sambung,
+			kelompok_id: dataItems.kelompok_id,
 		},
 		onSubmit: ({ value }) => {
 			mutate(value, {
@@ -168,11 +169,15 @@ function RouteComponent() {
 									type="date"
 									name={field.name}
 									id={field.name}
-									value={String(field.state.value)}
+									value={
+										field.state.value instanceof Date
+											? field.state.value.toISOString().split("T")[0]
+											: ""
+									}
 									onBlur={field.handleBlur}
 									onChange={(e) => field.handleChange(new Date(e.target.value))}
 									placeholder="John Doe"
-									required={true}
+									required={false}
 									className="w-full px-4 py-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
 								/>
 								<TextError field={field} />

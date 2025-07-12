@@ -23,7 +23,18 @@ declare module "@tanstack/react-router" {
 	}
 }
 
-type QueryKey = ["desaData" | "eventData" | "generusData" | "kelompokData" | "logData" | "presenceData" | "userData"];
+type QueryKey = [
+	(
+		| "desaData"
+		| "eventData"
+		| "generusData"
+		| "kelompokData"
+		| "logData"
+		| "presenceData"
+		| "userData"
+	),
+	...ReadonlyArray<unknown>,
+];
 
 declare module "@tanstack/react-query" {
 	interface Register {

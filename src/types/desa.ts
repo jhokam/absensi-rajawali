@@ -1,5 +1,8 @@
 import z from "zod";
-import type { ResponseBase, ResponseBaseWithArray } from "./api";
+import type {
+	ResponseBasePagination,
+	ResponseBaseWithArrayPagination,
+} from "./api";
 
 export type DesaBase = {
 	id: number;
@@ -12,6 +15,6 @@ export const desaSchema = z.object({
 
 export type DesaRequest = Omit<DesaBase, "id">;
 
-export type DesaResponseArray = ResponseBaseWithArray<DesaBase>;
+export type DesaResponseArray = ResponseBaseWithArrayPagination<DesaBase>;
 
-export type DesaResponse = ResponseBase<DesaBase>;
+export type DesaResponse = ResponseBasePagination<DesaBase>;

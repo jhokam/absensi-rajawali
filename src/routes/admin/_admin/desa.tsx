@@ -37,7 +37,7 @@ function RouteComponent() {
 
 	console.log(data);
 	const table = useReactTable({
-		data: data?.data || [],
+		data: data?.data.items || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
 	});

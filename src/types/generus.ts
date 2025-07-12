@@ -1,5 +1,8 @@
 import z from "zod";
-import type { ResponseBase, ResponseBaseWithArray } from "./api";
+import type {
+	ResponseBasePagination,
+	ResponseBaseWithArrayPagination,
+} from "./api";
 
 export type GenerusBase = {
 	id: string;
@@ -39,9 +42,9 @@ export type GenerusFilter = {
 
 export type GenerusRequest = Omit<GenerusBase, "id">;
 
-export type GenerusResponseArray = ResponseBaseWithArray<GenerusBase>;
+export type GenerusResponseArray = ResponseBaseWithArrayPagination<GenerusBase>;
 
-export type GenerusResponse = ResponseBase<GenerusBase>;
+export type GenerusResponse = ResponseBasePagination<GenerusBase>;
 
 export const generusSchema = z.object({
 	nama: z.string().nonempty("Nama tidak boleh kosong"),

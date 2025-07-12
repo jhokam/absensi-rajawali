@@ -6,12 +6,12 @@ import { Cookies, useCookies } from "react-cookie";
 import Button from "@/components/Button";
 import TextError from "@/components/TextError";
 import ThemedInput from "@/components/ThemedInput";
+import type { ErrorBase } from "@/types/api";
 import {
-	type ErrorBase,
 	type LoginRequest,
 	type LoginResponse,
 	loginSchema,
-} from "@/types/api";
+} from "@/types/auth";
 import { api } from "@/utils/api";
 import { useAlert } from "@/utils/useAlert";
 
