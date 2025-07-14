@@ -3,13 +3,16 @@ import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
+	getFilteredRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 import { useQueryState } from "nuqs";
-import { type ChangeEvent, useEffect } from "react";
+import { type ChangeEvent, useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import Button from "@/components/Button";
 import SearchBar from "@/components/SearchBar";
 import Skeleton from "@/components/Skeleton";
+import ThemedSelect from "@/components/ThemedSelect";
 import type { KelompokBase } from "@/types/kelompok";
 import { useKelompok } from "@/utils/fetch/useKelompok";
 import { useAlert } from "@/utils/useAlert";
@@ -25,8 +28,15 @@ function RouteComponent() {
 	});
 	const [debouncedSearch] = useDebounce(searchValue, 2000);
 	const { setAlert } = useAlert();
+	const [pagination, setPagination] = useState({
+		pageIndex: 0,
+		pageSize: 9,
+	});
 
-	const { isPending, error, isError, data } = useKelompok(debouncedSearch);
+	const { isPending, error, isError, data } = useKelompok(
+		debouncedSearch,
+		pagination,
+	);
 
 	const columnHelper = createColumnHelper<KelompokBase>();
 
@@ -39,6 +49,14 @@ function RouteComponent() {
 		data: data?.data.items || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
+		manualPagination: true,
+		rowCount: data?.data.meta.total,
+		onPaginationChange: setPagination,
+		state: {
+			pagination,
+		},
+		manualFiltering: true,
+		getFilteredRowModel: getFilteredRowModel(),
 	});
 
 	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +65,10 @@ function RouteComponent() {
 
 	useEffect(() => {
 		if (isError) {
-			setAlert(error.message, "error");
+			setAlert(
+				error.response?.data.message || "Internal Server Error",
+				"error",
+			);
 		}
 	}, [isError, error]);
 
@@ -91,6 +112,38 @@ function RouteComponent() {
 								</tr>
 							))}
 				</tbody>
+				<tfoot>
+					<tr>
+						<td>
+							<Button
+								type="button"
+								onClick={() => table.previousPage()}
+								disabled={!table.getCanPreviousPage()}>
+								Previous
+							</Button>
+							<Button
+								type="button"
+								onClick={() => table.nextPage()}
+								disabled={!table.getCanNextPage()}>
+								Next
+							</Button>
+							<ThemedSelect
+								name="pageSize"
+								options={[
+									{ value: 9, label: "9" },
+									{ value: 19, label: "19" },
+									{ value: 20, label: "20" },
+									{ value: 30, label: "30" },
+								]}
+								placeholder="Select Page Size"
+								value={table.getState().pagination.pageSize}
+								onChange={(e) => table.setPageSize(Number(e.target.value))}
+							/>
+							<p>Total Page: {table.getPageCount()}</p>
+							<p>Total Row: {table.getRowCount()}</p>
+						</td>
+					</tr>
+				</tfoot>
 			</table>
 		</>
 	);

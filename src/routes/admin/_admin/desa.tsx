@@ -35,7 +35,6 @@ function RouteComponent() {
 		columnHelper.accessor("nama", { header: "Nama" }),
 	];
 
-	console.log(data);
 	const table = useReactTable({
 		data: data?.data.items || [],
 		columns,

@@ -20,14 +20,14 @@ export type ResponseBaseWithArray<T> = {
 export type ResponseBasePagination<T> = {
 	success: boolean;
 	message: string;
-	data: { items: T; pagination: Pagination };
+	data: { items: T[]; meta: Pagination };
 	error: ErrorResponse | null;
 };
 
 export type ResponseBaseWithArrayPagination<T> = {
 	success: boolean;
 	message: string;
-	data: { items: T[]; pagination: Pagination };
+	data: { items: T[]; meta: Pagination };
 	error: ErrorResponse | null;
 };
 

@@ -9,6 +9,7 @@ export function useGenerus(
 	pendidikanTerakhirParam?: string,
 	sambungParam?: string,
 	keteranganParam?: string,
+	pagination?: { pageIndex: number; pageSize: number },
 ) {
 	const fetchGenerus = async (
 		debouncedSearch?: string,
@@ -17,6 +18,7 @@ export function useGenerus(
 		pendidikanTerakhirParam?: string,
 		sambungParam?: string,
 		keteranganParam?: string,
+		pagination?: { pageIndex: number; pageSize: number },
 	): Promise<GenerusResponseArray> => {
 		const response = await api.get("/generus", {
 			params: {
@@ -26,6 +28,8 @@ export function useGenerus(
 				pendidikan_terakhir: pendidikanTerakhirParam,
 				sambung: sambungParam,
 				keterangan: keteranganParam,
+				page: pagination?.pageIndex,
+				limit: pagination?.pageSize,
 			},
 		});
 		return response.data;
@@ -40,6 +44,7 @@ export function useGenerus(
 			pendidikanTerakhirParam,
 			sambungParam,
 			keteranganParam,
+			pagination,
 		],
 		queryFn: () =>
 			fetchGenerus(
@@ -49,6 +54,7 @@ export function useGenerus(
 				pendidikanTerakhirParam,
 				sambungParam,
 				keteranganParam,
+				pagination,
 			),
 	});
 

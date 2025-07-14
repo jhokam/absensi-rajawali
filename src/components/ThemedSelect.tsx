@@ -1,8 +1,8 @@
 import type { DetailedHTMLProps, SelectHTMLAttributes } from "react";
 
 interface SelectOption {
-	value: string;
-	label: string;
+	value: string | number;
+	label?: string;
 }
 
 type SelectProps = DetailedHTMLProps<
@@ -10,7 +10,7 @@ type SelectProps = DetailedHTMLProps<
 	HTMLSelectElement
 > & {
 	name: string;
-	label: string;
+	label?: string;
 	options: SelectOption[];
 	placeholder: string;
 };

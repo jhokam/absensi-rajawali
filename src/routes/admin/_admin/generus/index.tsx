@@ -5,6 +5,7 @@ import {
 	createColumnHelper,
 	flexRender,
 	getCoreRowModel,
+	getFilteredRowModel,
 	useReactTable,
 } from "@tanstack/react-table";
 import type { AxiosError, AxiosResponse } from "axios";
@@ -90,6 +91,10 @@ function RouteComponent() {
 			);
 		},
 	});
+	const [pagination, setPagination] = useState({
+		pageIndex: 0,
+		pageSize: 9,
+	});
 
 	const columnHelper = createColumnHelper<GenerusBase>();
 
@@ -116,6 +121,7 @@ function RouteComponent() {
 		pendidikanTerakhirParam,
 		sambungParam,
 		keteranganParam,
+		pagination,
 	);
 
 	const columns = [
@@ -163,6 +169,14 @@ function RouteComponent() {
 		data: data?.data.items || [],
 		columns,
 		getCoreRowModel: getCoreRowModel(),
+		manualPagination: true,
+		rowCount: data?.data.meta.total,
+		onPaginationChange: setPagination,
+		state: {
+			pagination,
+		},
+		manualFiltering: true,
+		getFilteredRowModel: getFilteredRowModel(),
 	});
 
 	useEffect(() => {
@@ -281,6 +295,38 @@ function RouteComponent() {
 								</tr>
 							))}
 				</tbody>
+				<tfoot>
+					<tr>
+						<td>
+							<Button
+								type="button"
+								onClick={() => table.previousPage()}
+								disabled={!table.getCanPreviousPage()}>
+								Previous
+							</Button>
+							<Button
+								type="button"
+								onClick={() => table.nextPage()}
+								disabled={!table.getCanNextPage()}>
+								Next
+							</Button>
+							<ThemedSelect
+								name="pageSize"
+								options={[
+									{ value: 9, label: "9" },
+									{ value: 19, label: "19" },
+									{ value: 20, label: "20" },
+									{ value: 30, label: "30" },
+								]}
+								placeholder="Select Page Size"
+								value={table.getState().pagination.pageSize}
+								onChange={(e) => table.setPageSize(Number(e.target.value))}
+							/>
+							<p>Total Page: {table.getPageCount()}</p>
+							<p>Total Row: {table.getRowCount()}</p>
+						</td>
+					</tr>
+				</tfoot>
 			</table>
 		</>
 	);
