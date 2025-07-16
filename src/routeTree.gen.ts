@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PresensiIdRouteImport } from './routes/presensi.$id'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAdminRouteRouteImport } from './routes/admin/_admin/route'
 import { Route as AdminAdminUserRouteImport } from './routes/admin/_admin/user'
@@ -29,6 +30,11 @@ const AdminRouteImport = createFileRoute('/admin')()
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PresensiIdRoute = PresensiIdRouteImport.update({
+  id: '/presensi/$id',
+  path: '/presensi/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminLoginRoute = AdminLoginRouteImport.update({
@@ -95,6 +101,7 @@ const AdminAdminGenerusUpdateIdRoute =
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/presensi/$id': typeof PresensiIdRoute
   '/admin/dashboard': typeof AdminAdminDashboardRoute
   '/admin/desa': typeof AdminAdminDesaRoute
   '/admin/kegiatan': typeof AdminAdminKegiatanRoute
@@ -109,6 +116,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/presensi/$id': typeof PresensiIdRoute
   '/admin/dashboard': typeof AdminAdminDashboardRoute
   '/admin/desa': typeof AdminAdminDesaRoute
   '/admin/kegiatan': typeof AdminAdminKegiatanRoute
@@ -125,6 +133,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteWithChildren
   '/admin/_admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
+  '/presensi/$id': typeof PresensiIdRoute
   '/admin/_admin/dashboard': typeof AdminAdminDashboardRoute
   '/admin/_admin/desa': typeof AdminAdminDesaRoute
   '/admin/_admin/kegiatan': typeof AdminAdminKegiatanRoute
@@ -141,6 +150,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/admin'
     | '/admin/login'
+    | '/presensi/$id'
     | '/admin/dashboard'
     | '/admin/desa'
     | '/admin/kegiatan'
@@ -155,6 +165,7 @@ export interface FileRouteTypes {
   to:
     | '/admin'
     | '/admin/login'
+    | '/presensi/$id'
     | '/admin/dashboard'
     | '/admin/desa'
     | '/admin/kegiatan'
@@ -170,6 +181,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/admin/_admin'
     | '/admin/login'
+    | '/presensi/$id'
     | '/admin/_admin/dashboard'
     | '/admin/_admin/desa'
     | '/admin/_admin/kegiatan'
@@ -184,6 +196,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AdminRoute: typeof AdminRouteWithChildren
+  PresensiIdRoute: typeof PresensiIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -193,6 +206,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/presensi/$id': {
+      id: '/presensi/$id'
+      path: '/presensi/$id'
+      fullPath: '/presensi/$id'
+      preLoaderRoute: typeof PresensiIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/login': {
@@ -326,6 +346,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRouteWithChildren,
+  PresensiIdRoute: PresensiIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
