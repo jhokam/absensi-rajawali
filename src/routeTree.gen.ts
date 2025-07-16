@@ -11,6 +11,7 @@
 import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TestRouteImport } from './routes/test'
 import { Route as PresensiIdRouteImport } from './routes/presensi.$id'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminAdminRouteRouteImport } from './routes/admin/_admin/route'
@@ -30,6 +31,11 @@ const AdminRouteImport = createFileRoute('/admin')()
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TestRoute = TestRouteImport.update({
+  id: '/test',
+  path: '/test',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PresensiIdRoute = PresensiIdRouteImport.update({
@@ -99,6 +105,7 @@ const AdminAdminGenerusUpdateIdRoute =
   } as any)
 
 export interface FileRoutesByFullPath {
+  '/test': typeof TestRoute
   '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/presensi/$id': typeof PresensiIdRoute
@@ -114,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/admin/generus/update/$id': typeof AdminAdminGenerusUpdateIdRoute
 }
 export interface FileRoutesByTo {
+  '/test': typeof TestRoute
   '/admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
   '/presensi/$id': typeof PresensiIdRoute
@@ -130,6 +138,7 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/test': typeof TestRoute
   '/admin': typeof AdminRouteWithChildren
   '/admin/_admin': typeof AdminAdminRouteRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
@@ -148,6 +157,7 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/test'
     | '/admin'
     | '/admin/login'
     | '/presensi/$id'
@@ -163,6 +173,7 @@ export interface FileRouteTypes {
     | '/admin/generus/update/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/test'
     | '/admin'
     | '/admin/login'
     | '/presensi/$id'
@@ -178,6 +189,7 @@ export interface FileRouteTypes {
     | '/admin/generus/update/$id'
   id:
     | '__root__'
+    | '/test'
     | '/admin'
     | '/admin/_admin'
     | '/admin/login'
@@ -195,6 +207,7 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  TestRoute: typeof TestRoute
   AdminRoute: typeof AdminRouteWithChildren
   PresensiIdRoute: typeof PresensiIdRoute
 }
@@ -206,6 +219,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/test': {
+      id: '/test'
+      path: '/test'
+      fullPath: '/test'
+      preLoaderRoute: typeof TestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/presensi/$id': {
@@ -345,6 +365,7 @@ const AdminRouteChildren: AdminRouteChildren = {
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  TestRoute: TestRoute,
   AdminRoute: AdminRouteWithChildren,
   PresensiIdRoute: PresensiIdRoute,
 }

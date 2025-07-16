@@ -103,6 +103,7 @@ function RouteComponent() {
 			onSuccess: (data) => {
 				queryClient.invalidateQueries({ queryKey: ["generusData"] });
 				setAlert(data.data.message, "success");
+				navigate({ to: "/admin/generus" });
 			},
 		});
 		setDialog(false);
